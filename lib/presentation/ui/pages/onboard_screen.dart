@@ -19,19 +19,19 @@ class _OnboardScreenState extends State<OnboardScreen> {
     {
       "title": "Scan Your Face",
       "text":
-          "Analisis kondisi kulit Anda dengan teknologi pemindaian wajah canggih kami. Dapatkan wawasan yang dipersonalisasi secara instan.",
+          "Analyze your skin condition with our advanced facial scanning technology. Get instant personalized insights.",
       "image": logoOnboardCommunity,
     },
     {
-      "title": "Perawatan Kulit yang Diperseorlisasi",
+      "title": "Personalized Skincare",
       "text":
-          "Terima rekomendasi perawatan kulit yang disesuaikan berdasarkan jenis kulit dan masalah unik Anda.",
+          "Receive tailored skincare recommendations based on your unique skin type and concerns.",
       "image": logoOnboardCommunity,
     },
     {
-      "title": "Bergabung dengan Komunitas",
+      "title": "Join the Community",
       "text":
-          "Terhubung dengan orang lain, berbagi pengalaman, dan tetap up-to-date dengan tren perawatan kulit terbaru dalam grup kami.",
+          "Connect with others, share experiences, and stay up-to-date with the latest skincare trends in our group.",
       "image": logoOnboardCommunity,
     },
   ];
@@ -68,50 +68,39 @@ class _OnboardScreenState extends State<OnboardScreen> {
               Container(
                 height: SizeConfig.calHeightMultiplier(220),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      splashData[_currentPage]["title"]!,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      splashData[_currentPage]["text"]!,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
-                    ),
-                          const SizedBox(height: 40),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        splashData.length,
-                        (index) => DotIndicator(index: index, currentPage: _currentPage),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_currentPage < splashData.length - 1) {
-                          _pageController.nextPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                          );
-                        } else {
-                          Navigator.of(context).pushNamed(routeLogin);
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue[900],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                    Column(
+                      children: [
+                        Text(
+                          splashData[_currentPage]["title"]!,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w600),
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        minimumSize: const Size.fromHeight(50),
-                      ),
-                      child: Text(
-                        _currentPage < splashData.length - 1 ? 'Selanjutnya' : 'Mulai',
-                        style: const TextStyle(fontSize: 16, color: Colors.white),
-                      ),
+                        SizedBox(height: SizeConfig.calHeightMultiplier(12)),
+                        Text(
+                          splashData[_currentPage]["text"]!,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.normal),
+                        ),
+                      ],
+                    ),
+                    // SizedBox(height: SizeConfig .calHeightMultiplier(40)),
+                    Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(
+                            splashData.length,
+                            (index) => DotIndicator(
+                                index: index, currentPage: _currentPage),
+                          ),
+                        ),
+                        SizedBox(height: SizeConfig.calHeightMultiplier(20)),
+                        nextButton(context),
+                      ],
                     ),
                   ],
                 ),
@@ -119,6 +108,33 @@ class _OnboardScreenState extends State<OnboardScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  ElevatedButton nextButton(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        if (_currentPage < splashData.length - 1) {
+          _pageController.nextPage(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        } else {
+          Navigator.of(context).pushNamed(routeLogin);
+        }
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.blue[900],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        minimumSize: const Size.fromHeight(60),
+      ),
+      child: Text(
+        _currentPage < splashData.length - 1 ? 'Selanjutnya' : 'Mulai',
+        style: const TextStyle(fontSize: 16, color: Colors.white),
       ),
     );
   }
