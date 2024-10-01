@@ -65,7 +65,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
                   ),
                 ),
               ),
-              Container(
+              SizedBox(
                 height: SizeConfig.calHeightMultiplier(220),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
