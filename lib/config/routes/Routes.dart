@@ -2,12 +2,12 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:skinisense/config/routes/Route.dart';
-import 'package:skinisense/presentation/ui/pages/home_screen.dart';
-import 'package:skinisense/presentation/ui/pages/login_screen.dart';
+import 'package:skinisense/presentation/ui/pages/features/home/home_screen.dart';
+import 'package:skinisense/presentation/ui/pages/features/auth/login_screen.dart';
 import 'package:skinisense/presentation/ui/pages/not_found_screen.dart';
-import 'package:skinisense/presentation/ui/pages/onboard_screen.dart';
-import 'package:skinisense/presentation/ui/pages/register_screen.dart';
-import 'package:skinisense/presentation/ui/pages/splash_screen.dart';
+import 'package:skinisense/presentation/ui/pages/features/splash_onboard/onboard_screen.dart';
+import 'package:skinisense/presentation/ui/pages/features/auth/register_screen.dart';
+import 'package:skinisense/presentation/ui/pages/features/splash_onboard/splash_screen.dart';
 // import 'package:skinisense/presentation/ui/splash_screen.dart';
 
 class Routes {
