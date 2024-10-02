@@ -8,6 +8,7 @@ import 'package:skinisense/presentation/ui/pages/not_found_screen.dart';
 import 'package:skinisense/presentation/ui/pages/onboard_screen.dart';
 import 'package:skinisense/presentation/ui/pages/register_screen.dart';
 import 'package:skinisense/presentation/ui/pages/splash_screen.dart';
+// import 'package:skinisense/presentation/ui/splash_screen.dart';
 
 class Routes {
   static Route onRoute(RouteSettings settings) {

@@ -20,19 +20,19 @@ class _OnboardScreenState extends State<OnboardScreen> {
       "title": "Scan Your Face",
       "text":
           "Analyze your skin condition with our advanced facial scanning technology. Get instant personalized insights.",
-      "image": logoOnboardCommunity,
+      "image": onboardScanFace,
     },
     {
       "title": "Personalized Skincare",
       "text":
           "Receive tailored skincare recommendations based on your unique skin type and concerns.",
-      "image": logoOnboardCommunity,
+      "image": onboardSkincare,
     },
     {
       "title": "Join the Community",
       "text":
           "Connect with others, share experiences, and stay up-to-date with the latest skincare trends in our group.",
-      "image": logoOnboardCommunity,
+      "image": onboardCommunity,
     },
   ];
 
