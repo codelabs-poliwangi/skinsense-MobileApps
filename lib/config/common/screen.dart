@@ -6,8 +6,8 @@ class SizeConfig {
   static double? _screenHeight;
   static double _blockWidth = 0;
   static double _blockHeight = 0;
-  static int mockupWidth = 375;
-  static int mockupHeigh = 850;
+  static int mockupWidth = 390;
+  static int mockupHeight = 972;
 
   static double? textMultiplier;
   static double? imageSizeMultiplier;
@@ -34,9 +34,9 @@ class SizeConfig {
     }
 
     _blockWidth =
-        _screenWidth! / 100; //! jika screen width 390 maka akan menjidi 3.9
+        _screenWidth! / mockupWidth; //! jika screen width 390 maka akan menjidi 3.9
     _blockHeight =
-        _screenHeight! / 100; //! jika screen height 844 maka akan Walkeridi 8.4
+        _screenHeight! / mockupHeight; //! jika screen height 844 maka akan Walkeridi 8.4
 
     textMultiplier = _blockHeight; //! nilai sama dengan bloc height 8.4
     imageSizeMultiplier = _blockWidth; //! nilai sama dengan bloc width 3.9
