@@ -2,74 +2,64 @@
 import 'package:flutter/widgets.dart';
 
 class SizeConfig {
-  static double? _screenWidth;
-  static double? _screenHeight;
-  static double _blockWidth = 0;
-  static double _blockHeight = 0;
-  static int mockupWidth = 375;
-  static int mockupHeigh = 850;
+  static late double screenWidth;
+  static late double screenHeight;
+  static late double textMultiplier;
+  static late double imageSizeMultiplier;
+  static late double heightMultiplier;
+  static late double widthMultiplier;
+  static late double devicePixelRatio;
+  static const int mockupWidth = 390;
+  static const int mockupHeight = 972;
 
-  static double? textMultiplier;
-  static double? imageSizeMultiplier;
-  static double?
-      heightMultiplier; //!digunakan untuk widget yang membutuhkan heigh seperti sizedbox, container, dll
-  static double?
-      widthMultiplier; //! digunakan ntuk widget yang membutuhkan width seperti sizedbox, container, dll
-  static bool isPortrait = true;
-  static bool isMobilePortrait = false;
+  static void init(BuildContext context) {
+    MediaQueryData mediaQuery = MediaQuery.of(context);
+    screenWidth = mediaQuery.size.width;
+    screenHeight = mediaQuery.size.height;
+    devicePixelRatio = mediaQuery.devicePixelRatio;
+    TextScaler textScaler = mediaQuery.textScaler;
+    Orientation orientation = mediaQuery.orientation;
 
-  void init(BoxConstraints constraints, Orientation orientation) {
-    if (orientation == Orientation.portrait) {
-      _screenWidth = constraints.maxWidth;
-      _screenHeight = constraints.maxHeight;
-      isPortrait = true;
-      if (_screenWidth! < 450) {
-        isMobilePortrait = true;
-      }
-    } else {
-      _screenWidth = constraints.maxHeight;
-      _screenHeight = constraints.maxWidth;
-      isPortrait = false;
-      isMobilePortrait = false;
-    }
+    // Menghitung scaling factor
+    double widthScaleFactor = screenWidth / mockupWidth;
+    double heightScaleFactor = screenHeight / mockupHeight;
+    double scaleFactor = (orientation == Orientation.portrait)
+        ? widthScaleFactor
+        : heightScaleFactor;
 
-    _blockWidth =
-        _screenWidth! / 100; //! jika screen width 390 maka akan menjidi 3.9
-    _blockHeight =
-        _screenHeight! / 100; //! jika screen height 844 maka akan Walkeridi 8.4
+    textMultiplier = scaleFactor;
+    imageSizeMultiplier = scaleFactor;
+    heightMultiplier = heightScaleFactor;
+    widthMultiplier = widthScaleFactor;
 
-    textMultiplier = _blockHeight; //! nilai sama dengan bloc height 8.4
-    imageSizeMultiplier = _blockWidth; //! nilai sama dengan bloc width 3.9
-    heightMultiplier = _blockHeight; //! nilai sama dengan bloc height 8.4
-    widthMultiplier = _blockWidth; //! nilai sama dengan bloc width 3.9
-
-    print('screen width = $_screenWidth');
-    print('screen height $_screenHeight');
-    print('block width = $_blockWidth');
-    print('block height = $_blockHeight');
-    print('text multiplier = $textMultiplier');
-    print('image multiplier = $imageSizeMultiplier');
-    print('height multiplier = $heightMultiplier');
-    print('width multiplier = $widthMultiplier');
+    print('Lebar layar = $screenWidth');
+    print('Tinggi layar = $screenHeight');
+    print('Rasio aspek = ${screenWidth / screenHeight}');
+    print('Rasio piksel perangkat = $devicePixelRatio');
+    print('Faktor skala teks = ${textScaler.scale(1.0)}');
+    print('Orientasi = $orientation');
+    print('Faktor skala lebar = $widthScaleFactor');
+    print('Faktor skala tinggi = $heightScaleFactor');
+    print('Faktor skala yang digunakan = $scaleFactor');
   }
 
   static double calMultiplierText(double textSize) {
-    double size = textSize / textMultiplier!;
-    return double.parse((size * textMultiplier!).toStringAsFixed(1));
+    double size = textSize / textMultiplier;
+    return double.parse((size * textMultiplier).toStringAsFixed(1));
   }
 
   static double calMultiplierImage(double imageSize) {
-    double size = imageSize / imageSizeMultiplier!;
-    return double.parse((size * imageSizeMultiplier!).toStringAsFixed(1));
+    double size = imageSize / imageSizeMultiplier;
+    return double.parse((size * imageSizeMultiplier).toStringAsFixed(1));
   }
 
   static double calWidthMultiplier(double widthSize) {
-    double size = widthSize / widthMultiplier!;
-    return double.parse((size * widthMultiplier!).toStringAsFixed(1));
+    double size = widthSize / widthMultiplier;
+    return double.parse((size * widthMultiplier).toStringAsFixed(1));
   }
 
   static double calHeightMultiplier(double heightSize) {
-    double size = heightSize / heightMultiplier!;
-    return double.parse((size * heightMultiplier!).toStringAsFixed(1));
+    double size = heightSize / heightMultiplier;
+    return double.parse((size * heightMultiplier).toStringAsFixed(1));
   }
 }
