@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
+import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/presentation/ui/pages/features/home/home_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/jadwal/jadwal_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/komunitas/komunitas_page.dart';
@@ -22,20 +24,20 @@ class _HomeWrapperState extends State<HomeWrapper> {
   ];
 
   // Variable to track the current index
-  int currentIndex = 0;
-   @override
+  int selectedIndex = 0;
+  @override
   void initState() {
     super.initState();
     // Initialize pageController
     pageController = PageController();
   }
 
-   PageView _pageViewWrapper() {
+  PageView _pageViewWrapper() {
     return PageView(
       controller: pageController,
       onPageChanged: (int index) {
         setState(() {
-          currentIndex = index; // Update current index when page is swiped
+          selectedIndex = index; // Update current index when page is swiped
         });
       },
       children: pages,
@@ -45,25 +47,26 @@ class _HomeWrapperState extends State<HomeWrapper> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pageViewWrapper(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,//! agar membuat fab nya ditengah bawah 
-      backgroundColor: ,
+      body: SafeArea(child: _pageViewWrapper()),
+      floatingActionButtonLocation: FloatingActionButtonLocation
+          .centerDocked, //! agar membuat fab nya ditengah bawah
+      backgroundColor: lightBlueColor,
       //! bungkus bottomnavigatorbarnya menggunakn bottomAppbar dan diberi beberapa property agar fab tidak collapse dengan bototm navigatior bar
       bottomNavigationBar: _bottomNavigationBar(),
       floatingActionButton: _floatingActionScan(),
-      
     );
   }
 
   FloatingActionButton _floatingActionScan() {
     return FloatingActionButton(
-      backgroundColor: btnPrimaryColor,
+      backgroundColor: primaryBlueColor,
       shape: CircleBorder(),
       onPressed: () {},
       child: Image(
-        width: SizeConfig.calWidthMultiplier(22),
+        width: SizeConfig.calWidthMultiplier(32),
+        color: Colors.white,
         image: AssetImage(
-          icPlusCircle,
+          icScanFace,
         ),
       ),
     );
@@ -71,75 +74,75 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
   BottomAppBar _bottomNavigationBar() {
     return BottomAppBar(
-      color: Colors.white,
-      shape: CircularNotchedRectangle(),
-      clipBehavior: Clip.antiAlias, //! agar terdapat lengkungan diantara fab dan bottomnavigatior bar
-      notchMargin: 6,
-      elevation: 0,
-      padding: EdgeInsets.all(0),
-      child: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: (value) {
-          setState(() {
-            _selectedIndex = value;
-          });
-        },
-        backgroundColor: Colors.white,
-        type: BottomNavigationBarType.fixed, //agar item dari bottomnavigator  tidak bergerak
-        elevation: 0, //agar tidak ada shdow
-        selectedItemColor: blueColorCarousel,
-        unselectedItemColor:
-            Colors.black, //saat tidak di select maka tetap menjadi  warna hitam
-        showSelectedLabels: true,
-        selectedLabelStyle: TextStyle(
-          fontSize: SizeConfig.calMultiplierText(10),
-          fontWeight: FontWeight.w500,
-          height: 2.0,
-        ),
-        unselectedLabelStyle: TextStyle(
-          fontSize: SizeConfig.calMultiplierText(10),
-          fontWeight: FontWeight.w500,
-          height: 2.0,
-        ),
-        showUnselectedLabels: true,
-        items: [
-          _bottomNavigationBarItem(),
-          BottomNavigationBarItem(
-            label: 'History',
-            icon: Image(
-              width: SizeConfig.calWidthMultiplier(20),
-              image: AssetImage(icHistory),
-            ),
+        color: Colors.white,
+        shape: CircularNotchedRectangle(),
+        clipBehavior: Clip
+            .antiAlias, //! agar terdapat lengkungan diantara fab dan bottomnavigatior bar
+        notchMargin: 6,
+        elevation: 2,
+        padding:
+            EdgeInsets.symmetric(horizontal: SizeConfig.calWidthMultiplier(24)),
+        child: Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _bottomAppBarItem(
+                context,
+                icon: icHome,
+                label: 'Home',
+                page: 0,
+              ),
+              _bottomAppBarItem(context,
+                  icon: icCalender, label: 'Jadwal', page: 1),
+              SizedBox(
+                width: SizeConfig.calWidthMultiplier(24),
+              ),
+              _bottomAppBarItem(context,
+                  icon: icCommunity, label: 'Komunitas', page: 2),
+              _bottomAppBarItem(context,
+                  icon: icProfile, label: 'Profile', page: 3)
+            ],
           ),
-          BottomNavigationBarItem(
-            label: 'Statistic',
-            icon: Image(
-              width: SizeConfig.calWidthMultiplier(20),
-              image: AssetImage(icStatistic),
-            ),
-          ),
-          BottomNavigationBarItem(
-            label: 'Reward',
-            icon: Image(
-              width: SizeConfig.calWidthMultiplier(20),
-              image: AssetImage(icReward),
-            ),
-          )
-        ],
-      ),
-    );
+        ));
   }
 
-  BottomNavigationBarItem _bottomNavigationBarItem() {
-    return BottomNavigationBarItem(
-          label: 'Overview',
-          icon: Image(
-            color: blueColorCarousel,
-            width: SizeConfig.calWidthMultiplier(20),
-            image: AssetImage(
-              icOverfiew,
+  Widget _bottomAppBarItem(BuildContext context,
+      {required int page, required String label, required String icon}) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedIndex = page;
+          pageController.animateToPage(page, // Animate page change on tap
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut);
+        });
+      },
+      child: Container(
+        color: Colors.transparent,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: SizeConfig.calHeightMultiplier(2)),
+            Container(
+              child: Image(
+                image: AssetImage(icon),
+                height: SizeConfig.calHeightMultiplier(20),
+                color: selectedIndex == page ? primaryBlueColor : grayColor,
+              ),
             ),
-          ),
-        );
+            SizedBox(height: SizeConfig.calHeightMultiplier(10)),
+            Text(
+              label,
+              style: TextStyle(
+                color: selectedIndex == page ? primaryBlueColor : grayColor,
+                fontSize: SizeConfig.calHeightMultiplier(12),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

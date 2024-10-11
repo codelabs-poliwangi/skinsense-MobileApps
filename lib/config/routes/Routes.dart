@@ -17,7 +17,7 @@ class Routes {
         return PageTransition(
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
-          child: SplashPage(),
+          child: HomeWrapper(),
           settings: settings,
         );
       case routeOnboard:
