@@ -38,6 +38,7 @@ dependencies:
   page_transition: ^2.1.0
   google_fonts: ^6.2.1
   font_awesome_flutter: ^10.7.0
+  fluentui_icons: ^1.0.0
 
 dev_dependencies:
   flutter_test:
