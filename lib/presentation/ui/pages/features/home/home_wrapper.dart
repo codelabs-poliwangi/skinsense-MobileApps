@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
+import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/presentation/ui/pages/features/home/home_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/jadwal/jadwal_page.dart';
@@ -61,7 +62,9 @@ class _HomeWrapperState extends State<HomeWrapper> {
     return FloatingActionButton(
       backgroundColor: primaryBlueColor,
       shape: CircleBorder(),
-      onPressed: () {},
+      onPressed: () {
+        Navigator.of(context).pushNamed(routeScan);
+      },
       child: Image(
         width: SizeConfig.calWidthMultiplier(32),
         color: Colors.white,
@@ -96,7 +99,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
               _bottomAppBarItem(context,
                   icon: icCalender, label: 'Jadwal', page: 1),
               SizedBox(
-                width: SizeConfig.calWidthMultiplier(24),
+                width: SizeConfig.calWidthMultiplier(20),
               ),
               _bottomAppBarItem(context,
                   icon: icCommunity, label: 'Komunitas', page: 2),

@@ -9,4 +9,5 @@ const String routeRegister = '/register';
 // const String routeRegisterPin = '/register-pin';
 // const String routeRegisterSuccess = '/register-success';
 const String routeHome = '/home';
+const String routeScan = '/scan';
 // const String routeOverview = '/home/overview';

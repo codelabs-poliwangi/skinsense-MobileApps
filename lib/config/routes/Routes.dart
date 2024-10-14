@@ -1,8 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/presentation/ui/pages/features/home/home_wrapper.dart';
+import 'package:skinisense/presentation/ui/pages/features/scan/scan_page.dart';
 // import 'package:skinisense/presentation/ui/pages/features/auth/login_screen.dart';
 import 'package:skinisense/presentation/ui/pages/not_found_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/splash_onboard/onboard_page.dart';
@@ -18,6 +18,7 @@ class Routes {
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
           child: HomeWrapper(),
+          // child: ScanPage(),
           settings: settings,
         );
       case routeOnboard:
@@ -27,7 +28,13 @@ class Routes {
           child: OnboardPage(),
           settings: settings,
         );
-        
+      case routeScan:
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 300),
+          child: ScanPage(),
+          settings: settings,
+        );
       // case routeLogin:
       //   return PageTransition(
       //     type: PageTransitionType.fade,
