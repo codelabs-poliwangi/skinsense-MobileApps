@@ -2,22 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:permission_handler/permission_handler.dart'; // Import permission_handler
 import 'package:fluentui_icons/fluentui_icons.dart';
+import 'package:skinisense/config/routes/Route.dart';
+import 'package:skinisense/presentation/ui/widget/alertdialog_widget.dart';
 import 'package:skinisense/presentation/ui/widget/camera_frame_scan.dart';
 
-late List<CameraDescription> _cameras;
+late List<CameraDescription> _cameras; // List camera use
 
-class ScanPage extends StatefulWidget {
-  const ScanPage({super.key});
+class ScanPageLeft extends StatefulWidget {
+  const ScanPageLeft({super.key});
 
   @override
-  State<ScanPage> createState() => _ScanPageState();
+  State<ScanPageLeft> createState() => _ScanPageState();
 }
 
-class _ScanPageState extends State<ScanPage> {
+class _ScanPageState extends State<ScanPageLeft> {
   late CameraController controller;
   bool _isCameraPermissionGranted = false;
   bool _isCameraInitialized = false;
-  int _selectedCameraIndex = 0; // Track current camera
+  int _selectedCameraIndex = 0; // Track current camera rear/front
+  bool _isFlashOn = false;
 
   @override
   void initState() {
@@ -35,12 +38,57 @@ class _ScanPageState extends State<ScanPage> {
       });
       _initializeCameras(); // Initialize cameras after permission is granted
     } else if (status.isDenied) {
-      // Handle case if the user denies the permission
       print('Camera permission denied');
+      _showPermissionDialog();
     } else if (status.isPermanentlyDenied) {
-      // Redirect user to app settings if permission is permanently denied
-      await openAppSettings();
+      _showSettingsDialog();
     }
+  }
+
+  void _showPermissionDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialogWidget(
+          title: 'Izin Kamera Diperlukan',
+          message: 'Agar aplikasi Skini dapat berfungsi dengan baik, kami memerlukan akses ke kamera Anda.',
+          cancelButton: () {
+            Navigator.of(context).pop();
+          },
+          mainButton: () async {
+            var status = await Permission.camera.request();
+            if (status.isGranted) {
+              Navigator.of(context).pop();
+              _initializeCameras();
+            } else {
+              Navigator.of(context).pushNamed(routeHome);
+            }
+          },
+          cancelButtonMessage: 'Nanti saja',
+          mainButtonMessage: 'Berikan Izin',
+        );
+      },
+    );
+  }
+
+  void _showSettingsDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialogWidget(
+          title: 'Izin Kamera Diperlukan',
+          message: 'Buka pengaturan dan berikan izin kamera agar aplikasi dapat menggunakan kamera.',
+          cancelButton: () {
+            Navigator.of(context).pushNamed(routeHome);
+          },
+          mainButton: () async {
+            await openAppSettings();
+          },
+          cancelButtonMessage: 'Batalkan',
+          mainButtonMessage: 'Buka Pengaturan',
+        );
+      },
+    );
   }
 
   // Function to load available cameras and initialize the first one
@@ -59,7 +107,8 @@ class _ScanPageState extends State<ScanPage> {
 
   // Function to initialize the camera
   void _initializeCamera(CameraDescription cameraDescription) {
-    controller = CameraController(cameraDescription, ResolutionPreset.max);
+    controller = CameraController(cameraDescription, ResolutionPreset.max,
+        enableAudio: false);
     controller.initialize().then((_) {
       if (!mounted) {
         return;
@@ -80,14 +129,27 @@ class _ScanPageState extends State<ScanPage> {
       }
     });
   }
-   void switchCamera() {
+
+  void switchCamera() {
     _selectedCameraIndex = (_selectedCameraIndex + 1) % _cameras.length;
     _initializeCamera(_cameras[_selectedCameraIndex]);
   }
+
+  Future<void> toggleFlash() async {
+    if (_isFlashOn) {
+      await controller.setFlashMode(FlashMode.off);
+    } else {
+      await controller.setFlashMode(FlashMode.torch);
+    }
+    setState(() {
+      _isFlashOn = !_isFlashOn;
+    });
+  }
+
   Future<void> takePicture() async {
     if (!controller.value.isInitialized) {
       print('Error: Camera is not initialized');
-      return null;
+      return;
     }
 
     try {
@@ -112,25 +174,25 @@ class _ScanPageState extends State<ScanPage> {
                           // Camera Preview
                           Container(
                             width: double.infinity,
-                            height: MediaQuery.sizeOf(context).height -
-                                MediaQuery.sizeOf(context).height * 0.15,
+                            height: MediaQuery.of(context).size.height -
+                                MediaQuery.of(context).size.height * 0.15,
                             child: CameraPreview(controller),
                           ),
 
                           // Blurred overlay with guided frame
-                          CameraFrameScan()
+                          CameraFrameScan(sideScan: 'Kanan',)
                         ],
                       )
                     : Container(
                         width: double.infinity,
-                        height: MediaQuery.sizeOf(context).height -
-                            MediaQuery.sizeOf(context).height * 0.15,
+                        height: MediaQuery.of(context).size.height -
+                            MediaQuery.of(context).size.height * 0.15,
                         color: Colors.black,
                       )
                 : Container(
                     width: double.infinity,
-                    height: MediaQuery.sizeOf(context).height -
-                        MediaQuery.sizeOf(context).height * 0.15,
+                    height: MediaQuery.of(context).size.height -
+                        MediaQuery.of(context).size.height * 0.15,
                     child: Center(
                       child: Text('Camera permission is required to scan.'),
                     ),
@@ -139,14 +201,23 @@ class _ScanPageState extends State<ScanPage> {
             // Bottom Blue Container
             Expanded(
               child: Container(
-                // height: MediaQuery.sizeOf(context).height * 0.5,
                 width: double.infinity,
                 color: Colors.blue,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    SizedBox.shrink(),
+                    GestureDetector(
+                      onTap: () {
+                        toggleFlash();
+                      },
+                      child: Icon(
+                        _isFlashOn
+                            ? FluentSystemIcons.ic_fluent_flash_on_regular
+                            : FluentSystemIcons.ic_fluent_flash_off_regular,
+                        color: Colors.white,
+                      ),
+                    ),
                     GestureDetector(
                       onTap: () {
                         takePicture();

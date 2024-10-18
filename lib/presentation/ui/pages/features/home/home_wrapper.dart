@@ -63,7 +63,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
       backgroundColor: primaryBlueColor,
       shape: CircleBorder(),
       onPressed: () {
-        Navigator.of(context).pushNamed(routeScan);
+        Navigator.of(context).pushNamed(routeScanFront);
       },
       child: Image(
         width: SizeConfig.calWidthMultiplier(32),

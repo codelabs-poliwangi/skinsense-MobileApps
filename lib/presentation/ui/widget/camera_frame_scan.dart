@@ -1,13 +1,14 @@
-
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:skinisense/config/common/image_assets.dart';
+import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/theme/color.dart';
 
 class CameraFrameScan extends StatelessWidget {
+  final String sideScan;
   const CameraFrameScan({
-    super.key,
+    super.key, required this.sideScan,
   });
 
   @override
@@ -18,13 +19,28 @@ class CameraFrameScan extends StatelessWidget {
           ClipPath(
             clipper: HollowRectClipper(),
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+              filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
               child: Container(
                 width: MediaQuery.sizeOf(context).width,
                 height: MediaQuery.sizeOf(context).height -
                     MediaQuery.sizeOf(context).height *
                         .15, // Same as the outer container
                 // color: Colors.blue,
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(
+                top: SizeConfig.calHeightMultiplier(
+                    MediaQuery.sizeOf(context).height -
+                        MediaQuery.sizeOf(context).height * .825)),
+            alignment: Alignment.center,
+            child: Text(
+              'Ambil Foto Wajah Sisi ${sideScan}',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: grayEdgeFrameColor,
               ),
             ),
           ),
@@ -55,8 +71,7 @@ class CameraFrameScan extends StatelessWidget {
                 MediaQuery.sizeOf(context).height * .775,
             child: Transform.rotate(
               angle: 90 *
-                  (3.14159 /
-                      180), // Rotate 45 degrees (convert to radians)
+                  (3.14159 / 180), // Rotate 45 degrees (convert to radians)
               child: Container(
                 width: 60, // Set a width
                 height: 60, // Set a height
@@ -79,8 +94,7 @@ class CameraFrameScan extends StatelessWidget {
                 MediaQuery.sizeOf(context).height * .515,
             child: Transform.rotate(
               angle: 180 *
-                  (3.14159 /
-                      180), // Rotate 45 degrees (convert to radians)
+                  (3.14159 / 180), // Rotate 45 degrees (convert to radians)
               child: Container(
                 width: 60, // Set a width
                 height: 60, // Set a height
@@ -103,8 +117,7 @@ class CameraFrameScan extends StatelessWidget {
                 MediaQuery.sizeOf(context).height * .515,
             child: Transform.rotate(
               angle: 270 *
-                  (3.14159 /
-                      180), // Rotate 45 degrees (convert to radians)
+                  (3.14159 / 180), // Rotate 45 degrees (convert to radians)
               child: Container(
                 width: 60, // Set a width
                 height: 60, // Set a height

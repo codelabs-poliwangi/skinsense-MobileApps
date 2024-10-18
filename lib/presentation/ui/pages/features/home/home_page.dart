@@ -8,6 +8,7 @@ import 'package:skinisense/presentation/ui/widget/product_katalog.dart';
 import 'package:skinisense/presentation/ui/widget/progress_skin.dart';
 import 'package:skinisense/presentation/ui/widget/routine_list.dart';
 import 'package:skinisense/presentation/ui/widget/search_textfield.dart';
+import 'package:skinisense/presentation/ui/widget/alertdialog_widget.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -22,7 +23,7 @@ class HomePage extends StatelessWidget {
             SliverAppBar(
               pinned: false,
               backgroundColor: lightBlueColor,
-              expandedHeight: 260,
+              expandedHeight: SizeConfig.calHeightMultiplier(260),
               flexibleSpace: FlexibleSpaceBar(
                 background: CardWelcomeWidget(),
               ),
@@ -30,7 +31,7 @@ class HomePage extends StatelessWidget {
             // Tambahkan jarak (space) di antara dua SliverAppBar
             SliverToBoxAdapter(
               child: SizedBox(
-                height: 10,
+                height: SizeConfig.calHeightMultiplier(10),
               ), // Jarak 10dp antara SliverAppBar pertama dan kedua
             ),
             SliverAppBar(
@@ -38,28 +39,35 @@ class HomePage extends StatelessWidget {
               elevation: 0,
               pinned: true,
               bottom: PreferredSize(
-                preferredSize: Size.fromHeight(20),
+                preferredSize:
+                    Size.fromHeight(SizeConfig.calHeightMultiplier(20)),
                 child: SizedBox(),
               ),
               flexibleSpace: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: EdgeInsets.symmetric(
+                    horizontal: SizeConfig.calHeightMultiplier(24)),
                 child: Center(child: SearchTextfield()),
               ),
             ),
             SliverList(
               delegate: SliverChildListDelegate(
                 [
+                  
                   SkinConditionWidget(),
-                  SizedBox(height: 20),
+                  SizedBox(height: SizeConfig.calHeightMultiplier(20)),
                   TrackRoutineWidget(),
-                  SizedBox(height: 20),
+                  SizedBox(height: SizeConfig.calHeightMultiplier(20)),
                   Container(
-                    padding: EdgeInsets.only(top:0,left: 24,right: 24,bottom: 16 ),
+                    padding: EdgeInsets.only(
+                        top: 0,
+                        left: SizeConfig.calWidthMultiplier(24),
+                        right: SizeConfig.calWidthMultiplier(24),
+                        bottom: SizeConfig.calHeightMultiplier(16)),
                     child: Text(
                       'Product',
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: 16,
+                        fontSize: SizeConfig.calHeightMultiplier(16),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -77,12 +85,22 @@ class HomePage extends StatelessWidget {
                   childAspectRatio: 0.68, // Rasio aspek untuk kotak
                 ),
                 itemBuilder: (BuildContext context, int index) {
-                  return ProductItemWidget(indexProduct: index, imageProduct: onboardCommunity, nameProduct: "Skintific 2% Salicylic Acid Anti Acne Serum 20ml", storeProduct: 'Skintific', storeImage: logoSplashScreen, ratingProduct: 4.3,);
+                  return ProductItemWidget(
+                    indexProduct: index,
+                    imageProduct: onboardCommunity,
+                    nameProduct:
+                        "Skintific 2% Salicylic Acid Anti Acne Serum 20ml",
+                    storeProduct: 'Skintific',
+                    storeImage: logoSplashScreen,
+                    ratingProduct: 4.3,
+                  );
                 },
                 itemCount: 8, // Jumlah item di grid
               ),
             ),
-            SliverPadding(padding: EdgeInsets.symmetric(vertical: 20))
+            SliverPadding(
+                padding: EdgeInsets.symmetric(
+                    vertical: SizeConfig.calHeightMultiplier(20)))
           ],
         ),
       ),
@@ -103,7 +121,7 @@ class ProductGridPage extends StatelessWidget {
                 'Product',
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 16,
+                  fontSize: SizeConfig.calHeightMultiplier(16),
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -143,7 +161,7 @@ class TrackRoutineWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: SizeConfig.calHeightMultiplier(24)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,11 +170,11 @@ class TrackRoutineWidget extends StatelessWidget {
             'Track Your Routine',
             style: TextStyle(
               color: Colors.black,
-              fontSize: 16,
+              fontSize: SizeConfig.calHeightMultiplier(16),
               fontWeight: FontWeight.w600,
             ),
           ),
-          SizedBox(height: 12), // Tambahkan sedikit jarak
+          SizedBox(height: SizeConfig.calHeightMultiplier(12)), // Tambahkan sedikit jarak
           // ListView builder di dalam SliverList
           ListView.builder(
             shrinkWrap:
@@ -206,11 +224,11 @@ class SkinConditionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: SizeConfig.calHeightMultiplier(24)),
       child: Container(
         width: double.infinity,
-        margin: EdgeInsets.only(top: 20),
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        margin: EdgeInsets.only(top: SizeConfig.calHeightMultiplier(20)),
+        padding: EdgeInsets.symmetric(horizontal: SizeConfig.calWidthMultiplier(16), vertical: SizeConfig.calHeightMultiplier(20)),
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
@@ -230,7 +248,7 @@ class SkinConditionWidget extends StatelessWidget {
               'Skin Condition',
               style: TextStyle(
                 color: blueTextColor,
-                fontSize: 20,
+                fontSize: SizeConfig.calHeightMultiplier(20),
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -238,22 +256,22 @@ class SkinConditionWidget extends StatelessWidget {
               'Last Check : 30 Augst 2024',
               style: TextStyle(
                 color: blueTextColor,
-                fontSize: 10,
+                fontSize: SizeConfig.calHeightMultiplier(10),
                 fontWeight: FontWeight.w600,
               ),
             ),
             SizedBox(
-              height: 12,
+              height: SizeConfig.calHeightMultiplier(12),
             ),
             ProgressSkinWidget(
                 problemSkin: 'Skin Acne', percentProblemSKin: 80),
             SizedBox(
-              height: 16,
+              height: SizeConfig.calHeightMultiplier(16),
             ),
             ProgressSkinWidget(
                 problemSkin: 'Skin Wringkle', percentProblemSKin: 70),
             SizedBox(
-              height: 16,
+              height: SizeConfig.calHeightMultiplier(16),
             ),
             ProgressSkinWidget(
                 problemSkin: 'Skin Oily', percentProblemSKin: 50),
@@ -284,8 +302,8 @@ class CardWelcomeWidget extends StatelessWidget {
       child: Stack(
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: const Column(
+            padding: EdgeInsets.symmetric(horizontal: SizeConfig.calWidthMultiplier(24), vertical: SizeConfig.calHeightMultiplier(16)),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
@@ -296,12 +314,12 @@ class CardWelcomeWidget extends StatelessWidget {
                       children: [
                         Text(
                           'Good Morning!',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
+                          style: TextStyle(fontSize: SizeConfig.calHeightMultiplier(16), color: Colors.white),
                         ),
                         Text(
                           'Hendery Huang',
                           style: TextStyle(
-                              fontSize: 20,
+                              fontSize: SizeConfig.calHeightMultiplier(20),
                               fontWeight: FontWeight.bold,
                               color: Colors.white),
                         ),
@@ -313,12 +331,12 @@ class CardWelcomeWidget extends StatelessWidget {
                   ],
                 ),
                 SizedBox(
-                  height: 40,
+                  height: SizeConfig.calHeightMultiplier(40),
                 ),
                 Text(
                   "🌞Don't forget to use sunscreen\nand re-apply it every 3 hours🌞",
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: SizeConfig.calHeightMultiplier(16),
                     fontWeight: FontWeight.normal,
                     color: Colors.white,
                   ),

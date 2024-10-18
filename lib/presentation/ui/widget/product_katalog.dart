@@ -16,7 +16,7 @@ class ProductItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 1000, // Tinggi container diatur
+      // height: 1000, // Tinggi container diatur
       decoration: BoxDecoration(
         color: Colors.white, // Warna latar belakang kotak
         borderRadius: BorderRadius.circular(8), // Membuat sudut membulat
@@ -54,8 +54,9 @@ class ProductItemWidget extends StatelessWidget {
           Expanded(
             child: Container(
               width: double.infinity,
+              // padding: EdgeInsets.only(bottom: ),
               decoration: BoxDecoration(
-                color: Colors.white,
+                // color: Colors.red,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(8),
                   bottomRight: Radius.circular(8),
@@ -67,60 +68,57 @@ class ProductItemWidget extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Text(
-                            '${nameProduct}', // Nama produk
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                          '${nameProduct}', // Nama produk
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
                           ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      Expanded(
-                        child: Container(
-                          // color: Colors.red,
-                          padding: EdgeInsets.only(left: 8),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 12,
-                                height: 12,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    // Menambahkan border
-                                    color: Colors.grey, // Warna border
-                                    width: 1, // Ketebalan border
-                                  ),
-                                  image: DecorationImage(
-                                    image: AssetImage(
-                                        storeImage), // Gambar di dalam lingkaran
-                                    fit: BoxFit
-                                        .cover, // Mengatur gambar agar sesuai dengan lingkaran
-                                  ),
+                      SizedBox(height: 16,),
+                      Container(
+                        // color: Colors.red,
+                        padding: EdgeInsets.only(left: 8),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 14,
+                              height: 14,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  // Menambahkan border
+                                  color: Colors.grey, // Warna border
+                                  width: 1, // Ketebalan border
+                                ),
+                                image: DecorationImage(
+                                  image: AssetImage(
+                                      storeImage), // Gambar di dalam lingkaran
+                                  fit: BoxFit
+                                      .cover, // Mengatur gambar agar sesuai dengan lingkaran
                                 ),
                               ),
-                              SizedBox(
-                                  width:
-                                      6), // Menambahkan jarak antara gambar dan teks
-                              Text(storeProduct)
-                            ],
-                          ),
+                            ),
+                            SizedBox(
+                                width:
+                                    6), // Menambahkan jarak antara gambar dan teks
+                            Text(storeProduct)
+                          ],
                         ),
                       )
 
-                      // Elemen lain bisa ditambahkan di sini jika diperlukan
+                      
                     ],
                   ),
                   Positioned(
                     right: 0,
-                    bottom: 8,
+                    bottom: 10,
                     child: RatingWidget(
                       rating: ratingProduct, // Rating produk
                     ),
