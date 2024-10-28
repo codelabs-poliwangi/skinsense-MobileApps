@@ -57,7 +57,8 @@ class _PreviewPageFrontState extends State<PreviewPageFront> {
             child: Container(
               margin: const EdgeInsets.only(right: 24),
               child: Transform.rotate(
-                angle: 45 * (3.141592653589793 / 180), // Mengubah derajat ke radian
+                angle: 45 *
+                    (3.141592653589793 / 180), // Mengubah derajat ke radian
                 child: const Icon(
                   size: 40,
                   color: primaryBlueColor,
@@ -84,8 +85,28 @@ class _PreviewPageFrontState extends State<PreviewPageFront> {
                     } else if (snapshot.hasData && snapshot.data != null) {
                       String imagePath = snapshot.data!;
                       return Center(
-                        child: Image.file(
-                          File(imagePath), // Menampilkan gambar dari File
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Wajah Depan',
+                              style: TextStyle(
+                                color: primaryBlueColor
+                              ),
+                            ),
+                            SizedBox(height: 20,),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: SizedBox(
+                                height: 400,
+                                child: Image.file(
+                                  File(
+                                      imagePath), // Menampilkan gambar dari File
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       );
                     } else {
@@ -99,7 +120,7 @@ class _PreviewPageFrontState extends State<PreviewPageFront> {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               width: double.infinity,
               height: MediaQuery.of(context).size.height * 0.125,
-              decoration:const BoxDecoration(
+              decoration: const BoxDecoration(
                 color: darkBackgroundColor,
               ),
               child: Row(
@@ -109,7 +130,8 @@ class _PreviewPageFrontState extends State<PreviewPageFront> {
                       mainButtonMessage: "Ambil Ulang",
                       mainButton: () {
                         // Hapus gambar di SharedPreferences
-                        SharedPreferencesService().removeData('scan_face_front');
+                        SharedPreferencesService()
+                            .removeData('scan_face_front');
                         Navigator.of(context).pushNamed(routeScanFront);
                       },
                     ),

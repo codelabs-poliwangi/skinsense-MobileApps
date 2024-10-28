@@ -82,34 +82,38 @@ class ProductItemWidget extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 16,),
-                      Container(
-                        // color: Colors.red,
-                        padding: EdgeInsets.only(left: 8),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 14,
-                              height: 14,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  // Menambahkan border
-                                  color: Colors.grey, // Warna border
-                                  width: 1, // Ketebalan border
+                      Expanded(
+                        child: Center(
+                          child: Container(
+                            // color: Colors.red,
+                            padding: EdgeInsets.only(left: 8),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 14,
+                                  height: 14,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      // Menambahkan border
+                                      color: Colors.grey, // Warna border
+                                      width: 1, // Ketebalan border
+                                    ),
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                          storeImage), // Gambar di dalam lingkaran
+                                      fit: BoxFit
+                                          .cover, // Mengatur gambar agar sesuai dengan lingkaran
+                                    ),
+                                  ),
                                 ),
-                                image: DecorationImage(
-                                  image: AssetImage(
-                                      storeImage), // Gambar di dalam lingkaran
-                                  fit: BoxFit
-                                      .cover, // Mengatur gambar agar sesuai dengan lingkaran
-                                ),
-                              ),
+                                SizedBox(
+                                    width:
+                                        6), // Menambahkan jarak antara gambar dan teks
+                                Text(storeProduct)
+                              ],
                             ),
-                            SizedBox(
-                                width:
-                                    6), // Menambahkan jarak antara gambar dan teks
-                            Text(storeProduct)
-                          ],
+                          ),
                         ),
                       )
 
