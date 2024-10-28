@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:skinisense/config/routes/Route.dart';
+import 'package:skinisense/presentation/ui/pages/features/auth/register_page.dart';
+import 'package:skinisense/presentation/ui/pages/features/auth/register_password_page.dart';
+import 'package:skinisense/presentation/ui/pages/features/auth/forgot_password_screen.dart';
+import 'package:skinisense/presentation/ui/pages/features/auth/otp_verification_screen.dart';
 import 'package:skinisense/presentation/ui/pages/features/home/home_wrapper.dart';
 import 'package:skinisense/presentation/ui/pages/features/questions/questions_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/preview_page_front.dart';
@@ -47,11 +51,39 @@ class Routes {
           child: ScanPageFront(),
           settings: settings,
         );
-      case routeScanFrontPreview:
+       case routeScanFrontPreview:
         return PageTransition(
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
           child: PreviewPageFront(),
+          settings: settings,
+        );
+      case routeRegister:
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 300),
+          child: RegisterPage(),
+          settings: settings,
+        );
+      case routerRegisterPassword:
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 300),
+          child: RegisterPasswordPage(),
+          settings: settings,
+        );
+      case routeForgotPassword:
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 300),
+          child: ForgotPasswordScreen(),
+          settings: settings,
+        );
+      case routeOtpVerification:
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 300),
+          child: OtpVerificationScreen(),
           settings: settings,
         );
       case routeScanLeftPreview:
@@ -68,7 +100,7 @@ class Routes {
           child: PreviewPageRight(),
           settings: settings,
         );
-      case routeQuestions:
+        case routeQuestions:
         return PageTransition(
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
