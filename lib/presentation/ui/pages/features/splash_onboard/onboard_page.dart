@@ -4,14 +4,14 @@ import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/presentation/ui/widget/dot_indicator.dart';
 
-class OnboardScreen extends StatefulWidget {
-  const OnboardScreen({Key? key}) : super(key: key);
+class OnboardPage extends StatefulWidget {
+  const OnboardPage({Key? key}) : super(key: key);
 
   @override
-  _OnboardScreenState createState() => _OnboardScreenState();
+  _OnboardPageState createState() => _OnboardPageState();
 }
 
-class _OnboardScreenState extends State<OnboardScreen> {
+class _OnboardPageState extends State<OnboardPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
