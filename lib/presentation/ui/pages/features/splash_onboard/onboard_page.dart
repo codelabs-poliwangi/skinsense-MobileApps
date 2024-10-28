@@ -4,34 +4,34 @@ import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/presentation/ui/widget/dot_indicator.dart';
 
-class OnboardScreen extends StatefulWidget {
-  const OnboardScreen({Key? key}) : super(key: key);
+class OnboardPage extends StatefulWidget {
+  const OnboardPage({Key? key}) : super(key: key);
 
   @override
-  _OnboardScreenState createState() => _OnboardScreenState();
+  _OnboardPageState createState() => _OnboardPageState();
 }
 
-class _OnboardScreenState extends State<OnboardScreen> {
+class _OnboardPageState extends State<OnboardPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
   final List<Map<String, String>> splashData = [
     {
-      "title": "Scan Your Face",
+      "title": "Pindai Wajah Anda",
       "text":
-          "Analyze your skin condition with our advanced facial scanning technology. Get instant personalized insights.",
+          "Analisis kondisi kulit Anda dengan teknologi pemindaian wajah canggih kami. Dapatkan wawasan personal secara instan.",
       "image": onboardScanFace,
     },
     {
-      "title": "Personalized Skincare",
+      "title": "Perawatan Kulit Personal",
       "text":
-          "Receive tailored skincare recommendations based on your unique skin type and concerns.",
+          "Terima rekomendasi perawatan kulit yang disesuaikan berdasarkan jenis kulit dan masalah kulit unik Anda.",
       "image": onboardSkincare,
     },
     {
-      "title": "Join the Community",
+      "title": "Bergabung dengan Komunitas",
       "text":
-          "Connect with others, share experiences, and stay up-to-date with the latest skincare trends in our group.",
+          "Terhubung dengan orang lain, berbagi pengalaman, dan tetap up-to-date dengan tren perawatan kulit terbaru dalam grup kami.",
       "image": onboardCommunity,
     },
   ];
@@ -45,27 +45,32 @@ class _OnboardScreenState extends State<OnboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: SafeArea(
-          child: Column(
-            children: [
-              Expanded(
-                // flex: 2,
-                child: PageView.builder(
-                  controller: _pageController,
-                  onPageChanged: (index) {
-                    setState(() {
-                      _currentPage = index;
-                    });
-                  },
-                  itemCount: splashData.length,
-                  itemBuilder: (context, index) => Image.asset(
-                    splashData[index]["image"]!,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              // flex: 2,
+              child: PageView.builder(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentPage = index;
+                  });
+                },
+                itemCount: splashData.length,
+                itemBuilder: (context, index) => Container(
+                  child: Container(
+                    padding: const EdgeInsets.all(24),
+                    child: Image.asset(
+                      splashData[index]["image"]!,
+                    ),
                   ),
                 ),
               ),
-              SizedBox(
+            ),
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: SizedBox(
                 height: SizeConfig.calHeightMultiplier(220),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -105,8 +110,8 @@ class _OnboardScreenState extends State<OnboardScreen> {
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
