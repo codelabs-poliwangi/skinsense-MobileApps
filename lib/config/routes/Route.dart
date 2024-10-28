@@ -4,15 +4,20 @@ const String routeOnboard = '/onboard';
 const String routeLogin = '/login';
 // const String routeLoginPin = '/login-pin';
 const String routeRegister = '/register';
-// const String routeRegisterProfile = '/register-profile';
+const String routerRegisterPassword = '/register-password';
 // const String routeRegisterVerify = '/register-verify';
 // const String routeRegisterPin = '/register-pin';
 // const String routeRegisterSuccess = '/register-success';
 const String routeHome = '/home';
+
+const String routeForgotPassword = '/forgot-password';
+const String routeOtpVerification = '/otp-verification';
+
 const String routeScanFront = '/scan/front';
 const String routeScanFrontPreview = '/scan/front/preview';
 const String routeScanRight = '/scan/right';
 const String routeScanRightPreview = '/scan/right/preview';
 const String routeScanLeft = '/scan/left';
 const String routeScanLeftPreview = '/scan/left/preview';
+
 // const String routeOverview = '/home/overview';
