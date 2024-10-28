@@ -15,4 +15,4 @@ const String routeScanRight = '/scan/right';
 const String routeScanRightPreview = '/scan/right/preview';
 const String routeScanLeft = '/scan/left';
 const String routeScanLeftPreview = '/scan/left/preview';
-// const String routeOverview = '/home/overview';
+const String routeQuestions = '/scan/questions';

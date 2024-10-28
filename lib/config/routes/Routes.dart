@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/presentation/ui/pages/features/home/home_wrapper.dart';
+import 'package:skinisense/presentation/ui/pages/features/questions/questions_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/preview_page_front.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/preview_page_left.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/preview_page_right.dart';
@@ -65,6 +66,13 @@ class Routes {
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
           child: PreviewPageRight(),
+          settings: settings,
+        );
+      case routeQuestions:
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 300),
+          child: QuestionsPage(),
           settings: settings,
         );
       // case routeLogin:

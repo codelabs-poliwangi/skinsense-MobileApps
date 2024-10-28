@@ -9,3 +9,5 @@ const Color grayEdgeFrameColor = Color(0xff929194);
 const Color secoundaryTextColor = Color(0xffa0a0a0);
 const Color secoundaryButtonColor = Color(0xffE1DFDF);
 const Color darkBackgroundColor = Color(0xff616367);
+const Color circleBackgroundBlueColor1 = Color(0xffCCE0FF);
+const Color circleBackgroundBlueColor2 = Color(0xffE1EDFF);
