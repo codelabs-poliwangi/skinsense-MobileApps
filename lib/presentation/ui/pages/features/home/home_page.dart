@@ -89,7 +89,7 @@ class HomePage extends StatelessWidget {
                         ratingProduct: 4.3,
                       );
                     },
-                    itemCount: 10, // Jumlah item di grid
+                    itemCount: 20, // Jumlah item di grid
                   ),
                 ),
               ),

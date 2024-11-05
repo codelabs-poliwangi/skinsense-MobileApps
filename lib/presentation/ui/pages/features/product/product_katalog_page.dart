@@ -25,7 +25,7 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
               backgroundColor: primaryBlueColor,
               elevation: 0,
               pinned: true,
-                            automaticallyImplyLeading: false,
+              automaticallyImplyLeading: false,
               bottom: PreferredSize(
                 preferredSize:
                     Size.fromHeight(SizeConfig.calHeightMultiplier(20)),
@@ -72,13 +72,13 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
             SliverPadding(padding: EdgeInsets.symmetric(vertical: 10)),
             // Grid untuk katalog produk
             SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 24),
+              padding: EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverGrid.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2, // Jumlah kolom
                   crossAxisSpacing: 16, // Jarak antar kolom
                   mainAxisSpacing: 16, // Jarak antar baris
-                  childAspectRatio: 0.68, // Rasio aspek untuk kotak
+                  childAspectRatio: 0.69, // Rasio aspek untuk kotak
                 ),
                 itemBuilder: (BuildContext context, int index) {
                   return Hero(
@@ -95,6 +95,11 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
                   );
                 },
                 itemCount: 8, // Jumlah item di grid
+              ),
+            ),
+            SliverPadding(
+              padding: EdgeInsets.symmetric(
+                vertical: SizeConfig.calHeightMultiplier(20),
               ),
             ),
           ],
