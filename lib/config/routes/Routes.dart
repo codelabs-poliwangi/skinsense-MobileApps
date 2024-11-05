@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:skinisense/config/routes/Route.dart';
+import 'package:skinisense/presentation/ui/pages/features/auth/login_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/auth/register_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/auth/register_password_page.dart';
-import 'package:skinisense/presentation/ui/pages/features/auth/forgot_password_screen.dart';
-import 'package:skinisense/presentation/ui/pages/features/auth/otp_verification_screen.dart';
+import 'package:skinisense/presentation/ui/pages/features/auth/forgot_password_page.dart';
+import 'package:skinisense/presentation/ui/pages/features/auth/otp_verification_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/home/home_wrapper.dart';
+import 'package:skinisense/presentation/ui/pages/features/product/product_katalog_page.dart';
+import 'package:skinisense/presentation/ui/pages/features/product/product_search_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/questions/questions_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/preview_page_front.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/preview_page_left.dart';
@@ -25,6 +28,8 @@ class Routes {
         return PageTransition(
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
+          // child: SplashPage(),
+          // child: ProductKatalogPage(),
           child: HomeWrapper(),
           // child: ScanPage(),
           settings: settings,
@@ -51,7 +56,7 @@ class Routes {
           child: ScanPageFront(),
           settings: settings,
         );
-       case routeScanFrontPreview:
+      case routeScanFrontPreview:
         return PageTransition(
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
@@ -76,14 +81,14 @@ class Routes {
         return PageTransition(
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
-          child: ForgotPasswordScreen(),
+          child: ForgotPasswordPage(),
           settings: settings,
         );
       case routeOtpVerification:
         return PageTransition(
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
-          child: OtpVerificationScreen(),
+          child: OtpVerificationPage(),
           settings: settings,
         );
       case routeScanLeftPreview:
@@ -100,34 +105,41 @@ class Routes {
           child: PreviewPageRight(),
           settings: settings,
         );
-        case routeQuestions:
+      case routeQuestions:
         return PageTransition(
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
           child: QuestionsPage(),
           settings: settings,
         );
-      // case routeLogin:
-      //   return PageTransition(
-      //     type: PageTransitionType.fade,
-      //     duration: const Duration(milliseconds: 300),
-      //     child: Login(),
-      //     settings: settings,
-      //   );
-      // case routeRegister:
-      //   return PageTransition(
-      //     type: PageTransitionType.fade,
-      //     duration: const Duration(milliseconds: 300),
-      //     child: RegisterScreen(),
-      //     settings: settings,
-      //   );
-      // case routeHome:
-      //   return PageTransition(
-      //     type: PageTransitionType.fade,
-      //     duration: const Duration(milliseconds: 300),
-      //     child: HomeWrapper(),
-      //     settings: settings,
-      //   );
+      case routeLogin:
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 300),
+          child: Loginpage(),
+          settings: settings,
+        );
+      case routeRegister:
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 300),
+          child: RegisterPage(),
+          settings: settings,
+        );
+      case routeProductSearch:
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 300),
+          child: ProductSearchPage(),
+          settings: settings,
+        );
+      case routeProductKatalog:
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 300),
+          child: ProductKatalogPage(),
+          settings: settings,
+        );
       default:
         return PageTransition(
           type: PageTransitionType.fade,

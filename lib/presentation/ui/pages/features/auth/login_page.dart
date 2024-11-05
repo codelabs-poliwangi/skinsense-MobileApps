@@ -6,6 +6,7 @@ import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/presentation/ui/widget/custom_button.dart';
 import 'package:skinisense/presentation/ui/widget/custom_input.dart';
 import 'package:skinisense/presentation/ui/widget/custom_logo_button.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 // import 'signup.dart'; // Import halaman signup.dart
 
 class Loginpage extends StatefulWidget {
@@ -54,245 +55,249 @@ class _LoginpageState extends State<Loginpage> {
       appBar: null,
       backgroundColor: Colors.white,
       body: SafeArea(
-          child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Logo
+                Image.asset(
+                  logoSplashScreen, // Ganti dengan path logo kamu
+                  width: SizeConfig.calWidthMultiplier(120),
+                ),
+                SizedBox(height: SizeConfig.calHeightMultiplier(24)),
+
+                // Login to Your Account
+                Text(
+                  'Welcome Back!',
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      color: primaryBlueColor, fontWeight: FontWeight.w700),
+                ),
+
+                // Login to your
+                Opacity(
+                  opacity: .5,
+                  child: Text(
+                    'Log in to existing SCIN account',
+                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                          color: primaryBlueColor,
+                        ),
+                  ),
+                ),
+                SizedBox(height: SizeConfig.calHeightMultiplier(24)),
+
+                // Username or email field
+                CustomInput(
+                  controller: _emailController,
+                  hintText: 'Username or Email',
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter an username or email!';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: SizeConfig.calHeightMultiplier(16)),
+
+                // Password field
+                CustomInput(
+                  controller: _passwordController,
+                  hintText: 'Password',
+                  isPasswordField: true,
+                  obscureText: _obscureText,
+                  onToggleVisibility: _isObsecure,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter password!';
+                    }
+                    return null;
+                  },
+                ),
+
+                // Remember Me and Forgot Password
+                Row(
                   children: [
-                    // Logo
-                    Image.asset(
-                      logoSplashScreen, // Ganti dengan path logo kamu
-                      width: SizeConfig.calWidthMultiplier(120),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Checkbox(
+                          value: _rememberMe,
+                          activeColor: primaryBlueColor,
+                          onChanged: _isRemember,
+                        ),
+                        Text(
+                          'Remember Me',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        )
+                      ],
                     ),
-                    SizedBox(height: SizeConfig.calHeightMultiplier(24)),
-
-                    // Login to Your Account
-                    Text(
-                      'Welcome Back!',
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          color: primaryBlueColor, fontWeight: FontWeight.w700),
-                    ),
-
-                    // Login to your
-                    Opacity(
-                      opacity: .5,
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(routeForgotPassword);
+                      },
                       child: Text(
-                        'Log in to existing SCIN account',
-                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                              color: primaryBlueColor,
-                            ),
+                        'Forgot Password?',
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: primaryBlueColor,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
-                    SizedBox(height: SizeConfig.calHeightMultiplier(24)),
+                  ],
+                ),
 
-                    // Username or email field
-                    CustomInput(
-                      controller: _emailController,
-                      hintText: 'Username or Email',
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter an username or email!';
+                SizedBox(height: SizeConfig.calHeightMultiplier(24)),
+                CustomButton(
+                    onPressed: () {
+                      // Jika form sudah tervalidasi
+                      if (_formKey.currentState!.validate()) {
+                        var validatedData = {
+                          'username': _emailController.text,
+                          'password': _passwordController.text,
+                        };
+
+                        if (authenticate(validatedData)) {
+                          // Fluttertoast.showToast(
+                          //   msg: "Login Berhasil",
+                          //   toastLength: Toast.LENGTH_SHORT,
+                          //   gravity: ToastGravity.TOP, // Set gravity to TOP
+                          //   timeInSecForIosWeb: 1,
+                          //   backgroundColor: Colors.greenAccent.shade700,
+                          //   textColor: Colors.white,
+                          //   fontSize: 16.0,
+                          // );
+                          Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            routeHome, // Nama route tujuan
+                            (Route<dynamic> route) =>
+                                false, // Menghapus semua route sebelumnya
+                          );
+                        } else {
+                          showCustomModalBottomSheet(
+                              context, imageTryAgain, primaryBlueColor);
                         }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: SizeConfig.calHeightMultiplier(16)),
+                      }
+                    },
+                    text: 'Login',
+                    backgroundColor: primaryBlueColor),
+                SizedBox(height: SizeConfig.calHeightMultiplier(24)),
 
-                    // Password field
-                    CustomInput(
-                      controller: _passwordController,
-                      hintText: 'Password',
-                      isPasswordField: true,
-                      obscureText: _obscureText,
-                      onToggleVisibility: _isObsecure,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter password!';
-                        }
-                        return null;
-                      },
-                    ),
+                //=========================================================================
 
-                    // Remember Me and Forgot Password
-                    Row(
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Image.asset(
+                      logoTransparent,
+                      fit: BoxFit.cover,
+                      width: 200,
+                    ),
+                    // Or Login With
+                    Column(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Checkbox(
-                              value: _rememberMe,
-                              activeColor: primaryBlueColor,
-                              onChanged: _isRemember,
-
+                            Expanded(
+                              child: Divider(
+                                color: primaryBlueColor, // Color of the line
+                                height: 1, // Height of the divider
+                              ),
                             ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 8.0), // Spacing around text
+                              child: Text(
+                                'Or Login With',
+                                style: TextStyle(
+                                  color: primaryBlueColor, // Color of the text
+                                  fontSize: 12, // Font size
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Divider(
+                                color: primaryBlueColor, // Color of the line
+                                height: 1, // Height of the divider
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: SizeConfig.calHeightMultiplier(16)),
+
+                        // Social Media Buttons
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CustomLogoButton(
+                              icon: imgLogoGoogle,
+                              onPressed: () {},
+                            ),
+                            const SizedBox(width: 16),
+                            CustomLogoButton(
+                              icon: imgLogoFacebook,
+                              onPressed: () {},
+                            ),
+                            const SizedBox(width: 16),
+                            CustomLogoButton(
+                              icon: imgLogoTwitter,
+                              onPressed: () {},
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: SizeConfig.calHeightMultiplier(24)),
+
+                        // Sign Up Link
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
                             Text(
-                              'Remember Me',
-                              style: Theme.of(context).textTheme.bodySmall,
+                              "Doesn't have an account?",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(
+                                    color: Colors.black,
+                                  ),
+                            ),
+                            const SizedBox(width: 10),
+                            GestureDetector(
+                              child: Text(
+                                "Sign Up",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                      color: Colors.blue[900],
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              ),
+                              onTap: () => Navigator.of(context)
+                                  .pushNamed(routeRegister),
                             )
                           ],
                         ),
-                        const Spacer(),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context)
-                                .pushNamed(routeForgotPassword);
-                          },
-                          child: Text(
-                            'Forgot Password?',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall!
-                                .copyWith(
-                                    color: primaryBlueColor,
-                                    fontWeight: FontWeight.bold),
-                          ),
-                        ),
                       ],
                     ),
-
-                    SizedBox(height: SizeConfig.calHeightMultiplier(24)),
-                    CustomButton(
-                        onPressed: () {
-                          // Jika form sudah tervalidasi
-                          if (_formKey.currentState!.validate()) {
-                            var validatedData = {
-                              'username': _emailController.text,
-                              'password': _passwordController.text,
-                            };
-
-                            if (authenticate(validatedData)) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Berhasil')),
-                              );
-                            } else {
-                              showCustomModalBottomSheet(
-                                  context, imageTryAgain, primaryBlueColor);
-                            }
-                          }
-                        },
-                        text: 'Login',
-                        backgroundColor: primaryBlueColor),
-                    SizedBox(height: SizeConfig.calHeightMultiplier(24)),
-
-                    //=========================================================================
-
-                    Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Image.asset(
-                          logoTransparent,
-                          fit: BoxFit.cover,
-                          width: 200,
-                        ),
-                        // Or Login With
-                        Column(
-                          children: [
-                            const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  child: Divider(
-                                    color:
-                                        primaryBlueColor, // Color of the line
-                                    height: 1, // Height of the divider
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 8.0), // Spacing around text
-                                  child: Text(
-                                    'Or Login With',
-                                    style: TextStyle(
-                                      color:
-                                          primaryBlueColor, // Color of the text
-                                      fontSize: 12, // Font size
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Divider(
-                                    color:
-                                        primaryBlueColor, // Color of the line
-                                    height: 1, // Height of the divider
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                                height: SizeConfig.calHeightMultiplier(16)),
-
-                            // Social Media Buttons
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CustomLogoButton(
-                                  icon: imgLogoGoogle,
-                                  onPressed: () {},
-                                ),
-                                const SizedBox(width: 16),
-                                CustomLogoButton(
-                                  icon: imgLogoFacebook,
-                                  onPressed: () {},
-                                ),
-                                const SizedBox(width: 16),
-                                CustomLogoButton(
-                                  icon: imgLogoTwitter,
-                                  onPressed: () {},
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                                height: SizeConfig.calHeightMultiplier(24)),
-
-                            // Sign Up Link
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Doesn't have an account?",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                        color: Colors.black,
-                                      ),
-                                ),
-                                const SizedBox(width: 10),
-                                GestureDetector(
-                                  child: Text(
-                                    "Sign Up",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .copyWith(
-                                          color: Colors.blue[900],
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                  ),
-                                  onTap: () => Navigator.of(context)
-                                      .pushNamed(routeRegister),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-
-                    const Text(
-                      '© 2024 SCIN. All rights reserved. Unauthorized copying or distribution is prohibited.',
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.grey,
-                      ),
-                      textAlign: TextAlign.center,
-                    )
                   ],
                 ),
-              ))),
+
+                const Text(
+                  '© 2024 SCIN. All rights reserved. Unauthorized copying or distribution is prohibited.',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Colors.grey,
+                  ),
+                  textAlign: TextAlign.center,
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

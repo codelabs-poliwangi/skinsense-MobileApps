@@ -7,8 +7,8 @@ import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
 
 // import 'signup.dart'; // Import halaman signup.dart
-class OtpVerificationScreen extends StatelessWidget {
-  const OtpVerificationScreen({super.key});
+class OtpVerificationPage extends StatelessWidget {
+  const OtpVerificationPage({super.key});
 
   @override
   Widget build(BuildContext context) {

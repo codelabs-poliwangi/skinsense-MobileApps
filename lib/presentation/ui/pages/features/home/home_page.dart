@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
+import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/presentation/ui/widget/product_katalog.dart';
 import 'package:skinisense/presentation/ui/widget/progress_skin.dart';
@@ -15,139 +16,92 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: lightBlueColor,
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              pinned: false,
-              backgroundColor: lightBlueColor,
-              expandedHeight: SizeConfig.calHeightMultiplier(260),
-              flexibleSpace: FlexibleSpaceBar(
-                background: CardWelcomeWidget(),
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        backgroundColor: lightBlueColor,
+        body: SafeArea(
+          child: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                pinned: false,
+                backgroundColor: lightBlueColor,
+                automaticallyImplyLeading: false,
+                expandedHeight: SizeConfig.calHeightMultiplier(260),
+                flexibleSpace: FlexibleSpaceBar(
+                  background: CardWelcomeWidget(),
+                ),
               ),
-            ),
-            // Tambahkan jarak (space) di antara dua SliverAppBar
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: SizeConfig.calHeightMultiplier(10),
-              ), // Jarak 10dp antara SliverAppBar pertama dan kedua
-            ),
-            SliverAppBar(
-              backgroundColor: lightBlueColor,
-              elevation: 0,
-              pinned: true,
-              bottom: PreferredSize(
-                preferredSize:
-                    Size.fromHeight(SizeConfig.calHeightMultiplier(20)),
-                child: SizedBox(),
+              // Jarak antara SliverAppBar pertama dan konten lainnya
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: SizeConfig.calHeightMultiplier(10),
+                ),
               ),
-              flexibleSpace: Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: SizeConfig.calHeightMultiplier(24)),
-                child: Center(child: SearchTextfield()),
-              ),
-            ),
-            SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  
-                  SkinConditionWidget(),
-                  SizedBox(height: SizeConfig.calHeightMultiplier(20)),
-                  TrackRoutineWidget(),
-                  SizedBox(height: SizeConfig.calHeightMultiplier(20)),
-                  Container(
-                    padding: EdgeInsets.only(
+              SliverList(
+                delegate: SliverChildListDelegate(
+                  [
+                    SkinConditionWidget(),
+                    SizedBox(height: SizeConfig.calHeightMultiplier(20)),
+                    TrackRoutineWidget(),
+                    SizedBox(height: SizeConfig.calHeightMultiplier(20)),
+                    Container(
+                      padding: EdgeInsets.only(
                         top: 0,
                         left: SizeConfig.calWidthMultiplier(24),
                         right: SizeConfig.calWidthMultiplier(24),
-                        bottom: SizeConfig.calHeightMultiplier(16)),
-                    child: Text(
-                      'Product',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: SizeConfig.calHeightMultiplier(16),
-                        fontWeight: FontWeight.w600,
+                        bottom: SizeConfig.calHeightMultiplier(16),
+                      ),
+                      child: Text(
+                        'Product',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: SizeConfig.calHeightMultiplier(16),
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 24),
-              sliver: SliverGrid.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // Jumlah kolom
-                  crossAxisSpacing: 16, // Jarak antar kolom
-                  mainAxisSpacing: 16, // Jarak antar baris
-                  childAspectRatio: 0.68, // Rasio aspek untuk kotak
+                  ],
                 ),
-                itemBuilder: (BuildContext context, int index) {
-                  return ProductItemWidget(
-                    indexProduct: index,
-                    imageProduct: onboardCommunity,
-                    nameProduct:
-                        "Skintific 2% Salicylic Acid Anti Acne Serum 20ml",
-                    storeProduct: 'Skintific',
-                    storeImage: logoSplashScreen,
-                    ratingProduct: 4.3,
-                  );
-                },
-                itemCount: 8, // Jumlah item di grid
               ),
-            ),
-            SliverPadding(
+              // Membungkus GridView.builder di dalam SliverToBoxAdapter
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: SizeConfig.calHeightMultiplier(1100), // Tentukan tinggi sesuai kebutuhan
+                  child: GridView.builder(
+                    scrollDirection: Axis.horizontal,
+                    physics: BouncingScrollPhysics(),
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 4, // Jumlah baris
+                      crossAxisSpacing: 16, // Jarak antar kolom
+                      mainAxisSpacing: 16, // Jarak antar baris
+                      childAspectRatio: 1/0.69, // Rasio aspek untuk kotak
+                    ),
+                    itemBuilder: (BuildContext context, int index) {
+                      return ProductItemWidget(
+                        indexProduct: index,
+                        imageProduct: onboardCommunity,
+                        nameProduct:
+                            "Skintific 2% Salicylic Acid Anti Acne Serum 20ml",
+                        storeProduct: 'Skintific',
+                        storeImage: logoSplashScreen,
+                        ratingProduct: 4.3,
+                      );
+                    },
+                    itemCount: 10, // Jumlah item di grid
+                  ),
+                ),
+              ),
+              // Tambahkan padding di bawah
+              SliverPadding(
                 padding: EdgeInsets.symmetric(
-                    vertical: SizeConfig.calHeightMultiplier(20)))
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ProductGridPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                'Product',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: SizeConfig.calHeightMultiplier(16),
-                  fontWeight: FontWeight.w600,
+                  vertical: SizeConfig.calHeightMultiplier(20),
                 ),
               ),
-            ),
+            ],
           ),
-          SliverGrid.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, // Jumlah kolom
-              crossAxisSpacing: 10, // Jarak antar kolom
-              mainAxisSpacing: 10, // Jarak antar baris
-              childAspectRatio: 1, // Rasio aspek untuk kotak
-            ),
-            itemBuilder: (BuildContext context, int index) {
-              return Container(
-                color: Colors.blueAccent, // Warna latar belakang kotak
-                child: Center(
-                  child: Text(
-                    'Item $index', // Teks di dalam kotak
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              );
-            },
-            itemCount: 20, // Jumlah item di grid
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -161,7 +115,8 @@ class TrackRoutineWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: SizeConfig.calHeightMultiplier(24)),
+      padding:
+          EdgeInsets.symmetric(horizontal: SizeConfig.calHeightMultiplier(24)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,7 +129,9 @@ class TrackRoutineWidget extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          SizedBox(height: SizeConfig.calHeightMultiplier(12)), // Tambahkan sedikit jarak
+          SizedBox(
+              height: SizeConfig.calHeightMultiplier(
+                  12)), // Tambahkan sedikit jarak
           // ListView builder di dalam SliverList
           ListView.builder(
             shrinkWrap:
@@ -224,11 +181,14 @@ class SkinConditionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: SizeConfig.calHeightMultiplier(24)),
+      padding:
+          EdgeInsets.symmetric(horizontal: SizeConfig.calHeightMultiplier(24)),
       child: Container(
         width: double.infinity,
         margin: EdgeInsets.only(top: SizeConfig.calHeightMultiplier(20)),
-        padding: EdgeInsets.symmetric(horizontal: SizeConfig.calWidthMultiplier(16), vertical: SizeConfig.calHeightMultiplier(20)),
+        padding: EdgeInsets.symmetric(
+            horizontal: SizeConfig.calWidthMultiplier(16),
+            vertical: SizeConfig.calHeightMultiplier(20)),
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
@@ -302,7 +262,9 @@ class CardWelcomeWidget extends StatelessWidget {
       child: Stack(
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: SizeConfig.calWidthMultiplier(24), vertical: SizeConfig.calHeightMultiplier(16)),
+            padding: EdgeInsets.symmetric(
+                horizontal: SizeConfig.calWidthMultiplier(24),
+                vertical: SizeConfig.calHeightMultiplier(16)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -314,7 +276,9 @@ class CardWelcomeWidget extends StatelessWidget {
                       children: [
                         Text(
                           'Good Morning!',
-                          style: TextStyle(fontSize: SizeConfig.calHeightMultiplier(16), color: Colors.white),
+                          style: TextStyle(
+                              fontSize: SizeConfig.calHeightMultiplier(16),
+                              color: Colors.white),
                         ),
                         Text(
                           'Hendery Huang',
@@ -325,8 +289,26 @@ class CardWelcomeWidget extends StatelessWidget {
                         ),
                       ],
                     ),
-                    NotificationWidget(
-                      isNotification: false,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            // Navigator.pushReplacementNamed(context, routeProductSearch);
+                            Navigator.of(context).pushNamed(routeProductSearch);
+                          },
+                          child: Icon(
+                            FluentSystemIcons.ic_fluent_search_regular,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(
+                          width: SizeConfig.calWidthMultiplier(16),
+                        ),
+                        NotificationWidget(
+                          isNotification: false,
+                        ),
+                      ],
                     ),
                   ],
                 ),

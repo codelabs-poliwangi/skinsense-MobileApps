@@ -46,6 +46,7 @@ dependencies:
   bloc: ^8.1.4
   flutter_bloc: ^8.1.6
   flutter_secure_storage: ^9.2.2
+  fluttertoast: ^8.2.8
 
 dev_dependencies:
   flutter_test:

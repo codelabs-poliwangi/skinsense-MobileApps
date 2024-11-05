@@ -21,3 +21,5 @@ const String routeScanLeft = '/scan/left';
 const String routeScanLeftPreview = '/scan/left/preview';
 // const String routeOverview = '/home/overview';
 const String routeQuestions = '/scan/questions';
+const String routeProductSearch = '/product/search';
+const String routeProductKatalog = '/product/katalog';
