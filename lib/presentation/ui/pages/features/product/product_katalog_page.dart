@@ -53,17 +53,6 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
                         width: 8,
                       ),
                       Expanded(child: SearchTextfield()),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      GestureDetector(
-                        onTap: () {},
-                        child: Icon(
-                          FluentSystemIcons.ic_fluent_filter_regular,
-                          size: 28,
-                          color: Colors.white,
-                        ),
-                      ),
                     ],
                   ),
                 ),

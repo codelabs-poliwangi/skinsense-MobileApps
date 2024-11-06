@@ -8,7 +8,8 @@ import 'package:skinisense/config/theme/color.dart';
 class CameraFrameScan extends StatelessWidget {
   final String sideScan;
   const CameraFrameScan({
-    super.key, required this.sideScan,
+    super.key,
+    required this.sideScan,
   });
 
   @override
@@ -21,26 +22,22 @@ class CameraFrameScan extends StatelessWidget {
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
               child: Container(
-                width: MediaQuery.sizeOf(context).width,
-                height: MediaQuery.sizeOf(context).height -
-                    MediaQuery.sizeOf(context).height *
-                        .15, // Same as the outer container
+                width: MediaQuery.sizeOf(context)
+                    .width, // Same as the outer container
                 // color: Colors.blue,
               ),
             ),
           ),
           Container(
-            margin: EdgeInsets.only(
-                top: SizeConfig.calHeightMultiplier(
-                    MediaQuery.sizeOf(context).height -
-                        MediaQuery.sizeOf(context).height * .825)),
-            alignment: Alignment.center,
+            alignment: Alignment.topCenter,
+            margin: EdgeInsets.only(top: 140),
+            // color: Colors.amber,
             child: Text(
               'Ambil Foto Wajah Sisi ${sideScan}',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
-                color: grayEdgeFrameColor,
+                color: Colors.grey,
               ),
             ),
           ),
@@ -58,7 +55,7 @@ class CameraFrameScan extends StatelessWidget {
                   ),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(
-                    grayEdgeFrameColor, // Color to apply
+                    Colors.grey, // Color to apply
                     BlendMode.srcIn, // Blend mode
                   ),
                 ),
@@ -80,7 +77,7 @@ class CameraFrameScan extends StatelessWidget {
                     image: AssetImage(icEdgeFrame),
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
-                      grayEdgeFrameColor, // Color to apply
+                      Colors.grey, // Color to apply
                       BlendMode.srcIn, // Blend mode
                     ),
                   ),
@@ -91,7 +88,7 @@ class CameraFrameScan extends StatelessWidget {
           Positioned(
             right: 50,
             top: MediaQuery.sizeOf(context).height -
-                MediaQuery.sizeOf(context).height * .515,
+                MediaQuery.sizeOf(context).height * .482,
             child: Transform.rotate(
               angle: 180 *
                   (3.14159 / 180), // Rotate 45 degrees (convert to radians)
@@ -103,7 +100,7 @@ class CameraFrameScan extends StatelessWidget {
                     image: AssetImage(icEdgeFrame),
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
-                      grayEdgeFrameColor, // Color to apply
+                      Colors.grey, // Color to apply
                       BlendMode.srcIn, // Blend mode
                     ),
                   ),
@@ -114,7 +111,7 @@ class CameraFrameScan extends StatelessWidget {
           Positioned(
             left: 50,
             top: MediaQuery.sizeOf(context).height -
-                MediaQuery.sizeOf(context).height * .515,
+                MediaQuery.sizeOf(context).height * .482,
             child: Transform.rotate(
               angle: 270 *
                   (3.14159 / 180), // Rotate 45 degrees (convert to radians)
@@ -126,7 +123,7 @@ class CameraFrameScan extends StatelessWidget {
                     image: AssetImage(icEdgeFrame),
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
-                      grayEdgeFrameColor, // Color to apply
+                      Colors.grey, // Color to apply
                       BlendMode.srcIn, // Blend mode
                     ),
                   ),
