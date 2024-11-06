@@ -3,6 +3,8 @@ import 'package:camera/camera.dart';
 import 'package:permission_handler/permission_handler.dart'; // Import permission_handler
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:skinisense/config/routes/Route.dart';
+import 'package:skinisense/config/theme/color.dart';
+import 'package:skinisense/domain/services/sharedPreferences-services.dart';
 import 'package:skinisense/presentation/ui/widget/alertdialog_widget.dart';
 import 'package:skinisense/presentation/ui/widget/camera_frame_scan.dart';
 
@@ -51,7 +53,8 @@ class _ScanPageState extends State<ScanPageLeft> {
       builder: (context) {
         return AlertDialogWidget(
           title: 'Izin Kamera Diperlukan',
-          message: 'Agar aplikasi Skini dapat berfungsi dengan baik, kami memerlukan akses ke kamera Anda.',
+          message:
+              'Agar aplikasi Skini dapat berfungsi dengan baik, kami memerlukan akses ke kamera Anda.',
           cancelButton: () {
             Navigator.of(context).pop();
           },
@@ -77,7 +80,8 @@ class _ScanPageState extends State<ScanPageLeft> {
       builder: (context) {
         return AlertDialogWidget(
           title: 'Izin Kamera Diperlukan',
-          message: 'Buka pengaturan dan berikan izin kamera agar aplikasi dapat menggunakan kamera.',
+          message:
+              'Buka pengaturan dan berikan izin kamera agar aplikasi dapat menggunakan kamera.',
           cancelButton: () {
             Navigator.of(context).pushNamed(routeHome);
           },
@@ -98,9 +102,45 @@ class _ScanPageState extends State<ScanPageLeft> {
       if (_cameras.isNotEmpty) {
         _initializeCamera(_cameras[_selectedCameraIndex]);
       } else {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialogWidget(
+              title: 'Oh No, Ada Yang Salah Dengan Kamera',
+              message:
+                  'Terjadi kesalahan saat membuka kamera. Silakan coba lagi.',
+              cancelButton: () {
+                Navigator.of(context).pushNamed(routeHome);
+              },
+              mainButton: () {
+                Navigator.of(context).pushNamed(routeHome);
+              },
+              cancelButtonMessage: 'Batalkan',
+              mainButtonMessage: 'Kembali Ke Home',
+            );
+          },
+        );
         print('No cameras available');
       }
     } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialogWidget(
+            title: 'Oh No, Ada Yang Salah Dengan Kamera',
+            message:
+                'Terjadi kesalahan saat membuka kamera. Silakan coba lagi.',
+            cancelButton: () {
+              Navigator.of(context).pushNamed(routeHome);
+            },
+            mainButton: () {
+              Navigator.of(context).pushNamed(routeHome);
+            },
+            cancelButtonMessage: 'Batalkan',
+            mainButtonMessage: 'Kembali Ke Home',
+          );
+        },
+      );
       print('Error loading cameras: $e');
     }
   }
@@ -121,6 +161,7 @@ class _ScanPageState extends State<ScanPageLeft> {
         switch (e.code) {
           case 'CameraAccessDenied':
             print('Camera access denied');
+            _showPermissionDialog();
             break;
           default:
             print('Camera error: ${e.code}');
@@ -149,13 +190,51 @@ class _ScanPageState extends State<ScanPageLeft> {
   Future<void> takePicture() async {
     if (!controller.value.isInitialized) {
       print('Error: Camera is not initialized');
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialogWidget(
+            title: 'Oh No, Ada Yang Salah Dengan Kamera',
+            message:
+                'Terjadi kesalahan saat membuka kamera. Silakan coba lagi.',
+            cancelButton: () {
+              return;
+            },
+            mainButton: () {
+              Navigator.of(context).pushNamed(routeHome);
+            },
+            cancelButtonMessage: 'Batalkan',
+            mainButtonMessage: 'Kembali Ke Home',
+          );
+        },
+      );
       return;
     }
 
     try {
       XFile picture = await controller.takePicture();
+      SharedPreferencesService().saveString('scan_face_left', picture.path);
       print('Picture saved to ${picture.path}');
+      Navigator.of(context).pushNamed(routeScanLeftPreview);
     } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialogWidget(
+            title: 'Oh No, Ada Yang Salah Dengan Kamera',
+            message:
+                'Terdapat kesalahan saat mengambil gambar. Silakan coba lagi.',
+            cancelButton: () {
+              return;
+            },
+            mainButton: () {
+              Navigator.of(context).pushNamed(routeHome);
+            },
+            cancelButtonMessage: 'Batalkan',
+            mainButtonMessage: 'Kembali Ke Home',
+          );
+        },
+      );
       print('Error taking picture: $e');
     }
   }
@@ -164,58 +243,72 @@ class _ScanPageState extends State<ScanPageLeft> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
+        child: Stack(
           children: [
             // Camera Preview or Black Screen Container
             _isCameraPermissionGranted
                 ? _isCameraInitialized
-                    ? Stack(
-                        children: [
-                          // Camera Preview
-                          Container(
-                            width: double.infinity,
-                            height: MediaQuery.of(context).size.height -
-                                MediaQuery.of(context).size.height * 0.15,
-                            child: CameraPreview(controller),
-                          ),
+                    ? SizedBox.expand(
+                        child: Stack(
+                          children: [
+                            // Camera Preview
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                              child: CameraPreview(controller),
+                            ),
 
-                          // Blurred overlay with guided frame
-                          CameraFrameScan(sideScan: 'Kiri',)
-                        ],
+                            // Blurred overlay with guided frame
+                            CameraFrameScan(
+                              sideScan: 'Kiri',
+                            )
+                          ],
+                        ),
                       )
                     : Container(
-                        width: double.infinity,
-                        height: MediaQuery.of(context).size.height -
-                            MediaQuery.of(context).size.height * 0.15,
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
                         color: Colors.black,
                       )
                 : Container(
-                    width: double.infinity,
-                    height: MediaQuery.of(context).size.height -
-                        MediaQuery.of(context).size.height * 0.15,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
                     child: Center(
                       child: Text('Camera permission is required to scan.'),
                     ),
                   ),
 
             // Bottom Blue Container
-            Expanded(
+            // Bottom Button Row
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
               child: Container(
-                width: double.infinity,
-                color: Colors.blue,
+                // color: Colors.amber,
+                padding: EdgeInsets.symmetric(vertical: 30.0),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     GestureDetector(
                       onTap: () {
                         toggleFlash();
                       },
-                      child: Icon(
-                        _isFlashOn
-                            ? FluentSystemIcons.ic_fluent_flash_on_regular
-                            : FluentSystemIcons.ic_fluent_flash_off_regular,
-                        color: Colors.white,
+                      child: Container(
+                        width: 54,
+                        height: 54,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white.withOpacity(0.5),
+                        ),
+                        child: Center(
+                          child: Icon(
+                            _isFlashOn
+                                ? FluentSystemIcons.ic_fluent_flash_on_regular
+                                : FluentSystemIcons.ic_fluent_flash_off_regular,
+                            color: primaryBlueColor,
+                          ),
+                        ),
                       ),
                     ),
                     GestureDetector(
@@ -224,19 +317,49 @@ class _ScanPageState extends State<ScanPageLeft> {
                         print('take picture');
                       },
                       child: Container(
-                        width: 50,
-                        height: 50,
+                        width: 90, // Ukuran lebih besar untuk border
+                        height: 90,
                         decoration: BoxDecoration(
-                          color: Colors.white,
                           shape: BoxShape.circle,
+                          color: Colors.transparent,
+                          border: Border.all(width: 1, color: primaryBlueColor), // Warna border
+                        ),
+                        child: Padding(
+                          padding:
+                              EdgeInsets.all(5), // Jarak antara border dan isi
+                          child: Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white, // Warna isi
+                            ),
+                            child: Center(
+                              child: Icon(
+                                FluentSystemIcons.ic_fluent_camera_regular,
+                                size: 40,
+                                color: primaryBlueColor,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
                     GestureDetector(
                       onTap: switchCamera,
-                      child: Icon(
-                        FluentSystemIcons.ic_fluent_camera_switch_regular,
-                        color: Colors.white,
+                      child: Container(
+                        width: 54,
+                        height: 54,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white.withOpacity(0.5),
+                        ),
+                        child: Center(
+                          child: Icon(
+                            FluentSystemIcons.ic_fluent_camera_switch_regular,
+                            color: primaryBlueColor,
+                          ),
+                        ),
                       ),
                     ),
                   ],
