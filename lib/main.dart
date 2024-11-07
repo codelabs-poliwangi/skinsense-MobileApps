@@ -6,8 +6,8 @@ import 'package:skinisense/config/common/screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Pastikan binding diinisialisasi
-  await SystemChrome.setPreferredOrientations([ // Set hanya untuk potret
+  WidgetsFlutterBinding.ensureInitialized(); 
+  await SystemChrome.setPreferredOrientations([ 
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);

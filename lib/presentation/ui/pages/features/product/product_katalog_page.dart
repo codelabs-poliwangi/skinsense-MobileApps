@@ -67,7 +67,7 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
                   crossAxisCount: 2, // Jumlah kolom
                   crossAxisSpacing: 8, // Jarak antar kolom
                   mainAxisSpacing: 8, // Jarak antar baris
-                  childAspectRatio: 0.78, // Rasio aspek untuk kotak
+                  childAspectRatio: 0.69, // Rasio aspek untuk kotak
                 ),
                 itemBuilder: (BuildContext context, int index) {
                   return GestureDetector(
