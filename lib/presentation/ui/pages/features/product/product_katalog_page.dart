@@ -61,17 +61,23 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
             SliverPadding(padding: EdgeInsets.symmetric(vertical: 10)),
             // Grid untuk katalog produk
             SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.symmetric(horizontal: 8),
               sliver: SliverGrid.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2, // Jumlah kolom
-                  crossAxisSpacing: 16, // Jarak antar kolom
-                  mainAxisSpacing: 16, // Jarak antar baris
-                  childAspectRatio: 0.69, // Rasio aspek untuk kotak
+                  crossAxisSpacing: 8, // Jarak antar kolom
+                  mainAxisSpacing: 8, // Jarak antar baris
+                  childAspectRatio: 0.78, // Rasio aspek untuk kotak
                 ),
                 itemBuilder: (BuildContext context, int index) {
-                  return Hero(
-                    tag: index.toString(),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        routeProductDetail,
+                        arguments: {'id': index.toString()},
+                      );
+                    },
                     child: ProductItemWidget(
                       indexProduct: index,
                       imageProduct: onboardCommunity,
