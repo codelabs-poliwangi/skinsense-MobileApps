@@ -14,7 +14,12 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Menunggu inisialisasi orientasi dan formatting tanggal
+import 'package:skinisense/domain/repository/auth_repository.dart';
+import 'package:skinisense/presentation/ui/pages/features/auth/bloc/auth_bloc.dart';
+import 'package:skinisense/presentation/ui/pages/features/auth/bloc/login_bloc.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -32,6 +37,31 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<AuthRepository>(
+          create: (context) => AuthRepository(),
+        ),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<AuthBloc>(
+            create: (context) => AuthBloc(
+              authRepository: RepositoryProvider.of<AuthRepository>(context),
+            ),
+          ),
+        ],
+        child: const MyAppView(),
+      ),
+    );
+  }
+}
+
+class MyAppView extends StatelessWidget {
+  const MyAppView({super.key});
 
   @override
   Widget build(BuildContext context) {
