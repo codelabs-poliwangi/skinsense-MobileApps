@@ -92,7 +92,9 @@ class _PreviewPageFrontState extends State<PreviewPageFront> {
                             Text(
                               'Wajah Depan',
                               style: TextStyle(
-                                color: primaryBlueColor
+                                color: primaryBlueColor,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 20,
                               ),
                             ),
                             SizedBox(height: 20,),
@@ -120,9 +122,6 @@ class _PreviewPageFrontState extends State<PreviewPageFront> {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               width: double.infinity,
               height: MediaQuery.of(context).size.height * 0.125,
-              decoration: const BoxDecoration(
-                color: darkBackgroundColor,
-              ),
               child: Row(
                 children: [
                   Expanded(
@@ -141,7 +140,7 @@ class _PreviewPageFrontState extends State<PreviewPageFront> {
                     child: ButtonPrimary(
                       mainButtonMessage: "Konfirmasi",
                       mainButton: () {
-                        Navigator.of(context).pushNamed(routeScanRight);
+                        Navigator.of(context).pushNamed(routeScanLeft);
                       },
                     ),
                   ),

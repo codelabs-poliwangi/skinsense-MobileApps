@@ -1,12 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
+import 'package:skinisense/domain/repository/auth_repository.dart';
+import 'package:skinisense/presentation/ui/pages/features/auth/bloc/login_bloc.dart';
 import 'package:skinisense/presentation/ui/widget/custom_button.dart';
 import 'package:skinisense/presentation/ui/widget/custom_input.dart';
 import 'package:skinisense/presentation/ui/widget/custom_logo_button.dart';
 // import 'signup.dart'; // Import halaman signup.dart
+class LoginScope extends StatelessWidget {
+  const LoginScope({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider<LoginBloc>(
+      create: (context) => LoginBloc(
+        authRepository: context.read<AuthRepository>(),
+      ),
+      child: Loginpage(), // Replace with the actual widget to be wrapped
+    );
+  }
+}
 
 class Loginpage extends StatefulWidget {
   @override
@@ -21,19 +37,19 @@ class _LoginpageState extends State<Loginpage> {
   bool _obscureText = true;
   bool _rememberMe = false;
 
-  // Percobaan
-  // Contoh pengguna yang diizinkan untuk login
-  final String allowedEmail = "user@example.com";
-  final String allowedPassword = "password123";
+  // // Percobaan
+  // // Contoh pengguna yang diizinkan untuk login
+  // final String allowedEmail = "user@example.com";
+  // final String allowedPassword = "password123";
 
-  // Fungsi autentikasi sederhana (ini bisa diganti dengan panggilan API di real-world)
-  bool authenticate(Map<String, String> data) {
-    if (data['username'] == allowedEmail &&
-        data['password'] == allowedPassword) {
-      return true;
-    }
-    return false;
-  }
+  // // Fungsi autentikasi sederhana (ini bisa diganti dengan panggilan API di real-world)
+  // bool authenticate(Map<String, String> data) {
+  //   if (data['username'] == allowedEmail &&
+  //       data['password'] == allowedPassword) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
   // Function State Management
   void _isObsecure() {
@@ -50,249 +66,280 @@ class _LoginpageState extends State<Loginpage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: null,
-      backgroundColor: Colors.white,
-      body: SafeArea(
+    return BlocListener<LoginBloc, LoginState>(
+      listener: (context, state) {
+        if (state is LoginLoading) {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => const Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        } else if (state is LoginSuccess) {
+          Navigator.of(context).pop(); // Close loading dialog
+    
+          // Navigate to home
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            routeHome,
+            (route) => false,
+          );
+        } else if (state is LoginFailure) {
+          Navigator.of(context).pop(); // Close loading dialog
+          showCustomModalBottomSheet(
+              context, imageTryAgain, primaryBlueColor);
+        }
+      },
+      child: Scaffold(
+        appBar: null,
+        backgroundColor: Colors.white,
+        body: SafeArea(
           child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Logo
-                    Image.asset(
-                      logoSplashScreen, // Ganti dengan path logo kamu
-                      width: SizeConfig.calWidthMultiplier(120),
+            padding:
+                const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Logo
+                  Image.asset(
+                    logoSplashScreen, // Ganti dengan path logo kamu
+                    width: SizeConfig.calWidthMultiplier(120),
+                  ),
+                  SizedBox(height: SizeConfig.calHeightMultiplier(24)),
+    
+                  // Login to Your Account
+                  Text(
+                    'Welcome Back!',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium!
+                        .copyWith(
+                            color: primaryBlueColor,
+                            fontWeight: FontWeight.w700),
+                  ),
+    
+                  // Login to your
+                  Opacity(
+                    opacity: .5,
+                    child: Text(
+                      'Log in to existing SCIN account',
+                      style:
+                          Theme.of(context).textTheme.titleSmall!.copyWith(
+                                color: primaryBlueColor,
+                              ),
                     ),
-                    SizedBox(height: SizeConfig.calHeightMultiplier(24)),
-
-                    // Login to Your Account
-                    Text(
-                      'Welcome Back!',
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          color: primaryBlueColor, fontWeight: FontWeight.w700),
-                    ),
-
-                    // Login to your
-                    Opacity(
-                      opacity: .5,
-                      child: Text(
-                        'Log in to existing SCIN account',
-                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                              color: primaryBlueColor,
-                            ),
-                      ),
-                    ),
-                    SizedBox(height: SizeConfig.calHeightMultiplier(24)),
-
-                    // Username or email field
-                    CustomInput(
-                      controller: _emailController,
-                      hintText: 'Username or Email',
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter an username or email!';
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: SizeConfig.calHeightMultiplier(16)),
-
-                    // Password field
-                    CustomInput(
-                      controller: _passwordController,
-                      hintText: 'Password',
-                      isPasswordField: true,
-                      obscureText: _obscureText,
-                      onToggleVisibility: _isObsecure,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter password!';
-                        }
-                        return null;
-                      },
-                    ),
-
-                    // Remember Me and Forgot Password
-                    Row(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Checkbox(
-                              value: _rememberMe,
-                              activeColor: primaryBlueColor,
-                              onChanged: _isRemember,
-
-                            ),
-                            Text(
-                              'Remember Me',
-                              style: Theme.of(context).textTheme.bodySmall,
-                            )
-                          ],
-                        ),
-                        const Spacer(),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context)
-                                .pushNamed(routeForgotPassword);
-                          },
-                          child: Text(
-                            'Forgot Password?',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall!
-                                .copyWith(
-                                    color: primaryBlueColor,
-                                    fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: SizeConfig.calHeightMultiplier(24)),
+    
+                  // Username or email field
+                  CustomInput(
+                    controller: _emailController,
+                    hintText: 'Username or Email',
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter an username or email!';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: SizeConfig.calHeightMultiplier(16)),
+    
+                  // Password field
+                  CustomInput(
+                    controller: _passwordController,
+                    hintText: 'Password',
+                    isPasswordField: true,
+                    obscureText: _obscureText,
+                    onToggleVisibility: _isObsecure,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter password!';
+                      }
+                      return null;
+                    },
+                  ),
+    
+                  // Remember Me and Forgot Password
+                  Row(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Checkbox(
+                            value: _rememberMe,
+                            activeColor: primaryBlueColor,
+                            onChanged: _isRemember,
                           ),
-                        ),
-                      ],
-                    ),
-
-                    SizedBox(height: SizeConfig.calHeightMultiplier(24)),
-                    CustomButton(
-                        onPressed: () {
-                          // Jika form sudah tervalidasi
-                          if (_formKey.currentState!.validate()) {
-                            var validatedData = {
-                              'username': _emailController.text,
-                              'password': _passwordController.text,
-                            };
-
-                            if (authenticate(validatedData)) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Berhasil')),
-                              );
-                            } else {
-                              showCustomModalBottomSheet(
-                                  context, imageTryAgain, primaryBlueColor);
-                            }
-                          }
+                          Text(
+                            'Remember Me',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          )
+                        ],
+                      ),
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(routeForgotPassword);
                         },
-                        text: 'Login',
-                        backgroundColor: primaryBlueColor),
-                    SizedBox(height: SizeConfig.calHeightMultiplier(24)),
-
-                    //=========================================================================
-
-                    Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Image.asset(
-                          logoTransparent,
-                          fit: BoxFit.cover,
-                          width: 200,
+                        child: Text(
+                          'Forgot Password?',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall!
+                              .copyWith(
+                                  color: primaryBlueColor,
+                                  fontWeight: FontWeight.bold),
                         ),
-                        // Or Login With
-                        Column(
-                          children: [
-                            const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  child: Divider(
+                      ),
+                    ],
+                  ),
+    
+                  SizedBox(height: SizeConfig.calHeightMultiplier(24)),
+                  CustomButton(
+                      onPressed: () {
+                        // Jika form sudah tervalidasi
+                        if (_formKey.currentState!.validate()) {
+                          var validatedData = {
+                            'username': _emailController.text,
+                            'password': _passwordController.text,
+                          };
+    
+                          context.read<LoginBloc>().add(
+                            LoginSubmitted(
+                              email: _emailController.text,
+                              password: _passwordController.text
+                            )
+                          );
+                        }
+                      },
+                      text: 'Login',
+                      backgroundColor: primaryBlueColor),
+                  SizedBox(height: SizeConfig.calHeightMultiplier(24)),
+    
+                  //=========================================================================
+    
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Image.asset(
+                        logoTransparent,
+                        fit: BoxFit.cover,
+                        width: 200,
+                      ),
+                      // Or Login With
+                      Column(
+                        children: [
+                          const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Divider(
+                                  color:
+                                      primaryBlueColor, // Color of the line
+                                  height: 1, // Height of the divider
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8.0), // Spacing around text
+                                child: Text(
+                                  'Or Login With',
+                                  style: TextStyle(
                                     color:
-                                        primaryBlueColor, // Color of the line
-                                    height: 1, // Height of the divider
+                                        primaryBlueColor, // Color of the text
+                                    fontSize: 12, // Font size
                                   ),
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 8.0), // Spacing around text
-                                  child: Text(
-                                    'Or Login With',
-                                    style: TextStyle(
-                                      color:
-                                          primaryBlueColor, // Color of the text
-                                      fontSize: 12, // Font size
+                              ),
+                              Expanded(
+                                child: Divider(
+                                  color:
+                                      primaryBlueColor, // Color of the line
+                                  height: 1, // Height of the divider
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                              height: SizeConfig.calHeightMultiplier(16)),
+    
+                          // Social Media Buttons
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CustomLogoButton(
+                                icon: imgLogoGoogle,
+                                onPressed: () {},
+                              ),
+                              const SizedBox(width: 16),
+                              CustomLogoButton(
+                                icon: imgLogoFacebook,
+                                onPressed: () {},
+                              ),
+                              const SizedBox(width: 16),
+                              CustomLogoButton(
+                                icon: imgLogoTwitter,
+                                onPressed: () {},
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                              height: SizeConfig.calHeightMultiplier(24)),
+    
+                          // Sign Up Link
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Doesn't have an account?",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                      color: Colors.black,
                                     ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Divider(
-                                    color:
-                                        primaryBlueColor, // Color of the line
-                                    height: 1, // Height of the divider
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                                height: SizeConfig.calHeightMultiplier(16)),
-
-                            // Social Media Buttons
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CustomLogoButton(
-                                  icon: imgLogoGoogle,
-                                  onPressed: () {},
-                                ),
-                                const SizedBox(width: 16),
-                                CustomLogoButton(
-                                  icon: imgLogoFacebook,
-                                  onPressed: () {},
-                                ),
-                                const SizedBox(width: 16),
-                                CustomLogoButton(
-                                  icon: imgLogoTwitter,
-                                  onPressed: () {},
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                                height: SizeConfig.calHeightMultiplier(24)),
-
-                            // Sign Up Link
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Doesn't have an account?",
+                              ),
+                              const SizedBox(width: 10),
+                              GestureDetector(
+                                child: Text(
+                                  "Sign Up",
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium!
                                       .copyWith(
-                                        color: Colors.black,
+                                        color: Colors.blue[900],
+                                        fontWeight: FontWeight.bold,
                                       ),
                                 ),
-                                const SizedBox(width: 10),
-                                GestureDetector(
-                                  child: Text(
-                                    "Sign Up",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .copyWith(
-                                          color: Colors.blue[900],
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                  ),
-                                  onTap: () => Navigator.of(context)
-                                      .pushNamed(routeRegister),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-
-                    const Text(
-                      '© 2024 SCIN. All rights reserved. Unauthorized copying or distribution is prohibited.',
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.grey,
+                                onTap: () => Navigator.of(context)
+                                    .pushNamed(routeRegister),
+                              )
+                            ],
+                          ),
+                        ],
                       ),
-                      textAlign: TextAlign.center,
-                    )
-                  ],
-                ),
-              ))),
+                    ],
+                  ),
+    
+                  const Text(
+                    '© 2024 SCIN. All rights reserved. Unauthorized copying or distribution is prohibited.',
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.grey,
+                    ),
+                    textAlign: TextAlign.center,
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

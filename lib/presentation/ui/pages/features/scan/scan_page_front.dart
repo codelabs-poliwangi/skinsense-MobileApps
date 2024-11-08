@@ -3,6 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:permission_handler/permission_handler.dart'; // Import permission_handler
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:skinisense/config/routes/Route.dart';
+import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/domain/services/sharedPreferences-services.dart';
 import 'package:skinisense/presentation/ui/widget/alertdialog_widget.dart';
 import 'package:skinisense/presentation/ui/widget/camera_frame_scan.dart';
@@ -242,60 +243,72 @@ class _ScanPageState extends State<ScanPageFront> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
+        child: Stack(
           children: [
             // Camera Preview or Black Screen Container
             _isCameraPermissionGranted
                 ? _isCameraInitialized
-                    ? Stack(
-                        children: [
-                          // Camera Preview
-                          Container(
-                            width: double.infinity,
-                            height: MediaQuery.of(context).size.height -
-                                MediaQuery.of(context).size.height * 0.15,
-                            child: CameraPreview(controller),
-                          ),
+                    ? SizedBox.expand(
+                        child: Stack(
+                          children: [
+                            // Camera Preview
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                              child: CameraPreview(controller),
+                            ),
 
-                          // Blurred overlay with guided frame
-                          CameraFrameScan(
-                            sideScan: 'Depan',
-                          )
-                        ],
+                            // Blurred overlay with guided frame
+                            CameraFrameScan(
+                              sideScan: 'Depan',
+                            )
+                          ],
+                        ),
                       )
                     : Container(
-                        width: double.infinity,
-                        height: MediaQuery.of(context).size.height -
-                            MediaQuery.of(context).size.height * 0.15,
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
                         color: Colors.black,
                       )
                 : Container(
-                    width: double.infinity,
-                    height: MediaQuery.of(context).size.height -
-                        MediaQuery.of(context).size.height * 0.15,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
                     child: Center(
                       child: Text('Camera permission is required to scan.'),
                     ),
                   ),
 
             // Bottom Blue Container
-            Expanded(
+            // Bottom Button Row
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
               child: Container(
-                width: double.infinity,
-                color: Colors.blue,
+                // color: Colors.amber,
+                padding: EdgeInsets.symmetric(vertical: 30.0),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     GestureDetector(
                       onTap: () {
                         toggleFlash();
                       },
-                      child: Icon(
-                        _isFlashOn
-                            ? FluentSystemIcons.ic_fluent_flash_on_regular
-                            : FluentSystemIcons.ic_fluent_flash_off_regular,
-                        color: Colors.white,
+                      child: Container(
+                        width: 54,
+                        height: 54,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white.withOpacity(0.5),
+                        ),
+                        child: Center(
+                          child: Icon(
+                            _isFlashOn
+                                ? FluentSystemIcons.ic_fluent_flash_on_regular
+                                : FluentSystemIcons.ic_fluent_flash_off_regular,
+                            color: primaryBlueColor,
+                          ),
+                        ),
                       ),
                     ),
                     GestureDetector(
@@ -304,19 +317,49 @@ class _ScanPageState extends State<ScanPageFront> {
                         print('take picture');
                       },
                       child: Container(
-                        width: 50,
-                        height: 50,
+                        width: 90, // Ukuran lebih besar untuk border
+                        height: 90,
                         decoration: BoxDecoration(
-                          color: Colors.white,
                           shape: BoxShape.circle,
+                          color: Colors.transparent,
+                          border: Border.all(width: 1, color: primaryBlueColor), // Warna border
+                        ),
+                        child: Padding(
+                          padding:
+                              EdgeInsets.all(5), // Jarak antara border dan isi
+                          child: Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white, // Warna isi
+                            ),
+                            child: Center(
+                              child: Icon(
+                                FluentSystemIcons.ic_fluent_camera_regular,
+                                size: 40,
+                                color: primaryBlueColor,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
                     GestureDetector(
                       onTap: switchCamera,
-                      child: Icon(
-                        FluentSystemIcons.ic_fluent_camera_switch_regular,
-                        color: Colors.white,
+                      child: Container(
+                        width: 54,
+                        height: 54,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white.withOpacity(0.5),
+                        ),
+                        child: Center(
+                          child: Icon(
+                            FluentSystemIcons.ic_fluent_camera_switch_regular,
+                            color: primaryBlueColor,
+                          ),
+                        ),
                       ),
                     ),
                   ],

@@ -9,28 +9,58 @@ class SearchTextfield extends StatefulWidget {
 }
 
 class _SearchTextfieldState extends State<SearchTextfield> {
+  // Tambahkan TextEditingController
+  final TextEditingController _controller = TextEditingController();
+  // Variable untuk mengontrol visibility suffix icon
+  bool _showClearButton = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Tambahkan listener untuk mengecek perubahan text
+    _controller.addListener(() {
+      setState(() {
+        _showClearButton = _controller.text.isNotEmpty;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    // Jangan lupa dispose controller
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 48,
       decoration: BoxDecoration(
-        color: Colors.white, // Warna latar belakang
-        borderRadius: BorderRadius.circular(30), // Mengatur sudut rounded
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 0,
-            blurRadius: 20,
-            offset: Offset(0, 6), // Mengatur posisi bayangan
-          ),
-        ],
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
       ),
       child: TextField(
+        controller: _controller, // Gunakan controller
         decoration: InputDecoration(
-          hintText: 'Search Product..', // Teks placeholder
-          hintStyle: TextStyle(color: Colors.grey), // Gaya teks placeholder
-          prefixIcon: Icon(FluentSystemIcons.ic_fluent_search_filled, color: Colors.grey), // Ikon pencarian
-          border: InputBorder.none, // Menghapus border default
-          contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20), // Padding di dalam text field
+          hintText: 'Search Product..',
+          hintStyle: TextStyle(color: Colors.grey),
+          prefixIcon: Icon(
+            FluentSystemIcons.ic_fluent_search_filled,
+            color: Colors.grey
+          ),
+          // Tampilkan suffix icon hanya jika ada text
+          suffixIcon: _showClearButton
+              ? IconButton(
+                  icon: Icon(Icons.close, color: Colors.grey),
+                  onPressed: () {
+                    // Clear text saat icon di tap
+                    _controller.clear();
+                  },
+                )
+              : null,
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
         ),
       ),
     );

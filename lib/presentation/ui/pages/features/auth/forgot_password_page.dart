@@ -6,7 +6,7 @@ import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
 
 // import 'signup.dart'; // Import halaman signup.dart
-class ForgotPasswordScreen extends StatelessWidget {
+class ForgotPasswordPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
