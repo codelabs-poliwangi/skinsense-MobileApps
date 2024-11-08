@@ -20,7 +20,7 @@ class ProductDetailPage extends StatelessWidget {
               Stack(
                 children: [
                   AspectRatio(
-                    aspectRatio: 1, // Ubah rasio sesuai kebutuhan
+                    aspectRatio: 16/12, // Ubah rasio sesuai kebutuhan
                     child: Image(
                       image: AssetImage(scanFaceSmile),
                       fit: BoxFit.cover, // Menjaga gambar agar memenuhi kotak

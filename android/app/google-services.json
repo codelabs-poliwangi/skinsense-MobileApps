@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "648977170225",
+    "project_id": "skini-b108e",
+    "storage_bucket": "skini-b108e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:648977170225:android:49b0d4cd37066a046b7a10",
+        "android_client_info": {
+          "package_name": "com.example.skinisense"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQxgt2Yby63M1pW04-OE06p8q17QVO5pA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

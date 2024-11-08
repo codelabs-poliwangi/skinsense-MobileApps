@@ -71,6 +71,7 @@ class _PreviewPageFrontState extends State<PreviewPageFront> {
       ),
       body: SafeArea(
         child: Column(
+          // Navigator.of(context).,
           children: [
             Expanded(
               child: Padding(

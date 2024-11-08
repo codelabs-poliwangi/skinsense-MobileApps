@@ -52,7 +52,7 @@ class ProductItemWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 // color: Colors.blue, // Tambahkan gambar di sini
                 image: DecorationImage(
-                  image: AssetImage(imageProduct), // Gambar dari asset
+                  image: NetworkImage(imageProduct), // Gambar dari asset
                   fit: BoxFit
                       .cover, // Mengatur gambar agar sesuai dengan container
                 ),
@@ -112,7 +112,16 @@ class ProductItemWidget extends StatelessWidget {
                                 SizedBox(
                                     width:
                                         6), // Menambahkan jarak antara gambar dan teks
-                                Text(storeProduct)
+                                Text(
+                                  storeProduct,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                )
                               ],
                             ),
                           ),
