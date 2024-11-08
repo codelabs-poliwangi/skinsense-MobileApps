@@ -1,11 +1,48 @@
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
+import 'package:skinisense/domain/provider/product_provider.dart';
+import 'package:skinisense/presentation/ui/pages/features/product/bloc/product_bloc.dart';
+import 'package:skinisense/presentation/ui/pages/features/product/repository/product_repository.dart';
 import 'package:skinisense/presentation/ui/widget/product_katalog.dart';
 import 'package:skinisense/presentation/ui/widget/search_textfield.dart';
+
+class ProductKatalogScope extends StatelessWidget {
+  const ProductKatalogScope({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiRepositoryProvider(
+      providers: [
+        // register provider to context
+        RepositoryProvider(
+          create: (context) => ProductProvider(),
+        ),
+        // register product Repository to context
+        RepositoryProvider(
+          create: (context) => ProductRepository(
+            RepositoryProvider.of<ProductProvider>(context),
+          ),
+        ),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            // register product Bloc to context with product Repository
+            create: (context) => ProductBloc(
+              RepositoryProvider.of<ProductRepository>(context),
+            ),
+          ),
+        ],
+        child: ProductKatalogPage(),
+      ),
+    );
+  }
+}
 
 class ProductKatalogPage extends StatefulWidget {
   const ProductKatalogPage({super.key});
@@ -15,6 +52,13 @@ class ProductKatalogPage extends StatefulWidget {
 }
 
 class _ProductKatalogPageState extends State<ProductKatalogPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Triggering the event to fetch products once the page is loaded
+    context.read<ProductBloc>().add(FetchProducts());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,9 +93,7 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
                           color: Colors.white,
                         ),
                       ),
-                      SizedBox(
-                        width: 8,
-                      ),
+                      SizedBox(width: 8),
                       Expanded(child: SearchTextfield()),
                     ],
                   ),
@@ -59,37 +101,75 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
               ),
             ),
             SliverPadding(padding: EdgeInsets.symmetric(vertical: 10)),
-            // Grid untuk katalog produk
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              sliver: SliverGrid.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // Jumlah kolom
-                  crossAxisSpacing: 16, // Jarak antar kolom
-                  mainAxisSpacing: 16, // Jarak antar baris
-                  childAspectRatio: 0.69, // Rasio aspek untuk kotak
-                ),
-                itemBuilder: (BuildContext context, int index) {
-                  return Hero(
-                    tag: index.toString(),
-                    child: ProductItemWidget(
-                      indexProduct: index,
-                      imageProduct: onboardCommunity,
-                      nameProduct:
-                          "Skintific 2% Salicylic Acid Anti Acne Serum 20ml",
-                      storeProduct: 'Skintific',
-                      storeImage: logoSplashScreen,
-                      ratingProduct: 4.3,
+
+            // BlocBuilder wrapping SliverGrid
+            BlocBuilder<ProductBloc, ProductState>(
+              buildWhen: (previous, current) => previous != current,
+              builder: (context, state) {
+                if (state is ProductInitial) {
+                  return SliverToBoxAdapter(
+                    child: Center(
+                      child: Text('Please Wait'),
                     ),
                   );
-                },
-                itemCount: 8, // Jumlah item di grid
-              ),
+                } else if (state is ProductLoading) {
+                  return SliverToBoxAdapter(
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                } else if (state is ProductLoaded) {
+                  return SliverPadding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    sliver: SliverGrid.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 8,
+                        mainAxisSpacing: 8,
+                        childAspectRatio: 0.69,
+                      ),
+                      itemBuilder: (BuildContext context, int index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              routeProductDetail,
+                              arguments: {'id': state.products[index].id!},
+                            );
+                          },
+                          child: ProductItemWidget(
+                            indexProduct: state.products[index].id!,
+                            imageProduct: state.products[index].productImage!,
+                            nameProduct: state.products[index].name!,
+                            storeProduct: state.products[index].store!,
+                            storeImage: state
+                                .products[index].store!, // Ensure correct data
+                            ratingProduct:
+                                state.products[index].rating!.toDouble(),
+                          ),
+                        );
+                      },
+                      itemCount: state.products.length,
+                    ),
+                  );
+                } else if (state is ProductError) {
+                  return SliverToBoxAdapter(
+                    child: Center(
+                      child: Text('Error: ${state.message}'),
+                    ),
+                  );
+                } else {
+                  return SliverToBoxAdapter(
+                    child: Center(
+                      child: Text('Something went wrong'),
+                    ),
+                  );
+                }
+              },
             ),
             SliverPadding(
               padding: EdgeInsets.symmetric(
-                vertical: SizeConfig.calHeightMultiplier(20),
-              ),
+                  vertical: SizeConfig.calHeightMultiplier(20)),
             ),
           ],
         ),

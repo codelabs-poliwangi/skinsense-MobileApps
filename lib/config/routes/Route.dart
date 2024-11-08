@@ -23,3 +23,4 @@ const String routeScanLeftPreview = '/scan/left/preview';
 const String routeQuestions = '/scan/questions';
 const String routeProductSearch = '/product/search';
 const String routeProductKatalog = '/product/katalog';
+const String routeProductDetail = '/product/katalog/:id';
