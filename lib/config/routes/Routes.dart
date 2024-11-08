@@ -7,6 +7,7 @@ import 'package:skinisense/presentation/ui/pages/features/auth/register_password
 import 'package:skinisense/presentation/ui/pages/features/auth/forgot_password_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/auth/otp_verification_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/home/home_wrapper.dart';
+import 'package:skinisense/presentation/ui/pages/features/product/product_detail_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/product_katalog_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/product_search_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/questions/questions_intro.dart';
@@ -25,6 +26,7 @@ import 'package:skinisense/presentation/ui/pages/features/splash_onboard/splash_
 
 class Routes {
   static Route onRoute(RouteSettings settings) {
+    final args = settings.arguments as Map<String, dynamic>?;
     switch (settings.name) {
       case routeInitial:
         return PageTransition(
@@ -33,7 +35,7 @@ class Routes {
           // child: SplashPage(),
           child: LoginScope(),
           // child: ProductKatalogPage(),
-          // child: HomeWrapper(),
+          // child: HomeWrapper()
           // child: QuestionsIntro(),
           // child: ScanPage(),
           settings: settings,
@@ -158,6 +160,23 @@ class Routes {
           child: ProductKatalogPage(),
           settings: settings,
         );
+      case routeProductDetail:
+        if (args != null && args.containsKey('id')) {
+          final productId = args['id'];
+          return PageTransition(
+            type: PageTransitionType.fade,
+            duration: const Duration(milliseconds: 300),
+            child: ProductDetailPage(productId: productId), // Kirim productId
+            settings: settings,
+          );
+        }
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 300),
+          child: NotFoundPage(),
+          settings: settings,
+        );
+        ;
       default:
         return PageTransition(
           type: PageTransitionType.fade,

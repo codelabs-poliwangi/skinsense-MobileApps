@@ -1,6 +1,8 @@
+import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
+import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/presentation/ui/widget/rating_widget.dart';
 
 class ProductItemWidget extends StatelessWidget {
@@ -50,7 +52,7 @@ class ProductItemWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 // color: Colors.blue, // Tambahkan gambar di sini
                 image: DecorationImage(
-                  image: AssetImage(imageProduct), // Gambar dari asset
+                  image: NetworkImage(imageProduct), // Gambar dari asset
                   fit: BoxFit
                       .cover, // Mengatur gambar agar sesuai dengan container
                 ),
@@ -99,33 +101,27 @@ class ProductItemWidget extends StatelessWidget {
                             // color: Colors.red,
                             padding: EdgeInsets.only(left: 8),
                             child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Container(
-                                  width: SizeConfig.calWidthMultiplier(20),
-                                  height: SizeConfig.calHeightMultiplier(20),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: Colors.grey, // Warna border
-                                      width: 1, // Ketebalan border
-                                    ),
-                                  ),
-                                  child: ClipOval(
-                                    child: Image.asset(
-                                      storeImage, // Gambar di dalam lingkaran
-                                      fit: BoxFit
-                                          .cover, // Mengatur gambar agar sesuai dengan lingkaran
-                                      width: SizeConfig.calWidthMultiplier(24),
-                                      height:
-                                          SizeConfig.calHeightMultiplier(24),
-                                    ),
-                                  ),
+                                Icon(
+                                  color: primaryBlueColor,
+                                  FluentSystemIcons.ic_fluent_store_regular,
+                                  size: 18,
                                 ),
-
                                 SizedBox(
                                     width:
                                         6), // Menambahkan jarak antara gambar dan teks
-                                Text(storeProduct)
+                                Text(
+                                  storeProduct,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                )
                               ],
                             ),
                           ),

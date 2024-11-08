@@ -2,8 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:skinisense/config/common/image_assets.dart';
-import 'package:skinisense/config/common/screen.dart';
-import 'package:skinisense/config/theme/color.dart';
 
 class CameraFrameScan extends StatelessWidget {
   final String sideScan;
@@ -17,117 +15,90 @@ class CameraFrameScan extends StatelessWidget {
     return Center(
       child: Stack(
         children: [
+          // Background Blur with Hollow Rectangle
           ClipPath(
             clipper: HollowRectClipper(),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
               child: Container(
-                width: MediaQuery.sizeOf(context)
-                    .width, // Same as the outer container
-                // color: Colors.blue,
+                width: MediaQuery.sizeOf(context).width,
+                color: Colors.transparent,
               ),
             ),
           ),
-          Container(
-            alignment: Alignment.topCenter,
-            margin: EdgeInsets.only(top: 140),
-            // color: Colors.amber,
+          
+          // Centered Text
+          Positioned(
+            top: 140,
+            left: 0,
+            right: 0,
             child: Text(
-              'Ambil Foto Wajah Sisi ${sideScan}',
-              style: TextStyle(
+              'Ambil Foto Wajah Sisi $sideScan',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
                 color: Colors.grey,
               ),
             ),
           ),
-          Positioned(
-            left: 50,
-            top: MediaQuery.sizeOf(context).height -
-                MediaQuery.sizeOf(context).height * .775,
-            child: Container(
-              width: 60, // Set a width
-              height: 60, // Set a height
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(
-                    icEdgeFrame,
-                  ),
-                  fit: BoxFit.cover,
-                  colorFilter: ColorFilter.mode(
-                    Colors.grey, // Color to apply
-                    BlendMode.srcIn, // Blend mode
-                  ),
-                ),
+          
+          // Top-Left EdgeFrame
+          Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: MediaQuery.sizeOf(context).width * 0.1,
+                top: MediaQuery.sizeOf(context).height * 0.24,
+              ),
+              child: const EdgeFrameWidget(
+                rotationAngle: 0,
+                color: Colors.grey,
               ),
             ),
           ),
-          Positioned(
-            right: 50,
-            top: MediaQuery.sizeOf(context).height -
-                MediaQuery.sizeOf(context).height * .775,
-            child: Transform.rotate(
-              angle: 90 *
-                  (3.14159 / 180), // Rotate 45 degrees (convert to radians)
-              child: Container(
-                width: 60, // Set a width
-                height: 60, // Set a height
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(icEdgeFrame),
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                      Colors.grey, // Color to apply
-                      BlendMode.srcIn, // Blend mode
-                    ),
-                  ),
-                ),
+          
+          // Top-Right EdgeFrame
+          Align(
+            alignment: Alignment.topRight,
+            child: Padding(
+              padding: EdgeInsets.only(
+                right: MediaQuery.sizeOf(context).width * 0.1,
+                top: MediaQuery.sizeOf(context).height * 0.24 ,
+              ),
+              child: const EdgeFrameWidget(
+                rotationAngle: 90,
+                color: Colors.grey,
               ),
             ),
           ),
-          Positioned(
-            right: 50,
-            top: MediaQuery.sizeOf(context).height -
-                MediaQuery.sizeOf(context).height * .482,
-            child: Transform.rotate(
-              angle: 180 *
-                  (3.14159 / 180), // Rotate 45 degrees (convert to radians)
-              child: Container(
-                width: 60, // Set a width
-                height: 60, // Set a height
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(icEdgeFrame),
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                      Colors.grey, // Color to apply
-                      BlendMode.srcIn, // Blend mode
-                    ),
-                  ),
-                ),
+          
+          // Bottom-Right EdgeFrame
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: EdgeInsets.only(
+                right: MediaQuery.sizeOf(context).width * 0.1,
+                bottom: MediaQuery.sizeOf(context).height * 0.24,
+              ),
+              child: const EdgeFrameWidget(
+                rotationAngle: 180,
+                color: Colors.grey,
               ),
             ),
           ),
-          Positioned(
-            left: 50,
-            top: MediaQuery.sizeOf(context).height -
-                MediaQuery.sizeOf(context).height * .482,
-            child: Transform.rotate(
-              angle: 270 *
-                  (3.14159 / 180), // Rotate 45 degrees (convert to radians)
-              child: Container(
-                width: 60, // Set a width
-                height: 60, // Set a height
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(icEdgeFrame),
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                      Colors.grey, // Color to apply
-                      BlendMode.srcIn, // Blend mode
-                    ),
-                  ),
-                ),
+          
+          // Bottom-Left EdgeFrame
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: MediaQuery.sizeOf(context).width * 0.1,
+                bottom: MediaQuery.sizeOf(context).height * 0.24,
+              ),
+              child: const EdgeFrameWidget(
+                rotationAngle: 270,
+                color: Colors.grey,
               ),
             ),
           ),
@@ -137,28 +108,54 @@ class CameraFrameScan extends StatelessWidget {
   }
 }
 
+// EdgeFrame Widget for reusability
+class EdgeFrameWidget extends StatelessWidget {
+  final double rotationAngle;
+  final Color color;
+
+  const EdgeFrameWidget({
+    super.key,
+    required this.rotationAngle,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.rotate(
+      angle: rotationAngle * (3.14159 / 180),
+      child: Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: const AssetImage(icEdgeFrame), // ganti dengan path gambar Anda
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+              color,
+              BlendMode.srcIn,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// HollowRectClipper with rounded inner rectangle
 class HollowRectClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
-    print('size height ${size.height}');
-    print('size width ${size.width}');
-    // Define the outer rectangle size
     Path path = Path()..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
-
-    // Define the inner rectangle size (the hollow part)
-    // Define the inner rectangle size (the hollow part) with rounded corners
     RRect hollowRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(50, 200, size.width - size.width * 0.25,
-          size.height - size.height * 0.625),
-      Radius.circular(20), // Adjust the radius as needed
+      Rect.fromLTWH(
+        size.width * 0.1,
+        size.height * 0.25,
+        size.width * 0.8,
+        size.height * 0.5,
+      ),
+      const Radius.circular(20),
     );
-
-    path = Path.combine(
-        PathOperation.difference, path, Path()..addRRect(hollowRect));
-
-    // Path topLeftBorder = Path();
-
-    return path;
+    return Path.combine(PathOperation.difference, path, Path()..addRRect(hollowRect));
   }
 
   @override

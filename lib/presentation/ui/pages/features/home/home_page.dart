@@ -67,7 +67,8 @@ class HomePage extends StatelessWidget {
               // Membungkus GridView.builder di dalam SliverToBoxAdapter
               SliverToBoxAdapter(
                 child: SizedBox(
-                  height: SizeConfig.calHeightMultiplier(1100), // Tentukan tinggi sesuai kebutuhan
+                  height: SizeConfig.calHeightMultiplier(
+                      1100), // Tentukan tinggi sesuai kebutuhan
                   child: GridView.builder(
                     scrollDirection: Axis.horizontal,
                     physics: BouncingScrollPhysics(),
@@ -76,17 +77,26 @@ class HomePage extends StatelessWidget {
                       crossAxisCount: 4, // Jumlah baris
                       crossAxisSpacing: 16, // Jarak antar kolom
                       mainAxisSpacing: 16, // Jarak antar baris
-                      childAspectRatio: 1/0.69, // Rasio aspek untuk kotak
+                      childAspectRatio: 1 / 0.69, // Rasio aspek untuk kotak
                     ),
                     itemBuilder: (BuildContext context, int index) {
-                      return ProductItemWidget(
-                        indexProduct: index,
-                        imageProduct: onboardCommunity,
-                        nameProduct:
-                            "Skintific 2% Salicylic Acid Anti Acne Serum 20ml",
-                        storeProduct: 'Skintific',
-                        storeImage: logoSplashScreen,
-                        ratingProduct: 4.3,
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            routeProductDetail,
+                            arguments: {'id': index.toString()},
+                          );
+                        },
+                        child: ProductItemWidget(
+                          indexProduct: index,
+                          imageProduct: onboardCommunity,
+                          nameProduct:
+                              "Skintific 2% Salicylic Acid Anti Acne Serum 20ml",
+                          storeProduct: 'Skintific',
+                          storeImage: logoSplashScreen,
+                          ratingProduct: 4.3,
+                        ),
                       );
                     },
                     itemCount: 20, // Jumlah item di grid
