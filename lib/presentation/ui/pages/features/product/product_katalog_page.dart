@@ -6,6 +6,7 @@ import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/domain/provider/product_provider.dart';
+import 'package:skinisense/dependency_injector.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/bloc/product_bloc.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/repository/product_repository.dart';
 import 'package:skinisense/presentation/ui/widget/product_katalog.dart';
@@ -16,25 +17,21 @@ class ProductKatalogScope extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
-      providers: [
-        // register provider to context
-        RepositoryProvider(
-          create: (context) => ProductProvider(),
-        ),
-        // register product Repository to context
-        RepositoryProvider(
-          create: (context) => ProductRepository(
-            RepositoryProvider.of<ProductProvider>(context),
-          ),
-        ),
-      ],
+    setupRepositoryProduct();
+
+    return PopScope(
+      canPop: true, // Menentukan apakah halaman dapat di-pop
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          print('deleted repository product on katalog page');
+          removeRepositoryProduct();
+        }
+      },
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
-            // register product Bloc to context with product Repository
             create: (context) => ProductBloc(
-              RepositoryProvider.of<ProductRepository>(context),
+              locator<ProductRepository>(),
             ),
           ),
         ],
@@ -57,6 +54,13 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
     super.initState();
     // Triggering the event to fetch products once the page is loaded
     context.read<ProductBloc>().add(FetchProducts());
+  }
+
+  @override
+  void dispose() {
+    removeRepositoryProduct();
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override
@@ -85,7 +89,7 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Navigator.of(context).pushNamed(routeProductSearch);
+                          Navigator.pop(context);
                         },
                         child: Icon(
                           FluentSystemIcons.ic_fluent_arrow_left_regular,
@@ -134,18 +138,18 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
                             Navigator.pushNamed(
                               context,
                               routeProductDetail,
-                              arguments: {'id': state.products[index].id!},
+                              arguments: {'id': state.products[index].id.toString()},
                             );
                           },
                           child: ProductItemWidget(
-                            indexProduct: state.products[index].id!,
-                            imageProduct: state.products[index].productImage!,
-                            nameProduct: state.products[index].name!,
-                            storeProduct: state.products[index].store!,
+                            indexProduct: state.products[index].id,
+                            imageProduct: state.products[index].productImage,
+                            nameProduct: state.products[index].name,
+                            storeProduct: state.products[index].store,
                             storeImage: state
-                                .products[index].store!, // Ensure correct data
+                                .products[index].store, // Ensure correct data
                             ratingProduct:
-                                state.products[index].rating!.toDouble(),
+                                state.products[index].rating.toDouble(),
                           ),
                         );
                       },

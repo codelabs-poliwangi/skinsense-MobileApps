@@ -9,8 +9,14 @@ part 'product_state.dart';
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
   final ProductRepository _productRepository;
   ProductBloc(this._productRepository) : super(ProductInitial()) {
-    on<ProductEvent>((event, emit) {
-      // TODO: implement event handler
+    on<FetchProducts>((event, emit) async {
+      emit(ProductLoading());
+      try {
+        final products = await _productRepository.fetchProducts();
+        emit(ProductLoaded(products));
+      } catch (e) {
+        emit(ProductError(e.toString()));
+      }
     });
   }
 }

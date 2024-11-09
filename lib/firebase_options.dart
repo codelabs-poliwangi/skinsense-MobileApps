@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -65,4 +62,15 @@ class DefaultFirebaseOptions {
     storageBucket: 'skini-b108e.firebasestorage.app',
     iosBundleId: 'com.example.skinisense',
   );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyB9LJ8AI2EROiTfPy_O94z-xG5g2KnCizU',
+    appId: '1:648977170225:web:3d4dad7f5be58c2c6b7a10',
+    messagingSenderId: '648977170225',
+    projectId: 'skini-b108e',
+    authDomain: 'skini-b108e.firebaseapp.com',
+    storageBucket: 'skini-b108e.firebasestorage.app',
+    measurementId: 'G-D33MLMNM23',
+  );
+
 }
