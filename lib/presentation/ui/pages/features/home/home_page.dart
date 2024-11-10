@@ -89,6 +89,7 @@ class HomePage extends StatelessWidget {
                           );
                         },
                         child: ProductItemWidget(
+                          isKatalog: false,
                           indexProduct: index,
                           imageProduct: onboardCommunity,
                           nameProduct:

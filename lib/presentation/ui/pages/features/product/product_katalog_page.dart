@@ -7,6 +7,7 @@ import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/domain/provider/product_provider.dart';
 import 'package:skinisense/dependency_injector.dart';
+import 'package:skinisense/domain/utils/logger.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/bloc/product_bloc.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/repository/product_repository.dart';
 import 'package:skinisense/presentation/ui/widget/product_katalog.dart';
@@ -23,7 +24,8 @@ class ProductKatalogScope extends StatelessWidget {
       canPop: true, // Menentukan apakah halaman dapat di-pop
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) {
-          print('deleted repository product on katalog page');
+          logger.i('deleted repository product on katalog page');
+          // print('deleted repository product on katalog page');
           removeRepositoryProduct();
         }
       },
@@ -31,11 +33,11 @@ class ProductKatalogScope extends StatelessWidget {
         providers: [
           BlocProvider(
             create: (context) => ProductBloc(
-              locator<ProductRepository>(),
+              di<ProductRepository>(),
             ),
           ),
         ],
-        child: ProductKatalogPage(),
+        child: const ProductKatalogPage(),
       ),
     );
   }
@@ -77,7 +79,7 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
               bottom: PreferredSize(
                 preferredSize:
                     Size.fromHeight(SizeConfig.calHeightMultiplier(20)),
-                child: SizedBox(),
+                child: const SizedBox(),
               ),
               flexibleSpace: Container(
                 padding: EdgeInsets.symmetric(
@@ -91,42 +93,43 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
                         onTap: () {
                           Navigator.pop(context);
                         },
-                        child: Icon(
+                        child: const Icon(
                           FluentSystemIcons.ic_fluent_arrow_left_regular,
                           size: 28,
                           color: Colors.white,
                         ),
                       ),
-                      SizedBox(width: 8),
-                      Expanded(child: SearchTextfield()),
+                      const SizedBox(width: 8),
+                      const Expanded(child: SearchTextfield()),
                     ],
                   ),
                 ),
               ),
             ),
-            SliverPadding(padding: EdgeInsets.symmetric(vertical: 10)),
+            const SliverPadding(padding: EdgeInsets.symmetric(vertical: 10)),
 
             // BlocBuilder wrapping SliverGrid
             BlocBuilder<ProductBloc, ProductState>(
               buildWhen: (previous, current) => previous != current,
               builder: (context, state) {
                 if (state is ProductInitial) {
-                  return SliverToBoxAdapter(
+                  return const SliverToBoxAdapter(
                     child: Center(
                       child: Text('Please Wait'),
                     ),
                   );
                 } else if (state is ProductLoading) {
-                  return SliverToBoxAdapter(
+                  return const SliverToBoxAdapter(
                     child: Center(
                       child: CircularProgressIndicator(),
                     ),
                   );
                 } else if (state is ProductLoaded) {
                   return SliverPadding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
                     sliver: SliverGrid.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         crossAxisSpacing: 8,
                         mainAxisSpacing: 8,
@@ -138,10 +141,13 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
                             Navigator.pushNamed(
                               context,
                               routeProductDetail,
-                              arguments: {'id': state.products[index].id.toString()},
+                              arguments: {
+                                'id': state.products[index].id.toString()
+                              },
                             );
                           },
                           child: ProductItemWidget(
+                            isKatalog: true,
                             indexProduct: state.products[index].id,
                             imageProduct: state.products[index].productImage,
                             nameProduct: state.products[index].name,
@@ -163,7 +169,7 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
                     ),
                   );
                 } else {
-                  return SliverToBoxAdapter(
+                  return const SliverToBoxAdapter(
                     child: Center(
                       child: Text('Something went wrong'),
                     ),
