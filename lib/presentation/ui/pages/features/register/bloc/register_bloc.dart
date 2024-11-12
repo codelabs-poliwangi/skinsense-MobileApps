@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:skinisense/domain/provider/auth_provider.dart';
-import 'package:skinisense/domain/repository/auth_repository.dart';
+import 'package:skinisense/presentation/ui/pages/features/auth/repository/auth_repository.dart';
 
 part 'register_event.dart';
 part 'register_state.dart';
