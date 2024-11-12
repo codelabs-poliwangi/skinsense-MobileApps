@@ -31,6 +31,26 @@ class AuthRepository {
     }
   }
 
+  Future<void> register({
+    required String name,
+    required String email,
+    required String phone,
+    required String confirmPassword,
+    required String password,
+  }) async {
+    try {
+      final user = await authProvider.register(
+        name: name,
+        email: email,
+        phone: phone,
+        password: password,
+        confirmPassword: confirmPassword
+      );
+    } catch (e) {
+      throw Exception('Register failed: $e');
+    }
+  }
+
   // Fetch the current authenticated user
   Future<User> me() async {
     try {

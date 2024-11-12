@@ -4,6 +4,7 @@ const String routeOnboard = '/onboard';
 const String routeLogin = '/login';
 // const String routeLoginPin = '/login-pin';
 const String routeRegister = '/register';
+const String routeRegisterContact = '/register-contact';
 const String routerRegisterPassword = '/register-password';
 // const String routeRegisterVerify = '/register-verify';
 // const String routeRegisterPin = '/register-pin';

@@ -32,15 +32,15 @@ class SizeConfig {
     heightMultiplier = heightScaleFactor;
     widthMultiplier = widthScaleFactor;
 
-    print('Lebar layar = $screenWidth');
-    print('Tinggi layar = $screenHeight');
-    print('Rasio aspek = ${screenWidth / screenHeight}');
-    print('Rasio piksel perangkat = $devicePixelRatio');
-    print('Faktor skala teks = ${textScaler.scale(1.0)}');
-    print('Orientasi = $orientation');
-    print('Faktor skala lebar = $widthScaleFactor');
-    print('Faktor skala tinggi = $heightScaleFactor');
-    print('Faktor skala yang digunakan = $scaleFactor');
+    // print('Lebar layar = $screenWidth');
+    // print('Tinggi layar = $screenHeight');
+    // print('Rasio aspek = ${screenWidth / screenHeight}');
+    // print('Rasio piksel perangkat = $devicePixelRatio');
+    // print('Faktor skala teks = ${textScaler.scale(1.0)}');
+    // print('Orientasi = $orientation');
+    // print('Faktor skala lebar = $widthScaleFactor');
+    // print('Faktor skala tinggi = $heightScaleFactor');
+    // print('Faktor skala yang digunakan = $scaleFactor');
   }
 
   static double calMultiplierText(double textSize) {

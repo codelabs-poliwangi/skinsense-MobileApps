@@ -5,7 +5,7 @@ import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/domain/repository/auth_repository.dart';
-import 'package:skinisense/presentation/ui/pages/features/auth/bloc/login_bloc.dart';
+import 'package:skinisense/presentation/ui/pages/features/login/bloc/login_bloc.dart';
 import 'package:skinisense/presentation/ui/widget/custom_button.dart';
 import 'package:skinisense/presentation/ui/widget/custom_input.dart';
 import 'package:skinisense/presentation/ui/widget/custom_logo_button.dart';
@@ -19,37 +19,25 @@ class LoginScope extends StatelessWidget {
       create: (context) => LoginBloc(
         authRepository: context.read<AuthRepository>(),
       ),
-      child: Loginpage(), // Replace with the actual widget to be wrapped
+      child: LoginPage(), // Replace with the actual widget to be wrapped
     );
   }
 }
 
-class Loginpage extends StatefulWidget {
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
-  State<Loginpage> createState() => _LoginpageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginpageState extends State<Loginpage> {
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   bool _obscureText = true;
   bool _rememberMe = false;
-
-  // // Percobaan
-  // // Contoh pengguna yang diizinkan untuk login
-  // final String allowedEmail = "user@example.com";
-  // final String allowedPassword = "password123";
-
-  // // Fungsi autentikasi sederhana (ini bisa diganti dengan panggilan API di real-world)
-  // bool authenticate(Map<String, String> data) {
-  //   if (data['username'] == allowedEmail &&
-  //       data['password'] == allowedPassword) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
 
   // Function State Management
   void _isObsecure() {
@@ -73,7 +61,9 @@ class _LoginpageState extends State<Loginpage> {
             context: context,
             barrierDismissible: false,
             builder: (context) => const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                color: primaryBlueColor,
+              ),
             ),
           );
         } else if (state is LoginSuccess) {
@@ -204,11 +194,7 @@ class _LoginpageState extends State<Loginpage> {
                       onPressed: () {
                         // Jika form sudah tervalidasi
                         if (_formKey.currentState!.validate()) {
-                          var validatedData = {
-                            'username': _emailController.text,
-                            'password': _passwordController.text,
-                          };
-    
+
                           context.read<LoginBloc>().add(
                             LoginSubmitted(
                               email: _emailController.text,
