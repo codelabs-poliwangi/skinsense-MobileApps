@@ -8,16 +8,10 @@ import 'package:skinisense/config/common/screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-
-// ...
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
 import 'package:skinisense/domain/repository/auth_repository.dart';
 import 'package:skinisense/presentation/ui/pages/features/auth/bloc/auth_bloc.dart';
-import 'package:skinisense/presentation/ui/pages/features/auth/bloc/login_bloc.dart';
 
+// ...
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([
@@ -68,9 +62,7 @@ class MyAppView extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         SizeConfig.init(context);
-        return MultiBlocProvider(
-          providers: [],
-          child: MaterialApp(
+        return MaterialApp(
             debugShowCheckedModeBanner: false,
             initialRoute: routeInitial,
             onGenerateRoute: Routes.onRoute,
@@ -79,7 +71,6 @@ class MyAppView extends StatelessWidget {
                 Theme.of(context).textTheme,
               ),
             ),
-          ),
         );
       },
     );
