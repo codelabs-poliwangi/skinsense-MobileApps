@@ -18,7 +18,7 @@ class ProductKatalogScope extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    setupRepositoryProduct();
+    // setupRepositoryProduct();
 
     return PopScope(
       canPop: true, // Menentukan apakah halaman dapat di-pop
@@ -26,7 +26,7 @@ class ProductKatalogScope extends StatelessWidget {
         if (didPop) {
           logger.i('deleted repository product on katalog page');
           // print('deleted repository product on katalog page');
-          removeRepositoryProduct();
+          // removeRepositoryProduct();
         }
       },
       child: MultiBlocProvider(
@@ -60,7 +60,7 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
 
   @override
   void dispose() {
-    removeRepositoryProduct();
+    // removeRepositoryProduct();
     // TODO: implement dispose
     super.dispose();
   }

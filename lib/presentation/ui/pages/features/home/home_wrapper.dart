@@ -19,16 +19,18 @@ class _HomeWrapperState extends State<HomeWrapper> {
   int selectedIndex = 0;
 
   final List<Widget> pages = [
-    HomePage(),
-    JadwalPage(),
-    KomunitasPage(),
-    ProfilePage(),
+    HomePageScope(),
+    JadwalPageScope(),
+    KomunitasPageScope(),
+    ProfilePageScope(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(child: pages[selectedIndex]),
+      body: SafeArea(
+        child: pages[selectedIndex],
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       backgroundColor: lightBlueColor,
       bottomNavigationBar: _bottomNavigationBar(),
@@ -58,7 +60,8 @@ class _HomeWrapperState extends State<HomeWrapper> {
       clipBehavior: Clip.antiAlias,
       notchMargin: 6,
       elevation: 2,
-      padding: EdgeInsets.symmetric(horizontal: SizeConfig.calWidthMultiplier(24)),
+      padding:
+          EdgeInsets.symmetric(horizontal: SizeConfig.calWidthMultiplier(24)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.min,
@@ -69,9 +72,11 @@ class _HomeWrapperState extends State<HomeWrapper> {
             label: 'Home',
             page: 0,
           ),
-          _bottomAppBarItem(context, icon: icCalender, label: 'Jadwal', page: 1),
+          _bottomAppBarItem(context,
+              icon: icCalender, label: 'Jadwal', page: 1),
           SizedBox(width: SizeConfig.calWidthMultiplier(20)),
-          _bottomAppBarItem(context, icon: icCommunity, label: 'Komunitas', page: 2),
+          _bottomAppBarItem(context,
+              icon: icCommunity, label: 'Komunitas', page: 2),
           _bottomAppBarItem(context, icon: icProfile, label: 'Profile', page: 3)
         ],
       ),

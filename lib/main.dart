@@ -8,11 +8,9 @@ import 'package:skinisense/config/common/screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:skinisense/dependency_injector.dart';
-import 'package:skinisense/domain/services/api_client.dart';
 import 'firebase_options.dart';
 import 'package:skinisense/domain/repository/auth_repository.dart';
 import 'package:skinisense/presentation/ui/pages/features/auth/bloc/auth_bloc.dart';
-import 'package:skinisense/presentation/ui/pages/features/auth/bloc/login_bloc.dart';
 
 
 void main() async {
@@ -24,7 +22,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  setupInitial();
+  init();
   // Menunggu inisialisasi format tanggal
   await initializeDateFormatting('id_ID', null);
 

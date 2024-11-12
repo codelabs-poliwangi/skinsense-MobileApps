@@ -1,6 +1,5 @@
 import 'package:skinisense/domain/model/user_model.dart';
 import 'package:skinisense/domain/services/api_client.dart';
-import 'package:skinisense/domain/services/token-service.dart';
 import 'package:skinisense/domain/utils/logger.dart';
 
 class AuthProvider {
