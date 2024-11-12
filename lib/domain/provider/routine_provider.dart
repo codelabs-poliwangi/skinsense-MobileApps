@@ -3,15 +3,14 @@ import 'dart:convert';
 import 'package:skinisense/config/api/api.dart';
 import 'package:skinisense/domain/model/routine.dart';
 import 'package:skinisense/domain/services/api_client.dart';
+import 'package:http/http.dart' as http;
 
 class RoutineProvider {
-  final ApiClient apiClient;
-  RoutineProvider(this.apiClient);
-  Future<List<Routine>>  getRoutine() async{
+  Future<List<Routine>> getRoutine() async {
     try {
-      final response = await apiClient.get(routineUrl);
+      final response = await http.get(Uri.parse(routineUrl));
       if (response.statusCode == 200) {
-        List<dynamic> data = jsonDecode(response.data);
+        List<dynamic> data = jsonDecode(response.body);
         return data.map((json) => Routine.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load products');

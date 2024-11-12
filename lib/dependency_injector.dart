@@ -1,9 +1,13 @@
 import 'package:get_it/get_it.dart';
 import 'package:skinisense/domain/provider/auth_provider.dart';
 import 'package:skinisense/domain/provider/product_provider.dart';
+import 'package:skinisense/domain/provider/routine_provider.dart';
+import 'package:skinisense/domain/provider/skin_condition_provider.dart';
 import 'package:skinisense/presentation/ui/pages/features/auth/repository/auth_repository.dart';
 import 'package:skinisense/domain/services/api_client.dart';
 import 'package:skinisense/domain/services/token-service.dart';
+import 'package:skinisense/presentation/ui/pages/features/home/repository/routine_repository.dart';
+import 'package:skinisense/presentation/ui/pages/features/home/repository/skin_condition_repository.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/repository/product_repository.dart';
 
 final di = GetIt.instance;
@@ -15,25 +19,30 @@ void init() {
   // Mendaftarkan AuthRepository dan ProductProvider sebagai singleton
   di.registerSingleton<TokenService>(TokenService());
   di.registerSingleton<ApiClient>(ApiClient(di<TokenService>()));
-  
+
   // auth
   di.registerSingleton<AuthProvider>(AuthProvider(di<ApiClient>()));
   di.registerSingleton<AuthRepository>(
       AuthRepository(di<ApiClient>(), di<AuthProvider>(), di<TokenService>()));
 
-  // Product 
-  di.registerSingleton<ProductProvider>(ProductProvider(di<ApiClient>()));
+  // Product
+  di.registerSingleton<ProductProvider>(ProductProvider());
 
   di.registerSingleton<ProductRepository>(
       ProductRepository(di<ProductProvider>()));
-  
-  // skin condition
-  
 
-  // routine 
+  // skin condition
+  di.registerSingleton<SkinConditionProvider>(SkinConditionProvider());
+  di.registerSingleton<SkinConditionRepository>(
+      SkinConditionRepository(di<SkinConditionProvider>()));
+
+  // routine
+
+  di.registerSingleton<RoutineProvider>(RoutineProvider());
+  di.registerSingleton<RoutineRepository>(
+      RoutineRepository(di<RoutineProvider>()));
 
   // hive databse local
 
   // connectiviy
 }
-

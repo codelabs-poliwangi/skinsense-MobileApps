@@ -2,13 +2,19 @@ import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:logger/logger.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/dependency_injector.dart';
+import 'package:skinisense/domain/provider/product_provider.dart';
 import 'package:skinisense/presentation/ui/pages/features/home/bloc/product_bloc.dart';
+import 'package:skinisense/presentation/ui/pages/features/home/bloc/routine_bloc.dart';
+import 'package:skinisense/presentation/ui/pages/features/home/bloc/skin_condition_bloc.dart';
 import 'package:skinisense/presentation/ui/pages/features/home/repository/product_repository.dart';
+import 'package:skinisense/presentation/ui/pages/features/home/repository/routine_repository.dart';
+import 'package:skinisense/presentation/ui/pages/features/home/repository/skin_condition_repository.dart';
 import 'package:skinisense/presentation/ui/widget/product_katalog.dart';
 import 'package:skinisense/presentation/ui/widget/progress_skin.dart';
 import 'package:skinisense/presentation/ui/widget/routine_list.dart';
@@ -25,8 +31,17 @@ class HomePageScope extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => ProductBloc(
-            di<ProductRepository>(),
+            ProductRepository(
+              di<ProductProvider>(),
+            ),
+            // di<ProductRepository>(),
           ),
+        ),
+        BlocProvider(
+          create: (context) => SkinConditionBloc(di<SkinConditionRepository>()),
+        ),
+        BlocProvider(
+          create: (context) => RoutineBloc(di<RoutineRepository>()),
         ),
       ],
       child: HomePage(),
@@ -88,76 +103,68 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               // Membungkus GridView.builder di dalam SliverToBoxAdapter
+              // Wrap the BlocBuilder with SliverToBoxAdapter to handle non-sliver content
               SliverToBoxAdapter(
                 child: SizedBox(
-                  height: SizeConfig.calHeightMultiplier(
-                      1100), // Tentukan tinggi sesuai kebutuhan
+                  height: SizeConfig.calHeightMultiplier(1100),
                   child: BlocBuilder<ProductBloc, ProductState>(
-                    // bloc: ProductBloc(di<ProductRepository>()),
                     buildWhen: (previous, current) => previous != current,
                     builder: (context, state) {
                       if (state is ProductInitial) {
-                        return const SliverToBoxAdapter(
-                          child: Center(
-                            child: Text('Please Wait'),
-                          ),
+                        context.read<ProductBloc>().add(FetchProducts());
+                        return const Center(
+                          child: Text('Please Wait'),
                         );
                       } else if (state is ProductLoading) {
-                        return const SliverToBoxAdapter(
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
+                        return const Center(
+                          child: CircularProgressIndicator(),
                         );
                       } else if (state is ProductLoaded) {
-                        return SliverPadding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          sliver: SliverGrid.builder(
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 8,
-                              mainAxisSpacing: 8,
-                              childAspectRatio: 0.69,
-                            ),
-                            itemBuilder: (BuildContext context, int index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    routeProductDetail,
-                                    arguments: {
-                                      'id': state.products[index].id.toString()
-                                    },
-                                  );
-                                },
-                                child: ProductItemWidget(
-                                  isKatalog: true,
-                                  indexProduct: state.products[index].id,
-                                  imageProduct:
-                                      state.products[index].productImage,
-                                  nameProduct: state.products[index].name,
-                                  storeProduct: state.products[index].store,
-                                  storeImage: state.products[index]
-                                      .store, // Ensure correct data
-                                  ratingProduct:
-                                      state.products[index].rating.toDouble(),
-                                ),
-                              );
-                            },
-                            itemCount: state.products.length,
+                        return GridView.builder(
+                          scrollDirection: Axis.horizontal,
+                          physics: BouncingScrollPhysics(),
+                          padding: EdgeInsets.symmetric(horizontal: 24),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 4, // Jumlah baris
+                            crossAxisSpacing: 16, // Jarak antar kolom
+                            mainAxisSpacing: 16, // Jarak antar baris
+                            childAspectRatio:
+                                1 / 0.69, // Rasio aspek untuk kotak
                           ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  routeProductDetail,
+                                  arguments: {
+                                    'id': state.products[index].id.toString()
+                                  },
+                                );
+                              },
+                              child: ProductItemWidget(
+                                isKatalog: true,
+                                indexProduct: state.products[index].id,
+                                imageProduct:
+                                    state.products[index].productImage,
+                                nameProduct: state.products[index].name,
+                                storeProduct: state.products[index].store,
+                                storeImage: state.products[index].store,
+                                ratingProduct:
+                                    state.products[index].rating.toDouble(),
+                              ),
+                            );
+                          },
+                          itemCount: state.products.length,
                         );
                       } else if (state is ProductError) {
-                        return SliverToBoxAdapter(
-                          child: Center(
-                            child: Text('Error: ${state.message}'),
-                          ),
+                        return Center(
+                          child: Text('Error: ${state.message}'),
                         );
                       } else {
-                        return const SliverToBoxAdapter(
-                          child: Center(
-                            child: Text('Something went wrong'),
-                          ),
+                        return const Center(
+                          child: Text('Something went wrong'),
                         );
                       }
                     },
@@ -204,38 +211,63 @@ class TrackRoutineWidget extends StatelessWidget {
               height: SizeConfig.calHeightMultiplier(
                   12)), // Tambahkan sedikit jarak
           // ListView builder di dalam SliverList
-          ListView.builder(
-            shrinkWrap:
-                true, // Diperlukan agar tidak mengambil seluruh tinggi layar
-            physics:
-                NeverScrollableScrollPhysics(), // Mencegah ListView ini dapat di-scroll
-            itemCount: 5, // Ganti dengan jumlah elemen sebenarnya
-            itemBuilder: (context, index) {
-              return Container(
-                margin: EdgeInsets.only(bottom: 16),
-                child: Row(
-                  children: [
-                    // Checkbox dengan logika dinamis
-                    Checkbox(
-                      activeColor: primaryBlueColor,
+          BlocBuilder<RoutineBloc, RoutineState>(
+            builder: (context, state) {
+              if (state is RoutineInitial) {
+                context.read<RoutineBloc>().add(FetchRoutine());
+                return const Center(
+                  child: Text('Please Wait'),
+                );
+              } else if (state is RoutineLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (state is RoutineOnLoaded) {
+                Logger().d(state);
+                return ListView.builder(
+                  shrinkWrap:
+                      true, // Diperlukan agar tidak mengambil seluruh tinggi layar
+                  physics:
+                      NeverScrollableScrollPhysics(), // Mencegah ListView ini dapat di-scroll
+                  itemCount: state.routines.length, // Ganti dengan jumlah elemen sebenarnya
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: EdgeInsets.only(bottom: 16),
+                      child: Row(
+                        children: [
+                          // Checkbox dengan logika dinamis
+                          Checkbox(
+                            activeColor: primaryBlueColor,
 
-                      value:
-                          true, // Sesuaikan dengan logika state yang diinginkan
-                      onChanged: (bool? value) {
-                        // Aksi ketika checklist diubah
-                      },
-                    ),
-                    // RoutineListTile dengan Expanded agar layout lebih fleksibel
-                    Expanded(
-                      child: RoutineListTile(
-                        routineImage: onboardCommunity,
-                        routineName:
-                            'Use serum for morning routine to help your skin stay hydrated.',
+                            value:
+                                state.routines[index].isComplete, // Sesuaikan dengan logika state yang diinginkan
+                            onChanged: (bool? value) {
+                               context.read<RoutineBloc>().add(ToggleRoutineComplete(index));
+                              // Aksi ketika checklist diubah
+                            },
+                          ),
+                          // RoutineListTile dengan Expanded agar layout lebih fleksibel
+                          Expanded(
+                            child: RoutineListTile(
+                              routineImage: state.routines[index].image,
+                              routineName:
+                                  state.routines[index].activity,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-              );
+                    );
+                  },
+                );
+              } else if (state is RoutineError) {
+                return Center(
+                  child: Text('Error: ${state.Message}'),
+                );
+              } else {
+                return const Center(
+                  child: Text('Something went wrong'),
+                );
+              }
             },
           ),
         ],
@@ -272,41 +304,63 @@ class SkinConditionWidget extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Skin Condition',
-              style: TextStyle(
-                color: blueTextColor,
-                fontSize: SizeConfig.calHeightMultiplier(20),
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Text(
-              'Last Check : 30 Augst 2024',
-              style: TextStyle(
-                color: blueTextColor,
-                fontSize: SizeConfig.calHeightMultiplier(10),
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            SizedBox(
-              height: SizeConfig.calHeightMultiplier(12),
-            ),
-            ProgressSkinWidget(
-                problemSkin: 'Skin Acne', percentProblemSKin: 80),
-            SizedBox(
-              height: SizeConfig.calHeightMultiplier(16),
-            ),
-            ProgressSkinWidget(
-                problemSkin: 'Skin Wringkle', percentProblemSKin: 70),
-            SizedBox(
-              height: SizeConfig.calHeightMultiplier(16),
-            ),
-            ProgressSkinWidget(
-                problemSkin: 'Skin Oily', percentProblemSKin: 50),
-          ],
+        child: BlocBuilder<SkinConditionBloc, SkinConditionState>(
+          builder: (context, state) {
+            if (state is SkinConditionInitial) {
+              context.read<SkinConditionBloc>().add(FetchSkinCondition());
+              return const Center(
+                child: Text('Please Wait'),
+              );
+            } else if (state is SkinConditionLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (state is SkinConditionLoaded) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Skin Condition',
+                    style: TextStyle(
+                      color: blueTextColor,
+                      fontSize: SizeConfig.calHeightMultiplier(20),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    'Last Check : ${state.skinCondition.lastCheck}',
+                    style: TextStyle(
+                      color: blueTextColor,
+                      fontSize: SizeConfig.calHeightMultiplier(10),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(
+                    height: SizeConfig.calHeightMultiplier(12),
+                  ),
+                  ProgressSkinWidget(
+                      problemSkin: 'Skin Acne',
+                      percentProblemSKin: state.skinCondition.acne),
+                  SizedBox(
+                    height: SizeConfig.calHeightMultiplier(16),
+                  ),
+                  ProgressSkinWidget(
+                      problemSkin: 'Skin Wringkle',
+                      percentProblemSKin: state.skinCondition.wringkle),
+                  SizedBox(
+                    height: SizeConfig.calHeightMultiplier(16),
+                  ),
+                  ProgressSkinWidget(
+                      problemSkin: 'Skin Flex',
+                      percentProblemSKin: state.skinCondition.flex),
+                ],
+              );
+            } else if (state is SkinConditionError) {
+              return Text(state.message);
+            } else {
+              return Container();
+            }
+          },
         ),
       ),
     );

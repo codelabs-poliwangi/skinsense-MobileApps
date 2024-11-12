@@ -9,13 +9,13 @@ class Routine {
     @JsonKey(name: "activity")
     final String activity;
     @JsonKey(name: "is_comlete")
-    final bool isComlete;
+    bool isComplete;
 
     Routine({
         required this.id,
         required this.image,
         required this.activity,
-        required this.isComlete,
+        required this.isComplete,
     });
 
     Routine copyWith({
@@ -28,7 +28,7 @@ class Routine {
             id: id ?? this.id,
             image: image ?? this.image,
             activity: activity ?? this.activity,
-            isComlete: isComlete ?? this.isComlete,
+            isComplete: isComlete ?? this.isComplete,
         );
 
     factory Routine.fromJson(Map<String, dynamic> json) => _$RoutineFromJson(json);

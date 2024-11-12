@@ -22,7 +22,6 @@ import 'package:skinisense/presentation/ui/pages/features/scan/scan_page_right.d
 import 'package:skinisense/presentation/ui/pages/not_found_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/splash_onboard/onboard_page.dart';
 // import 'package:skinisense/presentation/ui/pages/features/auth/register_screen.dart';
-import 'package:skinisense/presentation/ui/pages/features/splash_onboard/splash_page.dart';
 // import 'package:skinisense/presentation/ui/splash_screen.dart';
 
 class Routes {
@@ -34,9 +33,9 @@ class Routes {
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
           // child: SplashPage(),
-          child: const LoginScope(),
+          // child: const LoginScope(),
           // child: ProductKatalogPage(),
-          // child: HomeWrapper(),
+          child: HomeWrapper(),
           // child: QuestionsIntro(),
           // child: ScanPage(),
           settings: settings,
