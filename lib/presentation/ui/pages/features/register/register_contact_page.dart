@@ -1,43 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
+import 'package:skinisense/presentation/ui/pages/features/register/bloc/register_bloc.dart';
 import 'package:skinisense/presentation/ui/widget/custom_button.dart';
 import 'package:skinisense/presentation/ui/widget/custom_input.dart';
 import 'package:skinisense/presentation/ui/widget/custom_logo_button.dart';
 // import 'signup.dart'; // Import halaman signup.dart
 
-class RegisterPasswordPage extends StatefulWidget {
-  @override
-  State<RegisterPasswordPage> createState() => _RegisterPasswordPageState();
-}
+class RegisterContactPage extends StatelessWidget {
+  RegisterContactPage({super.key});
 
-class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _confirmPasswordController = TextEditingController();
-  bool _obscureText = true;
-  bool _obscureTextConfirm = true;
-  bool _rememberMe = false;
 
-  void _isRemember(value) {
-    setState(() {
-      _rememberMe = !_rememberMe;
-    });
-  }
+  final TextEditingController _emailController = TextEditingController();
 
-  void _isObsecure() {
-    setState(() {
-      _obscureText = !_obscureText;
-    });
-  }
-
-  void _isObsecureConfirm() {
-    setState(() {
-      _obscureTextConfirm = !_obscureTextConfirm;
-    });
-  }
+  final TextEditingController _phoneController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +25,13 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
       appBar: null,
       backgroundColor: Colors.white,
       body: SafeArea(
-          child: SingleChildScrollView(
+        child: BlocBuilder<RegisterBloc, RegisterState>(
+          builder: (context, state) { 
+            print(state);
+            if(state.status == RegisterStatus.nameSuccess){
+              print(state.name);
+            }
+            return SingleChildScrollView(
               padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
               child: Form(
                 key: _formKey,
@@ -80,17 +66,16 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
 
                     // Username or email field
                     CustomInput(
-                      controller: _passwordController,
-                      isPasswordField: true,
-                      obscureText: _obscureText,
-                      onToggleVisibility: _isObsecure,
-                      hintText: 'Password',
+                      controller: _emailController,
+                      hintText: 'Email',
+                      keyboardType: TextInputType.emailAddress,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Password must be filled';
+                          return 'Email must be filled';
                         }
-                        if (value.length < 8) {
-                          return 'Text must be at least 8 characters long';
+                        if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                            .hasMatch(_emailController.text)) {
+                          return 'Please enter valid email!';
                         }
                         return null;
                       },
@@ -98,67 +83,36 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
                     SizedBox(height: SizeConfig.calHeightMultiplier(16)),
 
                     CustomInput(
-                      controller: _confirmPasswordController,
-                      hintText: 'Confirm Password',
-                      isPasswordField: true,
-                      obscureText: _obscureTextConfirm,
-                      onToggleVisibility: _isObsecureConfirm,
+                      controller: _phoneController,
+                      hintText: 'Phone Number',
+                      keyboardType: TextInputType.phone,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Password must be filled';
-                        } else if (value != _passwordController.text) {
-                          return 'Passwords entered do not match. Please try again';
+                          return 'Phone number must be filled';
+                        }
+                        if (!RegExp(r'^(08)[0-9]{8,11}$')
+                            .hasMatch(_phoneController.text)) {
+                          return 'Please enter valid phone number!';
                         }
                         return null;
                       },
                     ),
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: _rememberMe,
-                          activeColor: primaryBlueColor,
-                          onChanged: _isRemember,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              'I agree with and Accept',
-                              style: TextStyle(
-                                  fontSize: SizeConfig.calMultiplierText(11)),
-                            ),
-                            SizedBox(width: 5),
-                            GestureDetector(
-                              child: Text(
-                                'Privacy and Policy',
-                                style: TextStyle(
-                                    fontSize: SizeConfig.calMultiplierText(11),
-                                    decoration: TextDecoration.underline
-                                ),
-                              ),
-                            )
-                          ],
-                        )
-                      ],
-                    ),
+                    SizedBox(height: SizeConfig.calHeightMultiplier(24)),
 
-                    SizedBox(height: SizeConfig.calHeightMultiplier(12)),
                     // Register button
                     CustomButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            // If the form is valid, display a snackbar. In the real world,
-                            // you'd often call a server or save the information in a database.
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Berhasil')),
-                            );
+                            final name = context.read<RegisterBloc>().add(
+                                RegisterContactSubmitted(_emailController.text,
+                                    _phoneController.text));
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text('Gagal')),
                             );
                           }
                         },
-                        text: 'Create Account',
-                        fontSize: 14,
+                        text: 'Sign Up',
                         backgroundColor: primaryBlueColor),
                     SizedBox(height: SizeConfig.calHeightMultiplier(24)),
 
@@ -270,7 +224,11 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
                     )
                   ],
                 ),
-              ))),
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

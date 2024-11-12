@@ -12,7 +12,7 @@ import 'firebase_options.dart';
 import 'package:skinisense/domain/repository/auth_repository.dart';
 import 'package:skinisense/presentation/ui/pages/features/auth/bloc/auth_bloc.dart';
 
-
+// ...
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([
@@ -57,14 +57,14 @@ class MyAppView extends StatelessWidget {
       builder: (context, constraints) {
         SizeConfig.init(context);
         return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          initialRoute: routeInitial,
-          onGenerateRoute: Routes.onRoute,
-          theme: ThemeData(
-            textTheme: GoogleFonts.poppinsTextTheme(
-              Theme.of(context).textTheme,
+            debugShowCheckedModeBanner: false,
+            initialRoute: routeInitial,
+            onGenerateRoute: Routes.onRoute,
+            theme: ThemeData(
+              textTheme: GoogleFonts.poppinsTextTheme(
+                Theme.of(context).textTheme,
+              ),
             ),
-          ),
         );
       },
     );
