@@ -8,12 +8,14 @@ import 'package:skinisense/domain/services/token-service.dart';
 
 class ApiResponse<T> {
   final T data;
+  final T message;
   final int statusCode;
   final Map<String, String> headers;
 
   ApiResponse({
     required this.data,
     required this.statusCode,
+    required this.message,
     required this.headers,
   });
 }
@@ -162,9 +164,10 @@ class ApiClient {
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return ApiResponse<T>(
-        data: body?['data'] ?? body,
-        statusCode: response.statusCode,
         headers: response.headers,
+        statusCode: response.statusCode,
+        message: body?['message'] ?? '',
+        data: body?['data'] ?? body
       );
     }
 
