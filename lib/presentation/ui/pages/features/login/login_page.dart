@@ -4,7 +4,7 @@ import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
-import 'package:skinisense/domain/repository/auth_repository.dart';
+import 'package:skinisense/presentation/ui/pages/features/auth/repository/auth_repository.dart';
 import 'package:skinisense/presentation/ui/pages/features/login/bloc/login_bloc.dart';
 import 'package:skinisense/presentation/ui/widget/custom_button.dart';
 import 'package:skinisense/presentation/ui/widget/custom_input.dart';

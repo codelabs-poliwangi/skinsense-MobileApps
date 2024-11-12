@@ -1,7 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:skinisense/domain/provider/auth_provider.dart';
 import 'package:skinisense/domain/provider/product_provider.dart';
-import 'package:skinisense/domain/repository/auth_repository.dart';
+import 'package:skinisense/presentation/ui/pages/features/auth/repository/auth_repository.dart';
 import 'package:skinisense/domain/services/api_client.dart';
 import 'package:skinisense/domain/services/token-service.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/repository/product_repository.dart';
