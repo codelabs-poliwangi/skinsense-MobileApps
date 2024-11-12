@@ -16,43 +16,23 @@ class HomeWrapper extends StatefulWidget {
 }
 
 class _HomeWrapperState extends State<HomeWrapper> {
-  late final PageController pageController;
-  final List<Widget> pages = [
-    HomePage(),
-    JadwalPage(),
-    KomunitasPage(),
-    ProfilePage(),
-  ];
-
-  // Variable to track the current index
   int selectedIndex = 0;
-  @override
-  void initState() {
-    super.initState();
-    // Initialize pageController
-    pageController = PageController();
-  }
 
-  PageView _pageViewWrapper() {
-    return PageView(
-      controller: pageController,
-      onPageChanged: (int index) {
-        setState(() {
-          selectedIndex = index; // Update current index when page is swiped
-        });
-      },
-      children: pages,
-    );
-  }
+  final List<Widget> pages = [
+    HomePageScope(),
+    JadwalPageScope(),
+    KomunitasPageScope(),
+    ProfilePageScope(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(child: _pageViewWrapper()),
-      floatingActionButtonLocation: FloatingActionButtonLocation
-          .centerDocked, //! agar membuat fab nya ditengah bawah
+      body: SafeArea(
+        child: pages[selectedIndex],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       backgroundColor: lightBlueColor,
-      //! bungkus bottomnavigatorbarnya menggunakn bottomAppbar dan diberi beberapa property agar fab tidak collapse dengan bototm navigatior bar
       bottomNavigationBar: _bottomNavigationBar(),
       floatingActionButton: _floatingActionScan(),
     );
@@ -68,46 +48,39 @@ class _HomeWrapperState extends State<HomeWrapper> {
       child: Image(
         width: SizeConfig.calWidthMultiplier(32),
         color: Colors.white,
-        image: AssetImage(
-          icScanFace,
-        ),
+        image: AssetImage(icScanFace),
       ),
     );
   }
 
   BottomAppBar _bottomNavigationBar() {
     return BottomAppBar(
-        color: Colors.white,
-        shape: CircularNotchedRectangle(),
-        clipBehavior: Clip
-            .antiAlias, //! agar terdapat lengkungan diantara fab dan bottomnavigatior bar
-        notchMargin: 6,
-        elevation: 2,
-        padding:
-            EdgeInsets.symmetric(horizontal: SizeConfig.calWidthMultiplier(24)),
-        child: Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _bottomAppBarItem(
-                context,
-                icon: icHome,
-                label: 'Home',
-                page: 0,
-              ),
-              _bottomAppBarItem(context,
-                  icon: icCalender, label: 'Jadwal', page: 1),
-              SizedBox(
-                width: SizeConfig.calWidthMultiplier(20),
-              ),
-              _bottomAppBarItem(context,
-                  icon: icCommunity, label: 'Komunitas', page: 2),
-              _bottomAppBarItem(context,
-                  icon: icProfile, label: 'Profile', page: 3)
-            ],
+      color: Colors.white,
+      shape: CircularNotchedRectangle(),
+      clipBehavior: Clip.antiAlias,
+      notchMargin: 6,
+      elevation: 2,
+      padding:
+          EdgeInsets.symmetric(horizontal: SizeConfig.calWidthMultiplier(24)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _bottomAppBarItem(
+            context,
+            icon: icHome,
+            label: 'Home',
+            page: 0,
           ),
-        ));
+          _bottomAppBarItem(context,
+              icon: icCalender, label: 'Jadwal', page: 1),
+          SizedBox(width: SizeConfig.calWidthMultiplier(20)),
+          _bottomAppBarItem(context,
+              icon: icCommunity, label: 'Komunitas', page: 2),
+          _bottomAppBarItem(context, icon: icProfile, label: 'Profile', page: 3)
+        ],
+      ),
+    );
   }
 
   Widget _bottomAppBarItem(BuildContext context,
@@ -116,9 +89,6 @@ class _HomeWrapperState extends State<HomeWrapper> {
       onTap: () {
         setState(() {
           selectedIndex = page;
-          pageController.animateToPage(page, // Animate page change on tap
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut);
         });
       },
       child: Container(
@@ -127,12 +97,10 @@ class _HomeWrapperState extends State<HomeWrapper> {
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(height: SizeConfig.calHeightMultiplier(2)),
-            Container(
-              child: Image(
-                image: AssetImage(icon),
-                height: SizeConfig.calHeightMultiplier(20),
-                color: selectedIndex == page ? primaryBlueColor : grayColor,
-              ),
+            Image(
+              image: AssetImage(icon),
+              height: SizeConfig.calHeightMultiplier(20),
+              color: selectedIndex == page ? primaryBlueColor : grayColor,
             ),
             SizedBox(height: SizeConfig.calHeightMultiplier(10)),
             Text(

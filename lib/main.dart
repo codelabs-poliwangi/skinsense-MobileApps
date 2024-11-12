@@ -7,16 +7,11 @@ import 'package:skinisense/config/routes/Routes.dart';
 import 'package:skinisense/config/common/screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:skinisense/dependency_injector.dart';
 import 'firebase_options.dart';
-
-// ...
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
 import 'package:skinisense/domain/repository/auth_repository.dart';
 import 'package:skinisense/presentation/ui/pages/features/auth/bloc/auth_bloc.dart';
-import 'package:skinisense/presentation/ui/pages/features/auth/bloc/login_bloc.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +22,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
+  init();
   // Menunggu inisialisasi format tanggal
   await initializeDateFormatting('id_ID', null);
 
@@ -40,22 +35,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
+    return MultiBlocProvider(
       providers: [
-        RepositoryProvider<AuthRepository>(
-          create: (context) => AuthRepository(),
+        BlocProvider<AuthBloc>(
+          create: (context) => AuthBloc(
+            authRepository: di<AuthRepository>(),
+          ),
         ),
       ],
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider<AuthBloc>(
-            create: (context) => AuthBloc(
-              authRepository: RepositoryProvider.of<AuthRepository>(context),
-            ),
-          ),
-        ],
-        child: const MyAppView(),
-      ),
+      child: const MyAppView(),
     );
   }
 }
@@ -68,16 +56,13 @@ class MyAppView extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         SizeConfig.init(context);
-        return MultiBlocProvider(
-          providers: [],
-          child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            initialRoute: routeInitial,
-            onGenerateRoute: Routes.onRoute,
-            theme: ThemeData(
-              textTheme: GoogleFonts.poppinsTextTheme(
-                Theme.of(context).textTheme,
-              ),
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          initialRoute: routeInitial,
+          onGenerateRoute: Routes.onRoute,
+          theme: ThemeData(
+            textTheme: GoogleFonts.poppinsTextTheme(
+              Theme.of(context).textTheme,
             ),
           ),
         );

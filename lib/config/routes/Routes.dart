@@ -33,9 +33,9 @@ class Routes {
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
           // child: SplashPage(),
-          child: LoginScope(),
+          // child: LoginScope(),
           // child: ProductKatalogPage(),
-          // child: HomeWrapper()
+          child: HomeWrapper(),
           // child: QuestionsIntro(),
           // child: ScanPage(),
           settings: settings,
@@ -157,7 +157,7 @@ class Routes {
         return PageTransition(
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
-          child: ProductKatalogPage(),
+          child: ProductKatalogScope(),
           settings: settings,
         );
       case routeProductDetail:
@@ -176,7 +176,6 @@ class Routes {
           child: NotFoundPage(),
           settings: settings,
         );
-        ;
       default:
         return PageTransition(
           type: PageTransitionType.fade,
