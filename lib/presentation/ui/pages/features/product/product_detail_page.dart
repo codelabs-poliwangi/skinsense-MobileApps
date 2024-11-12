@@ -20,7 +20,7 @@ class ProductDetailPage extends StatelessWidget {
               Stack(
                 children: [
                   AspectRatio(
-                    aspectRatio: 16/12, // Ubah rasio sesuai kebutuhan
+                    aspectRatio: 16 / 12, // Ubah rasio sesuai kebutuhan
                     child: Image(
                       image: AssetImage(scanFaceSmile),
                       fit: BoxFit.cover, // Menjaga gambar agar memenuhi kotak
@@ -117,7 +117,15 @@ class ProductDetailPage extends StatelessWidget {
                   ],
                 ),
               ),
-              
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Text(
+                  'product id = $productId',
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+              ),
             ],
           ),
         ),

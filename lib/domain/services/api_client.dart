@@ -37,13 +37,13 @@ class ApiException implements Exception {
 
 class ApiClient {
   final Duration timeout;
-  
-  ApiClient({ 
+  final TokenService tokenService;
+  ApiClient(this.tokenService, { 
     this.timeout = const Duration(seconds: 30),
   });
 
   Future<Map<String, String>> _getHeaders() async {
-    final token = await TokenService.getAccessToken();
+    final token = await tokenService.getAccessToken();
     return {
       'Content-Type': 'application/json',
       'Accept': 'application/json',

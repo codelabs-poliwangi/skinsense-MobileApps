@@ -36,7 +36,7 @@ class Routes {
           // child: SplashPage(),
           child: const LoginScope(),
           // child: ProductKatalogPage(),
-          // child: HomeWrapper()
+          // child: HomeWrapper(),
           // child: QuestionsIntro(),
           // child: ScanPage(),
           settings: settings,
@@ -165,7 +165,7 @@ class Routes {
         return PageTransition(
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
-          child: const ProductKatalogPage(),
+          child: ProductKatalogScope(),
           settings: settings,
         );
       case routeProductDetail:
@@ -184,7 +184,6 @@ class Routes {
           child: const NotFoundPage(),
           settings: settings,
         );
-        ;
       default:
         return PageTransition(
           type: PageTransitionType.fade,

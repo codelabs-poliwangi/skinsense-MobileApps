@@ -4,14 +4,14 @@ import 'package:skinisense/domain/provider/auth_provider.dart';
 import 'package:skinisense/domain/services/token-service.dart';
 
 class AuthRepository {
-  final ApiClient apiClient = ApiClient();
-  final AuthProvider authProvider = AuthProvider();
-
-  AuthRepository();
+  final ApiClient apiClient;
+  final AuthProvider authProvider;
+  final TokenService tokenService;
+  AuthRepository(this.apiClient, this.authProvider, this.tokenService);
 
   // Check if the user is logged in based on the token
   Future<bool> isLoggedIn() async {
-    final token = await TokenService.getAccessToken();
+    final token = await tokenService.getAccessToken();
     return token != null && token.isNotEmpty;
   }
 
@@ -54,7 +54,7 @@ class AuthRepository {
   // Fetch the current authenticated user
   Future<User> me() async {
     try {
-      final token = await TokenService.getAccessToken();
+      final token = await tokenService.getAccessToken();
       if (token == null || token.isEmpty) {
         throw Exception('User is not logged in.');
       }
@@ -67,8 +67,8 @@ class AuthRepository {
   // Save user credentials (token and user data)
   Future<void> saveUserCredentials() async {
     try {
-      await TokenService.saveAccessToken('access_token');  // Replace with actual token from response
-      await TokenService.saveRefreshToken('refresh_token');  // Replace with actual refresh token
+      await tokenService.saveAccessToken('access_token');  // Replace with actual token from response
+      await tokenService.saveRefreshToken('refresh_token');  // Replace with actual refresh token
     } catch (e) {
       throw Exception('Failed to save user credentials: $e');
     }
@@ -76,10 +76,10 @@ class AuthRepository {
 
   // Logout method to clear user data
   Future<void> logout() async {
-    final token = await TokenService.getAccessToken();
+    final token = await tokenService.getAccessToken();
     await authProvider.logout(token!);
-    await TokenService.deleteAccessToken();
-    await TokenService.deleteRefreshToken();
+    await tokenService.deleteAccessToken();
+    await tokenService.deleteRefreshToken();
 
   }
 }

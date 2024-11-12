@@ -1,15 +1,38 @@
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
+import 'package:skinisense/dependency_injector.dart';
+import 'package:skinisense/presentation/ui/pages/features/home/bloc/product_bloc.dart';
+import 'package:skinisense/presentation/ui/pages/features/home/repository/product_repository.dart';
 import 'package:skinisense/presentation/ui/widget/product_katalog.dart';
 import 'package:skinisense/presentation/ui/widget/progress_skin.dart';
 import 'package:skinisense/presentation/ui/widget/routine_list.dart';
 import 'package:skinisense/presentation/ui/widget/search_textfield.dart';
 import 'package:skinisense/presentation/ui/widget/alertdialog_widget.dart';
+
+class HomePageScope extends StatelessWidget {
+  const HomePageScope({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // setupRepositoryProduct();
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => ProductBloc(
+            di<ProductRepository>(),
+          ),
+        ),
+      ],
+      child: HomePage(),
+    );
+  }
+}
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -69,37 +92,75 @@ class HomePage extends StatelessWidget {
                 child: SizedBox(
                   height: SizeConfig.calHeightMultiplier(
                       1100), // Tentukan tinggi sesuai kebutuhan
-                  child: GridView.builder(
-                    scrollDirection: Axis.horizontal,
-                    physics: BouncingScrollPhysics(),
-                    padding: EdgeInsets.symmetric(horizontal: 24),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4, // Jumlah baris
-                      crossAxisSpacing: 16, // Jarak antar kolom
-                      mainAxisSpacing: 16, // Jarak antar baris
-                      childAspectRatio: 1 / 0.69, // Rasio aspek untuk kotak
-                    ),
-                    itemBuilder: (BuildContext context, int index) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            routeProductDetail,
-                            arguments: {'id': index.toString()},
-                          );
-                        },
-                        child: ProductItemWidget(
-                          indexProduct: index,
-                          imageProduct: onboardCommunity,
-                          nameProduct:
-                              "Skintific 2% Salicylic Acid Anti Acne Serum 20ml",
-                          storeProduct: 'Skintific',
-                          storeImage: logoSplashScreen,
-                          ratingProduct: 4.3,
-                        ),
-                      );
+                  child: BlocBuilder<ProductBloc, ProductState>(
+                    // bloc: ProductBloc(di<ProductRepository>()),
+                    buildWhen: (previous, current) => previous != current,
+                    builder: (context, state) {
+                      if (state is ProductInitial) {
+                        return const SliverToBoxAdapter(
+                          child: Center(
+                            child: Text('Please Wait'),
+                          ),
+                        );
+                      } else if (state is ProductLoading) {
+                        return const SliverToBoxAdapter(
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      } else if (state is ProductLoaded) {
+                        return SliverPadding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          sliver: SliverGrid.builder(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 8,
+                              mainAxisSpacing: 8,
+                              childAspectRatio: 0.69,
+                            ),
+                            itemBuilder: (BuildContext context, int index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    routeProductDetail,
+                                    arguments: {
+                                      'id': state.products[index].id.toString()
+                                    },
+                                  );
+                                },
+                                child: ProductItemWidget(
+                                  isKatalog: true,
+                                  indexProduct: state.products[index].id,
+                                  imageProduct:
+                                      state.products[index].productImage,
+                                  nameProduct: state.products[index].name,
+                                  storeProduct: state.products[index].store,
+                                  storeImage: state.products[index]
+                                      .store, // Ensure correct data
+                                  ratingProduct:
+                                      state.products[index].rating.toDouble(),
+                                ),
+                              );
+                            },
+                            itemCount: state.products.length,
+                          ),
+                        );
+                      } else if (state is ProductError) {
+                        return SliverToBoxAdapter(
+                          child: Center(
+                            child: Text('Error: ${state.message}'),
+                          ),
+                        );
+                      } else {
+                        return const SliverToBoxAdapter(
+                          child: Center(
+                            child: Text('Something went wrong'),
+                          ),
+                        );
+                      }
                     },
-                    itemCount: 20, // Jumlah item di grid
                   ),
                 ),
               ),
@@ -306,6 +367,7 @@ class CardWelcomeWidget extends StatelessWidget {
                           onTap: () {
                             // Navigator.pushReplacementNamed(context, routeProductSearch);
                             Navigator.of(context).pushNamed(routeProductSearch);
+                            // removeRepositoryProduct();
                           },
                           child: Icon(
                             FluentSystemIcons.ic_fluent_search_regular,
