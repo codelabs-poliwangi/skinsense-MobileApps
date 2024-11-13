@@ -11,3 +11,7 @@ const String routineUrl =  "https://retoolapi.dev/76WqTn/routine";
 // skin Condition mock api 
 const String skinConditionUrl = "https://retoolapi.dev/kCYWJj/skin_condition";
 
+
+// question mock api
+const String questionUrl = "https://mocki.io/v1/95af8bbb-4401-452f-9845-a8e865f4fed3";
+

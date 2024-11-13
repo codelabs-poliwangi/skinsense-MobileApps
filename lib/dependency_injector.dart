@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:skinisense/domain/provider/auth_provider.dart';
 import 'package:skinisense/domain/provider/product_provider.dart';
+import 'package:skinisense/domain/provider/question_provider.dart';
 import 'package:skinisense/domain/provider/routine_provider.dart';
 import 'package:skinisense/domain/provider/skin_condition_provider.dart';
 import 'package:skinisense/presentation/ui/pages/features/auth/repository/auth_repository.dart';
@@ -9,6 +10,7 @@ import 'package:skinisense/domain/services/token-service.dart';
 import 'package:skinisense/presentation/ui/pages/features/home/repository/routine_repository.dart';
 import 'package:skinisense/presentation/ui/pages/features/home/repository/skin_condition_repository.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/repository/product_repository.dart';
+import 'package:skinisense/presentation/ui/pages/features/questions/repository/question_repository.dart';
 
 final di = GetIt.instance;
 
@@ -42,6 +44,9 @@ void init() {
   di.registerSingleton<RoutineRepository>(
       RoutineRepository(di<RoutineProvider>()));
 
+  //question
+  di.registerSingleton<QuestionProvider>(QuestionProvider());
+  di.registerSingleton<QuestionRepository>(QuestionRepository(di<QuestionProvider>()));
   // hive databse local
 
   // connectiviy

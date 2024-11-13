@@ -5,7 +5,7 @@ class RoutineRepository {
   final RoutineProvider _routineProvider;
 
   RoutineRepository(this._routineProvider);
-   Future<List<Routine>> fetchRoutine() async {
+  Future<List<Routine>> fetchRoutine() async {
     try {
       return await _routineProvider.getRoutine();
     } catch (e) {
