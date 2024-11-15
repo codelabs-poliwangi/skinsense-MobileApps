@@ -14,3 +14,12 @@ final class QuestionSubmited extends QuestionEvent{}
 final class QuestionPrevious extends QuestionEvent {}
 
 final class QuestionNext extends QuestionEvent {}
+
+class SelectAnswer extends QuestionEvent {
+  final String answer; // The selected answer
+
+  const SelectAnswer(this.answer);
+
+  @override
+  List<Object> get props => [answer];
+}

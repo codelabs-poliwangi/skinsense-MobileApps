@@ -1,39 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'question.g.dart';
-
 @JsonSerializable()
 class Question {
-    @JsonKey(name: "statusCode")
-    final int statusCode;
-    @JsonKey(name: "message")
-    final String message;
-    @JsonKey(name: "data")
-    final List<Datum> data;
-
-    Question({
-        required this.statusCode,
-        required this.message,
-        required this.data,
-    });
-
-    Question copyWith({
-        int? statusCode,
-        String? message,
-        List<Datum>? data,
-    }) => 
-        Question(
-            statusCode: statusCode ?? this.statusCode,
-            message: message ?? this.message,
-            data: data ?? this.data,
-        );
-
-    factory Question.fromJson(Map<String, dynamic> json) => _$QuestionFromJson(json);
-
-    Map<String, dynamic> toJson() => _$QuestionToJson(this);
-}
-
-@JsonSerializable()
-class Datum {
     @JsonKey(name: "id")
     final String id;
     @JsonKey(name: "question")
@@ -41,26 +9,26 @@ class Datum {
     @JsonKey(name: "option")
     final List<Option> option;
 
-    Datum({
+    Question({
         required this.id,
         required this.question,
         required this.option,
     });
 
-    Datum copyWith({
+    Question copyWith({
         String? id,
         String? question,
         List<Option>? option,
     }) => 
-        Datum(
+        Question(
             id: id ?? this.id,
             question: question ?? this.question,
             option: option ?? this.option,
         );
 
-    factory Datum.fromJson(Map<String, dynamic> json) => _$DatumFromJson(json);
+    factory Question.fromJson(Map<String, dynamic> json) => _$QuestionFromJson(json);
 
-    Map<String, dynamic> toJson() => _$DatumToJson(this);
+    Map<String, dynamic> toJson() => _$QuestionToJson(this);
 }
 
 @JsonSerializable()

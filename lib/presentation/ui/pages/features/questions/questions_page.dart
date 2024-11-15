@@ -4,8 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/theme/color.dart';
+import 'package:skinisense/dependency_injector.dart';
+import 'package:skinisense/domain/utils/logger.dart';
 import 'package:skinisense/presentation/ui/pages/features/questions/bloc/question_bloc.dart';
+import 'package:skinisense/presentation/ui/pages/features/questions/repository/question_repository.dart';
 import 'package:skinisense/presentation/ui/widget/button_primary.dart';
+import 'package:skinisense/presentation/ui/widget/warningDialog.dart';
 
 class QuestionsPageScope extends StatelessWidget {
   const QuestionsPageScope({super.key});
@@ -13,7 +17,7 @@ class QuestionsPageScope extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => QuestionBloc(),
+      create: (context) => QuestionBloc(di<QuestionRepository>()),
       child: QuestionsPage(),
     );
   }
@@ -27,33 +31,34 @@ class QuestionsPage extends StatefulWidget {
 }
 
 class _QuestionsPageState extends State<QuestionsPage> {
-  final List<Map<String, dynamic>> questions = [
-    {
-      "question":
-          "Seberapa baik Anda mendeskripsikan jenis kulit Anda? (normal, kering, berminyak, kombinasi, sensitif)",
-      "answer": [
-        "Sangat Tidak Jelas",
-        "Tidak Jelas",
-        "Cukup Jelas",
-        "Jelas",
-        "Sangat Jelas"
-      ]
-    },
-    // Tambahkan pertanyaan lain jika diperlukan
-  ];
-
   int selectedAnswerIndex = -1; // Index pilihan yang dipilih
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch questions when the page is initialized
+    context.read<QuestionBloc>().add(FetchQuestion());
+  }
 
   void nextQuestion() {
     if (selectedAnswerIndex != -1) {
       print(
-          "Jawaban yang dipilih: ${questions[0]["answer"][selectedAnswerIndex]}");
+          "Jawaban yang dipilih: ${context.read<QuestionBloc>().listQuestion[context.read<QuestionBloc>().currentIndex].option[selectedAnswerIndex]}");
       setState(() {
         selectedAnswerIndex = -1; // Reset pilihan setelah pindah pertanyaan
       });
+      context.read<QuestionBloc>().add(QuestionNext());
     } else {
       print("Belum ada pilihan yang dipilih.");
     }
+  }
+
+  void previousQuestion() {
+    context
+        .read<QuestionBloc>()
+        .add(QuestionPrevious()); // Dispatch previous question event
+
+    setState(() {});
   }
 
   @override
@@ -62,7 +67,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
-          "Question 1/5",
+          "Question ${context.watch<QuestionBloc>().currentIndex + 1}/5",
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
@@ -73,58 +78,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
       body: PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, result) async {
-          return showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              scrollable: false,
-              contentPadding: EdgeInsets.all(0),
-              content: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(16)),
-                  color: Colors.white,
-                ),
-                padding: EdgeInsets.all(32),
-                // height: 300,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image(
-                      // width: 200,
-                      height: 200,
-                      image: AssetImage(
-                        imgStop,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      textAlign: TextAlign.center,
-                      "Ayo lengkapi semua pertanyaan dulu, baru bisa lanjut ke tahap berikutnya!",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.normal,
-                          fontSize: SizeConfig.calHeightMultiplier(12)),
-                    ),
-                    SizedBox(
-                      height: SizeConfig.calHeightMultiplier(30),
-                    ),
-                    ButtonPrimary(
-                      mainButtonMessage: "Kembali",
-                      mainButton: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    SizedBox(
-                      height: SizeConfig.calHeightMultiplier(12),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
+          return warningDialog(context);
         },
         child: Stack(
           children: [
@@ -132,57 +86,75 @@ class _QuestionsPageState extends State<QuestionsPage> {
             SafeArea(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    SizedBox(height: 24),
-                    Text(
-                      questions[0]["question"],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: primaryBlueColor,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    SizedBox(height: 30),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: questions[0]["answer"].length,
-                        itemBuilder: (context, index) {
-                          bool isSelected = index == selectedAnswerIndex;
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                selectedAnswerIndex = index;
-                              });
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(bottom: 12),
-                              width: double.infinity,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                color:
-                                    isSelected ? primaryBlueColor : Colors.grey,
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  questions[0]["answer"][index],
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.white,
+                child: BlocBuilder<QuestionBloc, QuestionState>(
+                    builder: (context, state) {
+                  if (state is QuestionLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is QuestionOnLoaded) {
+                    final question = state.listQuestions;
+                    var currentIndex =
+                        context.read<QuestionBloc>().currentIndex;
+                    List listOption = question[currentIndex].option;
+                    return Column(
+                      children: [
+                        SizedBox(height: 24),
+                        Text(
+                          question[currentIndex].question,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: primaryBlueColor,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(height: 30),
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: question.length,
+                            itemBuilder: (context, index) {
+                              bool isSelected = index == selectedAnswerIndex;
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedAnswerIndex = index;
+                                  });
+                                  context.read<QuestionBloc>().add(
+                                      SelectAnswer(listOption[index].id));
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.only(bottom: 12),
+                                  width: double.infinity,
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                    color: isSelected
+                                        ? primaryBlueColor
+                                        : Colors.grey,
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  padding: EdgeInsets.symmetric(horizontal: 16),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      listOption[index].option,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Container();
+                  }
+                }),
               ),
             ),
           ],
@@ -195,27 +167,42 @@ class _QuestionsPageState extends State<QuestionsPage> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            GestureDetector(
-              child: Container(
-                width: 58,
-                height: 58,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(width: 1, color: primaryBlueColor),
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
+            // Conditional rendering for the Previous button
+            if (context.watch<QuestionBloc>().currentIndex != 0) ...[
+              GestureDetector(
+                child: Container(
+                  width: 58,
+                  height: 58,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(width: 1, color: primaryBlueColor),
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
+                  child: Center(
+                    child: Icon(FluentSystemIcons.ic_fluent_arrow_left_regular),
+                  ),
                 ),
-                child: Center(
-                  child: Icon(FluentSystemIcons.ic_fluent_arrow_left_regular),
-                ),
+                onTap: previousQuestion,
               ),
-              onTap: () {},
-            ),
-            SizedBox(width: 24),
+              SizedBox(width: 16),
+            ],
             Expanded(
               child: ButtonPrimary(
-                mainButtonMessage: 'Next',
-                mainButton:
-                    nextQuestion, // Panggil fungsi nextQuestion saat tombol ditekan
+                mainButtonMessage: context.watch<QuestionBloc>().currentIndex ==
+                        context.watch<QuestionBloc>().listQuestion.length - 1
+                    ? 'Finish'
+                    : 'Next',
+                mainButton: () {
+                  final questionBloc = context.read<QuestionBloc>();
+                  final isLastQuestion = questionBloc.currentIndex ==
+                      questionBloc.listQuestion.length - 1;
+
+                  if (isLastQuestion) {
+                    questionBloc.add(QuestionSubmited());
+                  } else {
+                    nextQuestion(); // Panggil fungsi nextQuestion saat tombol ditekan
+                  }
+                },
               ),
             ),
           ],

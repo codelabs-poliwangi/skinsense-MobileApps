@@ -45,7 +45,7 @@ void init() {
       RoutineRepository(di<RoutineProvider>()));
 
   //question
-  di.registerSingleton<QuestionProvider>(QuestionProvider());
+  di.registerSingleton<QuestionProvider>(QuestionProvider(di<ApiClient>()));
   di.registerSingleton<QuestionRepository>(QuestionRepository(di<QuestionProvider>()));
   // hive databse local
 

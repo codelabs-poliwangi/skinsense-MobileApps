@@ -4,7 +4,7 @@ import 'package:skinisense/domain/provider/question_provider.dart';
 class QuestionRepository {
   final QuestionProvider _questionProvider;
   QuestionRepository(this._questionProvider);
-  Future<Question> getQuestion () async{
+  Future<List<Question>> getQuestion () async{
     try {
       return await _questionProvider.getQuestion();
     } catch (e) {

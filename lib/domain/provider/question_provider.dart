@@ -2,29 +2,36 @@ import 'dart:convert';
 import 'package:logger/logger.dart';
 import 'package:skinisense/config/api/api.dart';
 import 'package:skinisense/domain/model/question.dart';
-import 'package:http/http.dart' as http;
+import 'package:skinisense/domain/services/api_client.dart';
+import 'package:skinisense/domain/utils/logger.dart';
 
 class QuestionProvider {
-  Future<Question> getQuestion() async {
+  final ApiClient apiClient;
+  QuestionProvider(this.apiClient);
+
+  Future<List<Question>> getQuestion() async {
     try {
-      final response = await http.get(Uri.parse(questionUrl));
-
+      final response = await apiClient.get(questionUrl, requireAuth: false);
       if (response.statusCode == 200) {
-        final jsonData = json.decode(response.body);
+        // logger.d(response.data);
 
-        return Question.fromJson(jsonData);
+        // Memastikan response data sesuai dengan List<dynamic> atau decode bila perlu
+        final List<dynamic> jsonResponse = response.data is String
+            ? json.decode(response.data)
+            : response.data;
+        // logger.d(jsonResponse);
+        // Map data JSON ke dalam objek Question
+        return jsonResponse
+            .map<Question>((json) => Question.fromJson(json))
+            .toList();
       } else {
-        // Handle error if response status code is not 200
         Logger()
-            .d("Failed to load questions, status code: ${response.statusCode}");
-        // print("Failed to load questions, status code: ${response.statusCode}");
-          throw Exception('Failed to load products ${response.statusCode}');
+            .e("Failed to load questions, status code: ${response.statusCode}");
+        throw Exception('Failed to load questions: ${response.statusCode}');
       }
     } catch (e) {
-      // Handle exception
-      Logger().d("Failed to load questions, status code: ${e}");
-      throw Exception('Failed to load products ${e}');
-      // return null;
+      Logger().e("Error fetching questions: $e");
+      throw Exception('Failed to load questions: $e');
     }
   }
 }

@@ -11,9 +11,11 @@ final class QuestionInitial extends QuestionState {}
 
 final class QuestionLoading extends QuestionState {}
 
-final class QuesitonOnLoaded extends QuestionState {
-  final Question question;
-  QuesitonOnLoaded(this.question);
+final class QuestionOnLoaded extends QuestionState {
+  final List<Question> listQuestions; // Change to List<Question>
+  final int currentIndex; // Track the current question index
+
+  QuestionOnLoaded(this.listQuestions, this.currentIndex);
 }
 
 final class QuestionError extends QuestionState {

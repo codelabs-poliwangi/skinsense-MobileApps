@@ -34,34 +34,42 @@ class ApiException implements Exception {
   @override
   String toString() => message;
 }
-
 class ApiClient {
   final Duration timeout;
   final TokenService tokenService;
+  
   ApiClient(this.tokenService, { 
     this.timeout = const Duration(seconds: 30),
   });
 
-  Future<Map<String, String>> _getHeaders() async {
-    final token = await tokenService.getAccessToken();
-    return {
+  Future<Map<String, String>> _getHeaders({bool requireAuth = true}) async {
+    final headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      if (token != null) 'Authorization': 'Bearer $token',
     };
+
+    if (requireAuth) {
+      final token = await tokenService.getAccessToken();
+      if (token != null) {
+        headers['Authorization'] = 'Bearer $token';
+      }
+    }
+
+    return headers;
   }
 
   Future<ApiResponse<T>> get<T>(
     String path, {
     Map<String, String>? queryParameters,
     Map<String, String>? headers,
+    bool requireAuth = true,
   }) async {
     try {
-      final uri = Uri.parse(baseUrl + path).replace(
+      final uri = Uri.parse(path).replace(
         queryParameters: queryParameters,
       );
-      
-      final defaultHeaders = await _getHeaders();
+
+      final defaultHeaders = await _getHeaders(requireAuth: requireAuth);
       final response = await http
           .get(
             uri,
@@ -82,13 +90,14 @@ class ApiClient {
     Map<String, dynamic>? data,
     Map<String, String>? queryParameters,
     Map<String, String>? headers,
+    bool requireAuth = true,
   }) async {
     try {
-      final uri = Uri.parse(baseUrl + path).replace(
+      final uri = Uri.parse(path).replace(
         queryParameters: queryParameters,
       );
-      
-      final defaultHeaders = await _getHeaders();
+
+      final defaultHeaders = await _getHeaders(requireAuth: requireAuth);
       final response = await http
           .post(
             uri,
@@ -110,13 +119,14 @@ class ApiClient {
     Map<String, dynamic>? data,
     Map<String, String>? queryParameters,
     Map<String, String>? headers,
+    bool requireAuth = true,
   }) async {
     try {
-      final uri = Uri.parse(baseUrl + path).replace(
+      final uri = Uri.parse(path).replace(
         queryParameters: queryParameters,
       );
-      
-      final defaultHeaders = await _getHeaders();
+
+      final defaultHeaders = await _getHeaders(requireAuth: requireAuth);
       final response = await http
           .put(
             uri,
@@ -137,13 +147,14 @@ class ApiClient {
     String path, {
     Map<String, String>? queryParameters,
     Map<String, String>? headers,
+    bool requireAuth = true,
   }) async {
     try {
-      final uri = Uri.parse(baseUrl + path).replace(
+      final uri = Uri.parse(path).replace(
         queryParameters: queryParameters,
       );
-      
-      final defaultHeaders = await _getHeaders();
+
+      final defaultHeaders = await _getHeaders(requireAuth: requireAuth);
       final response = await http
           .delete(
             uri,
@@ -167,7 +178,7 @@ class ApiClient {
         headers: response.headers,
         statusCode: response.statusCode,
         message: body?['message'] ?? '',
-        data: body?['data'] ?? body
+        data: body?['data'] ?? body,
       );
     }
 

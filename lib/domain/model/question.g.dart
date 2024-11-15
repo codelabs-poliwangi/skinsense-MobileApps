@@ -7,20 +7,6 @@ part of 'question.dart';
 // **************************************************************************
 
 Question _$QuestionFromJson(Map<String, dynamic> json) => Question(
-      statusCode: (json['statusCode'] as num).toInt(),
-      message: json['message'] as String,
-      data: (json['data'] as List<dynamic>)
-          .map((e) => Datum.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-
-Map<String, dynamic> _$QuestionToJson(Question instance) => <String, dynamic>{
-      'statusCode': instance.statusCode,
-      'message': instance.message,
-      'data': instance.data,
-    };
-
-Datum _$DatumFromJson(Map<String, dynamic> json) => Datum(
       id: json['id'] as String,
       question: json['question'] as String,
       option: (json['option'] as List<dynamic>)
@@ -28,7 +14,7 @@ Datum _$DatumFromJson(Map<String, dynamic> json) => Datum(
           .toList(),
     );
 
-Map<String, dynamic> _$DatumToJson(Datum instance) => <String, dynamic>{
+Map<String, dynamic> _$QuestionToJson(Question instance) => <String, dynamic>{
       'id': instance.id,
       'question': instance.question,
       'option': instance.option,
