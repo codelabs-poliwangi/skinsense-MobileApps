@@ -4,11 +4,13 @@ import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
+import 'package:skinisense/dependency_injector.dart';
 import 'package:skinisense/presentation/ui/pages/features/auth/repository/auth_repository.dart';
 import 'package:skinisense/presentation/ui/pages/features/login/bloc/login_bloc.dart';
 import 'package:skinisense/presentation/ui/widget/custom_button.dart';
 import 'package:skinisense/presentation/ui/widget/custom_input.dart';
 import 'package:skinisense/presentation/ui/widget/custom_logo_button.dart';
+
 // import 'signup.dart'; // Import halaman signup.dart
 class LoginScope extends StatelessWidget {
   const LoginScope({super.key});
@@ -17,9 +19,9 @@ class LoginScope extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<LoginBloc>(
       create: (context) => LoginBloc(
-        authRepository: context.read<AuthRepository>(),
+        authRepository: di<AuthRepository>(),
       ),
-      child: LoginPage(), // Replace with the actual widget to be wrapped
+      child: const LoginPage(), // Replace with the actual widget to be wrapped
     );
   }
 }
@@ -39,7 +41,6 @@ class _LoginPageState extends State<LoginPage> {
   bool _obscureText = true;
   bool _rememberMe = false;
 
-  // Function State Management
   void _isObsecure() {
     setState(() {
       _obscureText = !_obscureText;
@@ -54,40 +55,39 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginBloc, LoginState>(
+    return BlocConsumer<LoginBloc, LoginState>(
       listener: (context, state) {
-        if (state is LoginLoading) {
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) => const Center(
-              child: CircularProgressIndicator(
-                color: primaryBlueColor,
-              ),
+      if (state is LoginLoading) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => const Center(
+            child: CircularProgressIndicator(
+              color: primaryBlueColor,
             ),
-          );
-        } else if (state is LoginSuccess) {
-          Navigator.of(context).pop(); // Close loading dialog
-    
-          // Navigate to home
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            routeHome,
-            (route) => false,
-          );
-        } else if (state is LoginFailure) {
-          Navigator.of(context).pop(); // Close loading dialog
-          showCustomModalBottomSheet(
-              context, imageTryAgain, primaryBlueColor);
-        }
-      },
-      child: Scaffold(
+          ),
+        );
+      } else if (state is LoginSuccess) {
+        Navigator.of(context).pop(); // Close loading dialog
+
+        // Navigate to home
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          routeHome,
+          (route) => false,
+        );
+      } else if (state is LoginFailure) {
+        Navigator.of(context).pop(); // Close loading dialog
+        showCustomModalBottomSheet(context, imageTryAgain, primaryBlueColor);
+      }
+    }, 
+    builder: (context, state) {
+      return Scaffold(
         appBar: null,
         backgroundColor: Colors.white,
         body: SafeArea(
           child: SingleChildScrollView(
-            padding:
-                const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
             child: Form(
               key: _formKey,
               child: Column(
@@ -99,31 +99,26 @@ class _LoginPageState extends State<LoginPage> {
                     width: SizeConfig.calWidthMultiplier(120),
                   ),
                   SizedBox(height: SizeConfig.calHeightMultiplier(24)),
-    
+
                   // Login to Your Account
                   Text(
                     'Welcome Back!',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium!
-                        .copyWith(
-                            color: primaryBlueColor,
-                            fontWeight: FontWeight.w700),
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: primaryBlueColor, fontWeight: FontWeight.w700),
                   ),
-    
+
                   // Login to your
                   Opacity(
                     opacity: .5,
                     child: Text(
                       'Log in to existing SCIN account',
-                      style:
-                          Theme.of(context).textTheme.titleSmall!.copyWith(
-                                color: primaryBlueColor,
-                              ),
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                            color: primaryBlueColor,
+                          ),
                     ),
                   ),
                   SizedBox(height: SizeConfig.calHeightMultiplier(24)),
-    
+
                   // Username or email field
                   CustomInput(
                     controller: _emailController,
@@ -137,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                     },
                   ),
                   SizedBox(height: SizeConfig.calHeightMultiplier(16)),
-    
+
                   // Password field
                   CustomInput(
                     controller: _passwordController,
@@ -152,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                       return null;
                     },
                   ),
-    
+
                   // Remember Me and Forgot Password
                   Row(
                     children: [
@@ -173,8 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                       const Spacer(),
                       GestureDetector(
                         onTap: () {
-                          Navigator.of(context)
-                              .pushNamed(routeForgotPassword);
+                          Navigator.of(context).pushNamed(routeForgotPassword);
                         },
                         child: Text(
                           'Forgot Password?',
@@ -188,27 +182,23 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ],
                   ),
-    
+
                   SizedBox(height: SizeConfig.calHeightMultiplier(24)),
                   CustomButton(
                       onPressed: () {
                         // Jika form sudah tervalidasi
                         if (_formKey.currentState!.validate()) {
-
-                          context.read<LoginBloc>().add(
-                            LoginSubmitted(
+                          context.read<LoginBloc>().add(LoginSubmitted(
                               email: _emailController.text,
-                              password: _passwordController.text
-                            )
-                          );
+                              password: _passwordController.text));
                         }
                       },
                       text: 'Login',
                       backgroundColor: primaryBlueColor),
                   SizedBox(height: SizeConfig.calHeightMultiplier(24)),
-    
+
                   //=========================================================================
-    
+
                   Stack(
                     alignment: Alignment.center,
                     children: [
@@ -225,8 +215,7 @@ class _LoginPageState extends State<LoginPage> {
                             children: [
                               Expanded(
                                 child: Divider(
-                                  color:
-                                      primaryBlueColor, // Color of the line
+                                  color: primaryBlueColor, // Color of the line
                                   height: 1, // Height of the divider
                                 ),
                               ),
@@ -244,16 +233,14 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               Expanded(
                                 child: Divider(
-                                  color:
-                                      primaryBlueColor, // Color of the line
+                                  color: primaryBlueColor, // Color of the line
                                   height: 1, // Height of the divider
                                 ),
                               ),
                             ],
                           ),
-                          SizedBox(
-                              height: SizeConfig.calHeightMultiplier(16)),
-    
+                          SizedBox(height: SizeConfig.calHeightMultiplier(16)),
+
                           // Social Media Buttons
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -274,9 +261,8 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ],
                           ),
-                          SizedBox(
-                              height: SizeConfig.calHeightMultiplier(24)),
-    
+                          SizedBox(height: SizeConfig.calHeightMultiplier(24)),
+
                           // Sign Up Link
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -311,7 +297,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ],
                   ),
-    
+
                   const Text(
                     '© 2024 SCIN. All rights reserved. Unauthorized copying or distribution is prohibited.',
                     style: TextStyle(
@@ -325,8 +311,8 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
 
