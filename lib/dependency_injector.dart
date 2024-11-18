@@ -18,8 +18,7 @@ void init() {
   
   // auth
   di.registerSingleton<AuthProvider>(AuthProvider(di<ApiClient>()));
-  di.registerSingleton<AuthRepository>(
-      AuthRepository(di<ApiClient>(), di<AuthProvider>(), di<TokenService>()));
+  di.registerSingleton<AuthRepository>(AuthRepository(di<ApiClient>(), di<AuthProvider>(), di<TokenService>()));
 
   // Product 
   di.registerSingleton<ProductProvider>(ProductProvider(di<ApiClient>()));
