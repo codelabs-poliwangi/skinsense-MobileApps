@@ -6,8 +6,8 @@ import 'package:skinisense/presentation/ui/pages/features/questions/questions_pa
 import 'package:skinisense/presentation/ui/pages/features/register/register_contact_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/register/register_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/register/register_password_page.dart';
-import 'package:skinisense/presentation/ui/pages/features/auth/forgot_password_page.dart';
-import 'package:skinisense/presentation/ui/pages/features/auth/otp_verification_page.dart';
+import 'package:skinisense/presentation/ui/pages/features/forgot_password/forgot_password_page.dart';
+import 'package:skinisense/presentation/ui/pages/features/forgot_password/otp_verification_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/home/home_wrapper.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/product_detail_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/product_katalog_page.dart';
@@ -125,7 +125,7 @@ class Routes {
         return PageTransition(
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
-          child: ForgotPasswordPage(),
+          child: ForgotPasswordScope(),
           settings: settings,
         );
       case routeOtpVerification:
