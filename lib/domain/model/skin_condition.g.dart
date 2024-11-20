@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'skinCondition.dart';
+part of 'skin_condition.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

@@ -1,11 +1,9 @@
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
-import 'package:skinisense/domain/provider/product_provider.dart';
 import 'package:skinisense/dependency_injector.dart';
 import 'package:skinisense/domain/utils/logger.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/bloc/product_bloc.dart';
@@ -60,8 +58,6 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
 
   @override
   void dispose() {
-    // removeRepositoryProduct();
-    // TODO: implement dispose
     super.dispose();
   }
 

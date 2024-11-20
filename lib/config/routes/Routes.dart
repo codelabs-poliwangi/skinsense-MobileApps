@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/presentation/ui/pages/features/login/login_page.dart';
+import 'package:skinisense/presentation/ui/pages/features/questions/questions_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/register/register_contact_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/register/register_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/register/register_password_page.dart';
@@ -22,7 +23,6 @@ import 'package:skinisense/presentation/ui/pages/features/scan/scan_page_right.d
 import 'package:skinisense/presentation/ui/pages/not_found_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/splash_onboard/onboard_page.dart';
 // import 'package:skinisense/presentation/ui/pages/features/auth/register_screen.dart';
-import 'package:skinisense/presentation/ui/pages/features/splash_onboard/splash_page.dart';
 // import 'package:skinisense/presentation/ui/splash_screen.dart';
 
 class Routes {
@@ -34,11 +34,13 @@ class Routes {
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
           // child: SplashPage(),
-          child: const LoginScope(),
+          // child: const LoginScope(),
           // child: ProductKatalogPage(),
           // child: HomeWrapper(),
-          // child: QuestionsIntro(),
+          // child: QuestionScope(),
           // child: ScanPage(),
+          child: QuestionsIntro(),
+          // child: QuestionsPageScope(),
           settings: settings,
         );
       case routeHome:
@@ -133,11 +135,19 @@ class Routes {
           child: const OtpVerificationPage(),
           settings: settings,
         );
+      case routeQuestionIntro:
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 300),
+          child: QuestionsIntro(),
+          settings: settings,
+        );
+
       case routeQuestions:
         return PageTransition(
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
-          child: const QuestionsIntro(),
+          child: QuestionsPageScope(),
           settings: settings,
         );
       case routeLogin:
