@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
 // Import Repository
-import 'package:skinisense/domain/repository/auth_repository.dart';
+import 'package:skinisense/presentation/ui/pages/features/auth/repository/auth_repository.dart';
 
 // Import Model
 import 'package:skinisense/domain/model/user_model.dart';

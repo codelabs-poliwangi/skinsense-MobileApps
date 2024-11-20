@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:skinisense/domain/provider/auth_provider.dart';
-import 'package:skinisense/domain/repository/auth_repository.dart';
+import 'package:skinisense/presentation/ui/pages/features/auth/repository/auth_repository.dart';
 
 part 'register_event.dart';
 part 'register_state.dart';
@@ -31,8 +30,6 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           isLoading: false,
           status: RegisterStatus.nameSuccess,));
 
-        print(state.name);
-
       } catch (error) {
         emit(state.copyWith(
           isLoading: false,
@@ -42,7 +39,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       }
     });
 
-    on<RegisterContactSubmitted>((event, emit) {
+    on<RegisterContactSubmitted>((event, emit) async {
       emit(state.copyWith(isLoading: true, error: null));
       try {
         if (event.email.isEmpty) {
@@ -112,19 +109,17 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           status: RegisterStatus.passwordSuccess,
         ));
 
-        print('Name: ${state.name}');
-        print('Email: ${state.email}');
-        print('Phone: ${state.phone}');
-        print('Password: ${state.password}');
+        print(event.password);
 
         // Call Api
-        // await authRepository.register(
-        //   name: state.name,
-        //   email: state.email,
-        //   phone: state.phone,
-        //   password: state.password,
-        //   confirmPassword: state.confirmPassword,
-        // );
+        await authRepository.register(
+          name: state.name,
+          email: state.email,
+          phone: state.phone,
+          password: state.password,
+          confirmPassword: state.confirmPassword,
+        );
+        
       } catch (error) {
         emit(state.copyWith(
           isLoading: false,

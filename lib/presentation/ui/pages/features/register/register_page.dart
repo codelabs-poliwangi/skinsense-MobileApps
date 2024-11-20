@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
-import 'package:skinisense/domain/repository/auth_repository.dart';
-import 'package:skinisense/presentation/ui/pages/features/login/login_page.dart';
+import 'package:skinisense/dependency_injector.dart';
+import 'package:skinisense/presentation/ui/pages/features/auth/repository/auth_repository.dart';
 import 'package:skinisense/presentation/ui/pages/features/register/register_contact_page.dart';
 import 'package:skinisense/presentation/ui/widget/custom_button.dart';
 import 'package:skinisense/presentation/ui/widget/custom_input.dart';
 import 'package:skinisense/presentation/ui/widget/custom_logo_button.dart';
 import './bloc/register_bloc.dart';
-// import 'signup.dart'; // Import halaman signup.dart
 
 class RegisterScope extends StatelessWidget {
   const RegisterScope({super.key});
@@ -20,7 +20,7 @@ class RegisterScope extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<RegisterBloc>(
       create: (context) => RegisterBloc(
-        authRepository: context.read<AuthRepository>(),
+        authRepository: di<AuthRepository>(),
       ),
       child: RegisterPage(),
     );
@@ -52,23 +52,15 @@ class _RegisterPageState extends State<RegisterPage> {
           );
         } else {
           if (state.status == RegisterStatus.nameSuccess) {
-            Navigator.of(context).pop(); // Close loading dialog
-
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => BlocProvider.value(
-                  value: BlocProvider.of<RegisterBloc>(
-                      context), // Mengirim RegisterBloc yang ada
-                  child: RegisterContactPage(),
-                ),
-              ),
-            );
-          }
-          if (state.status == RegisterStatus.failure) {
-            Navigator.of(context).pop(); // Close loading dialog
-
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Gagal Registrasi Nama')),
+            Navigator.of(context).pushReplacement(
+              PageTransition(
+                type: PageTransitionType.fade,
+                duration: const Duration(milliseconds: 300),
+                child: BlocProvider.value(
+                  value: BlocProvider.of<RegisterBloc>(context), // Mengirim RegisterBloc yang ada
+                  child: const RegisterContactPage(),
+                )
+              )
             );
           }
         }
@@ -121,6 +113,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                         // Username or email field
                         CustomInput(
+                          key: const Key('nameKey'),
                           controller: _nameController,
                           hintText: 'Your Name',
                           keyboardType: TextInputType.emailAddress,
