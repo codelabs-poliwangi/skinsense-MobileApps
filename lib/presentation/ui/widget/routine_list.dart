@@ -31,11 +31,18 @@ class RoutineListTile extends StatelessWidget {
         children: [
           // Cek apakah routineImage ada, jika tidak null maka tampilkan gambar
           if (routineImage != null)
-            Image.asset(
-              routineImage!,
-              width: 50,
-              height: 50,
-              fit: BoxFit.cover,
+            ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(routineImage!), 
+                    fit: BoxFit.cover
+                  ),
+                ),
+              ),
             )
           else
             SizedBox.shrink(), // Placeholder jika tidak ada gambar

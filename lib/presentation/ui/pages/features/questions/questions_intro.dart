@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skinisense/config/common/image_assets.dart';
+import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
+import 'package:skinisense/presentation/ui/pages/features/questions/bloc/question_bloc.dart';
+import 'package:skinisense/presentation/ui/pages/features/questions/questions_page.dart';
 import 'package:skinisense/presentation/ui/widget/button_primary.dart';
 
-class QuestionsIntro extends StatefulWidget {
+class QuestionsIntro extends StatelessWidget {
   const QuestionsIntro({super.key});
 
-  @override
-  State<QuestionsIntro> createState() => _QuestionsIntroState();
-}
-
-class _QuestionsIntroState extends State<QuestionsIntro> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +23,7 @@ class _QuestionsIntroState extends State<QuestionsIntro> {
                 // crossAxisAlignment: CrossAxisAlignment.center,
                 // mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                   SizedBox(
+                  SizedBox(
                     height: 70,
                   ),
                   Text(
@@ -60,7 +59,12 @@ class _QuestionsIntroState extends State<QuestionsIntro> {
                   SizedBox(
                     height: 57,
                   ),
-                  ButtonPrimary(mainButtonMessage: "Next", mainButton: () {}),
+                  ButtonPrimary(
+                    mainButtonMessage: "Next",
+                    mainButton: () {
+                      Navigator.pushNamed(context, routeQuestions);
+                    },
+                  ),
                 ],
               ),
             ),
@@ -80,40 +84,11 @@ class _QuestionsIntroState extends State<QuestionsIntro> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Container(
-                    width: double.infinity,
-                    height: 2, // Ketebalan garis
-                    color: primaryBlueColor.withOpacity(0.5), // Warna garis
-                    margin: EdgeInsets.symmetric(
-                        horizontal: 20), // Jarak dari tepi kiri dan kanan
-                  ),
-                ),
-
-                // Menambahkan Expanded untuk menyesuaikan ruang
-                Expanded(
-                  child: Image.asset(
-                    logoSplashScreen, // Menggunakan AssetImage dengan shorthand
-                    // height: 150, // Tinggi gambar
-                    color:
-                        Colors.black.withOpacity(0.2), // Mengatur opacity warna
-                    fit: BoxFit.cover, // Menyesuaikan ukuran gambar
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    width: double.infinity,
-                    height: 2, // Ketebalan garis
-                    color: primaryBlueColor.withOpacity(0.5), // Warna garis
-                    margin: EdgeInsets.symmetric(
-                        horizontal: 20), // Jarak dari tepi kiri dan kanan
-                  ),
-                ),
-              ],
+            Image.asset(
+              logoSplashScreen, // Menggunakan AssetImage dengan shorthand
+              height: 190, // Tinggi gambar
+              color: Colors.black.withOpacity(0.2), // Mengatur opacity warna
+              fit: BoxFit.cover, // Menyesuaikan ukuran gambar
             ),
             SizedBox(
               height: 20,
