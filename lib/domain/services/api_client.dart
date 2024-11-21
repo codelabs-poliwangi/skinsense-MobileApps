@@ -65,7 +65,7 @@ class ApiClient {
     bool requireAuth = true,
   }) async {
     try {
-      final uri = Uri.parse(path).replace(
+      final uri = Uri.parse(baseUrl+path).replace(
         queryParameters: queryParameters,
       );
 
@@ -93,7 +93,7 @@ class ApiClient {
     bool requireAuth = true,
   }) async {
     try {
-      final uri = Uri.parse(path).replace(
+      final uri = Uri.parse(baseUrl+path).replace(
         queryParameters: queryParameters,
       );
 
@@ -122,7 +122,7 @@ class ApiClient {
     bool requireAuth = true,
   }) async {
     try {
-      final uri = Uri.parse(path).replace(
+      final uri = Uri.parse(baseUrl+path).replace(
         queryParameters: queryParameters,
       );
 
@@ -150,7 +150,7 @@ class ApiClient {
     bool requireAuth = true,
   }) async {
     try {
-      final uri = Uri.parse(path).replace(
+      final uri = Uri.parse(baseUrl+path).replace(
         queryParameters: queryParameters,
       );
 

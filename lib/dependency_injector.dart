@@ -1,5 +1,5 @@
 import 'package:get_it/get_it.dart';
-import 'package:skinisense/domain/provider/auth_provider.dart';
+import 'package:skinisense/domain/provider/authentication_provider.dart';
 import 'package:skinisense/domain/provider/product_provider.dart';
 import 'package:skinisense/domain/provider/question_provider.dart';
 import 'package:skinisense/domain/provider/routine_provider.dart';
@@ -23,8 +23,8 @@ void init() {
   di.registerSingleton<ApiClient>(ApiClient(di<TokenService>()));
 
   // auth
-  di.registerSingleton<AuthProvider>(AuthProvider(di<ApiClient>()));
-  di.registerSingleton<AuthRepository>(AuthRepository(di<ApiClient>(), di<AuthProvider>(), di<TokenService>()));
+  di.registerSingleton<AuthenticationProvider>(AuthenticationProvider(di<ApiClient>()));
+  di.registerSingleton<AuthRepository>(AuthRepository(di<ApiClient>(), di<AuthenticationProvider>(), di<TokenService>()));
 
   // Product
   di.registerSingleton<ProductProvider>(ProductProvider());

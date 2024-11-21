@@ -2,9 +2,10 @@ import 'package:skinisense/domain/model/user_model.dart';
 import 'package:skinisense/domain/services/api_client.dart';
 import 'package:skinisense/domain/utils/logger.dart';
 
-class AuthProvider {
+class AuthenticationProvider {
   final ApiClient apiClient;
-  AuthProvider(this.apiClient);
+
+  AuthenticationProvider(this.apiClient);
 
   // Login method to authenticate the user
   Future<User> login({
@@ -24,15 +25,16 @@ class AuthProvider {
         final user = await me(response.data['access_token']);
         return user;
       } else {
-        logger.e('error = ${response.data['message']}');
+        logger.e('Error: ${response.data['message']}');
         throw Exception('Failed to login: ${response.data['message']}');
       }
     } catch (e) {
-      logger.e('error = $e');
+      logger.e('Login error: $e');
       throw Exception('Failed to login: $e');
     }
   }
-  // Login method to authenticate the user
+
+  // Register method to create a new user
   Future<void> register({
     required String name,
     required String email,
@@ -53,47 +55,54 @@ class AuthProvider {
       );
 
       if (response.statusCode == 201) {
-        print("Message: ${response.message}");
+        logger.i('Registration successful: ${response.data['message']}');
       } else {
-        throw Exception('Failed to Register: ${response.message}');
+        logger.e('Error: ${response.data['message']}');
+        throw Exception('Failed to register: ${response.data['message']}');
       }
     } catch (e) {
-      throw Exception('Failed to Register: $e');
+      logger.e('Register error: $e');
+      throw Exception('Failed to register: $e');
     }
   }
+
+  // Fetch current user details
   Future<User> me(String token) async {
     try {
-      final response = await apiClient
-          .get('/user/me', headers: {'Authorization': "Bearer $token"});
+      final response = await apiClient.get(
+        '/auth/me',
+        headers: {'Authorization': 'Bearer $token'},
+      );
 
       if (response.statusCode == 200) {
         final user = User.fromJson(response.data);
         return user;
       } else {
-        throw Exception('Failed to Auth: $response');
+        logger.e('Error fetching user: ${response.data}');
+        throw Exception('Failed to authenticate user');
       }
     } catch (e) {
-      throw Exception('Failed to Auth: $e');
+      logger.e('Error in me(): $e');
+      throw Exception('Failed to fetch user details: $e');
     }
   }
 
+  // Logout method
   Future<void> logout(String token) async {
     try {
       final response = await apiClient.post(
-        '/logout', // Your API endpoint for logging out
-        headers: {
-          'Authorization': "Bearer $token", // Pass the token for invalidation
-        },
+        '/auth/logout',
+        headers: {'Authorization': 'Bearer $token'},
       );
 
       if (response.statusCode != 200) {
-        logger.e('error = ${response.data['message']}');
+        logger.e('Error: ${response.data['message']}');
         throw Exception('Failed to logout: ${response.data['message']}');
       }
-      logger.i('user logout');
+      logger.i('User logged out successfully');
     } catch (e) {
-      logger.e('error = $e');
-      throw Exception('Logout failed: $e');
+      logger.e('Logout error: $e');
+      throw Exception('Failed to logout: $e');
     }
   }
 }

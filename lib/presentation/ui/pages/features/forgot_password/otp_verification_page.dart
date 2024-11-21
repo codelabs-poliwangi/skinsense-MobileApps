@@ -8,8 +8,6 @@ import 'package:skinisense/presentation/ui/pages/features/forgot_password/bloc/f
 import 'package:pinput/pinput.dart';
 import 'dart:async';
 
-
-// import 'signup.dart'; // Import halaman signup.dart
 class OtpVerificationPage extends StatefulWidget {
   const OtpVerificationPage({super.key});
 
@@ -97,13 +95,14 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
 
                   SizedBox(height: SizeConfig.calHeightMultiplier(24)),
 
-                  Text(
-                    state.email,
-                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          color: primaryBlueColor,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
+                  // Text(
+                  //   state.email,
+                  //   style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                  //         color: primaryBlueColor,
+                  //       ),
+                  //   textAlign: TextAlign.center,
+                  // ),
+
                   SizedBox(height: SizeConfig.calHeightMultiplier(16)),
 
                   Pinput(
