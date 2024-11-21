@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
+import 'package:skinisense/domain/utils/logger.dart';
 import 'package:skinisense/presentation/ui/pages/features/auth/repository/auth_repository.dart';
 import 'package:skinisense/domain/model/user_model.dart';
 import 'package:equatable/equatable.dart';
@@ -27,11 +27,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (isLoggedIn) {
         final user = await authRepository.me();
         if (user != null) {
+          logger.d("User Authenticated");
           emit(AuthAuthenticated(user));
           return;
         }
       }
       emit(AuthUnauthenticated());
+      logger.d("User Not Authenticated");
     } catch (e) {
       emit(AuthFailure(e.toString()));
     }
@@ -63,6 +65,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     try {
       await authRepository.logout();
+      logger.d("User Logout");
       emit(AuthUnauthenticated());
     } catch (e) {
       emit(AuthFailure(e.toString()));
