@@ -6,27 +6,45 @@ import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/dependency_injector.dart';
 import 'package:skinisense/presentation/ui/pages/features/auth/bloc/auth_bloc.dart';
 
+import '../../../../../domain/utils/logger.dart';
+
 class SplashPageScope extends StatelessWidget {
   const SplashPageScope({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<AuthBloc>(create: (context) => di<AuthBloc>()),
-      ],
-      child: const SplashPage(),
+    return BlocProvider(
+      create: (context) => di<AuthBloc>(),
+      child: SplashPage(),
     );
   }
 }
 
-class SplashPage extends StatelessWidget {
+class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
+
+  @override
+  State<SplashPage> createState() => _SplashPageState();
+}
+
+class _SplashPageState extends State<SplashPage> {
+  @override
+  void initState() {
+    context.read<AuthBloc>().add(AuthCheckRequested());
+    logger.d('auth bloc ${di<AuthBloc>().state}');
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
+      bloc: di<AuthBloc>(),
       listener: (context, state) {
+        if(state is AuthInitial){
+          context.read<AuthBloc>().add(AuthCheckRequested());
+        }
+        logger.d('state is ${state}');
         if (state is AuthAuthenticated) {
           Future.delayed(const Duration(seconds: 2), () {
             Navigator.of(context).pushReplacementNamed(routeHome);
