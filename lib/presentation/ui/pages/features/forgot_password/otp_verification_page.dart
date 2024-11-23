@@ -1,15 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/presentation/ui/pages/features/forgot_password/bloc/forgot_password_bloc.dart';
 import 'package:pinput/pinput.dart';
-import 'dart:async';
+import 'package:skinisense/presentation/ui/pages/features/forgot_password/reset_password_page.dart';
 
+import 'package:skinisense/presentation/ui/widget/custom_button.dart';
 
-// import 'signup.dart'; // Import halaman signup.dart
 class OtpVerificationPage extends StatefulWidget {
   const OtpVerificationPage({super.key});
 
@@ -18,6 +21,7 @@ class OtpVerificationPage extends StatefulWidget {
 }
 
 class _OtpVerificationPageState extends State<OtpVerificationPage> {
+  final TextEditingController pinController = TextEditingController();
   late Timer _timer;
   int _remainingSeconds = 60;
 
@@ -39,6 +43,14 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
     });
   }
 
+  void resetTimer() {
+  _timer.cancel(); // Hentikan timer lama
+  setState(() {
+    _remainingSeconds = 60; // Reset ke 60 detik atau sesuai kebutuhan
+  });
+  startTimer(); // Mulai timer baru
+}
+
   String get formattedTime {
     final minutes = (_remainingSeconds ~/ 60).toString().padLeft(2, '0');
     final seconds = (_remainingSeconds % 60).toString().padLeft(2, '0');
@@ -52,23 +64,36 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(Object context) {
     return BlocConsumer<ForgotPasswordBloc, ForgotPasswordState>(
       listener: (context, state) {
-        //
+        if(state is ForgotPasswordOtpSuccess) {
+          Navigator.of(context).push(
+              PageTransition(
+                type: PageTransitionType.fade,
+                duration: const Duration(milliseconds: 300),
+                child: BlocProvider.value(
+                  value: BlocProvider.of<ForgotPasswordBloc>(context),
+                  child: const ResetPasswordPage(),
+                )
+              )
+            );
+        }
       },
       builder: (context, state) {
+        String emailText = 'Email not found';
+
+        // Pengambilan state email
+        if(state is ForgotPasswordEmailSuccess) {
+          emailText = state.email;
+        }
+
         return Scaffold(
-          appBar: null,
-          backgroundColor: Colors.white,
           body: SafeArea(
             child: SingleChildScrollView(
-                child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
+              padding: const  EdgeInsets.symmetric(vertical: 40, horizontal: 24),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  // Logo
                   Image.asset(
                     imageOTPVerification, // Ganti dengan path logo kamu
                     height: 200,
@@ -98,23 +123,20 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                   SizedBox(height: SizeConfig.calHeightMultiplier(24)),
 
                   Text(
-                    state.email,
-                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          color: primaryBlueColor,
-                        ),
-                    textAlign: TextAlign.center,
+                      emailText,
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                            color: primaryBlueColor,
+                          ),
+                      textAlign: TextAlign.center,
                   ),
+
                   SizedBox(height: SizeConfig.calHeightMultiplier(16)),
 
                   Pinput(
+                    controller: pinController,
                     length: 6,
-                    // You can pass your own SmsRetriever implementation based on any package
-                    // in this example we are using the SmartAuth
                     separatorBuilder: (index) =>
                         SizedBox(width: SizeConfig.calHeightMultiplier(10)),
-                    validator: (value) {
-                      return value == '2222222' ? null : 'Pin is incorrect';
-                    },
                     hapticFeedbackType: HapticFeedbackType.lightImpact,
                     onCompleted: (pin) {
                       debugPrint('onCompleted: $pin');
@@ -130,8 +152,8 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                           color: Color.fromRGBO(30, 60, 87, 1),
                           fontWeight: FontWeight.w600),
                       decoration: BoxDecoration(
-                        border:
-                            Border.all(color: const Color.fromRGBO(234, 239, 243, 1)),
+                        border: Border.all(
+                            color: Colors.grey.shade300),
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
@@ -155,71 +177,64 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                   SizedBox(height: SizeConfig.calHeightMultiplier(16)),
 
                   // Sign Up Link
-                  TextButton(
-                    onPressed: () {
-                      // Navigate to the Sign Up page
-                      Navigator.of(context).pushNamed(routeRegister);
-                    },
-                    child: Text.rich(
-                      TextSpan(
-                        text: "Do not sent OTP? ",
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Do not sent OTP?",
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                               color: Colors.black,
                             ),
-                        children: [
-                          TextSpan(
-                            text: "Send OTP",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(
-                                  color: Colors.blue[900],
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          ),
-                        ],
                       ),
-                    ),
+                      SizedBox(width: SizeConfig.calWidthMultiplier(8)),
+                      GestureDetector(
+                        child: Text(
+                          "Send OTP",
+                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                color: _remainingSeconds > 0 ? Colors.grey.shade300 : primaryBlueColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                        onTap: () {
+                          if(_remainingSeconds > 0) {
+                            return;
+                          }
+                          else {
+                            context.read<ForgotPasswordBloc>().add(ForgotPasswordEmailSubmitted(emailText));
+                            resetTimer();
+                          }
+                        },
+                      )
+                    ],
                   ),
 
+                  SizedBox(height: SizeConfig.calHeightMultiplier(16)),
+
                   // Register button
-                  ElevatedButton(
+                  CustomButton(
                     onPressed: () {
-                      // Action saat tombol ditekan
+                      // print(context.read<ForgotPasswordBloc>().isClosed);
+                      context.read<ForgotPasswordBloc>().add(ForgotPasswordOtpSubmitted(otp: pinController.text));
                     },
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      backgroundColor: Colors.blue[900],
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Submit',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
+                    text: 'Submit',
                   ),
                   SizedBox(height: SizeConfig.calHeightMultiplier(24)),
 
                   const Text(
                     '© 2024 SCIN. All rights reserved. Unauthorized copying or distribution is prohibited.',
                     style: TextStyle(
-                      fontSize: 8,
+                      fontSize: 11,
                       color: Colors.grey,
                     ),
                     textAlign: TextAlign.center,
                   )
                 ],
               ),
-            )),
+            ) 
           ),
         );
-      },
+      }
     );
   }
+  
 }

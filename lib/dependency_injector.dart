@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:skinisense/domain/provider/auth_provider.dart';
+import 'package:skinisense/domain/provider/forgot_password_provider.dart';
 import 'package:skinisense/domain/provider/product_provider.dart';
 import 'package:skinisense/domain/provider/question_provider.dart';
 import 'package:skinisense/domain/provider/routine_provider.dart';
@@ -26,6 +27,8 @@ void init() {
   di.registerSingleton<AuthProvider>(AuthProvider(di<ApiClient>()));
   di.registerSingleton<AuthRepository>(AuthRepository(di<ApiClient>(), di<AuthProvider>(), di<TokenService>()));
 
+  // Forgot password
+  di.registerSingleton<ForgotPasswordProvider>(ForgotPasswordProvider(di<ApiClient>())); 
   // Product
   di.registerSingleton<ProductProvider>(ProductProvider());
 
