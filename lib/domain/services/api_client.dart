@@ -1,8 +1,12 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:skinisense/config/api/api.dart';
+import 'package:skinisense/dependency_injector.dart';
+import 'package:skinisense/domain/provider/authentication_provider.dart';
+import 'package:skinisense/domain/services/sharedPreferences-services.dart';
 import 'package:skinisense/domain/services/token-service.dart';
 import '../utils/logger.dart';
+import 'package:skinisense/presentation/ui/pages/features/auth/bloc/auth_bloc.dart';
 
 class ApiResponse<T> {
   final T data;
@@ -64,14 +68,50 @@ class ApiClient {
       },
       onError: (DioException e, handler) async {
         if (e.response?.statusCode == 401) {
-          // Token mungkin sudah tidak valid, lakukan refresh atau logout
-          await tokenService
-              .deleteAccessToken(); // Menghapus token yang tidak valid
-          await tokenService.deleteRefreshToken();
+          // !cehcking accestoken is exp
+          await _handleUnauthorizedError();
         }
         return handler.next(e);
       },
     ));
+  }
+  Future<void> _handleUnauthorizedError() async {
+    try {
+      // Coba refresh token
+      await generateRefreshToken();
+    } catch (e) {
+      // Jika refresh token gagal, paksa logout
+      await _forceLogout();
+    }
+  }
+
+  Future<void> generateRefreshToken() async {
+    final refreshToken = await tokenService.getRefreshToken();
+    try {
+      final response = await di<AuthenticationProvider>().refreshToken(refreshToken!);
+      
+      if (response.statusCode == 401) {
+        // Invalid refresh token, trigger logout
+        await _forceLogout();
+      } else {
+        // Proses refresh token normal
+        await tokenService.deleteAccessToken();
+        final accesToken = response.data['data']['access_token'] as String;
+        await tokenService.saveAccessToken(accesToken);
+      }
+    } catch (e) {
+      await _forceLogout();
+    }
+  }
+
+  Future<void> _forceLogout() async {
+    // Hapus semua token dan data pengguna
+    await tokenService.deleteAccessToken();
+    await tokenService.deleteRefreshToken();
+    await di<SharedPreferencesService>().clearAllData();
+
+    // Trigger event logout di AuthBloc
+    di<AuthBloc>().add(AuthLogoutRequested());
   }
 
   Future<ApiResponse<T>> get<T>(
@@ -86,7 +126,8 @@ class ApiClient {
         queryParameters: queryParameters,
         options: Options(headers: headers),
       );
-      logger.d("fetching api get, status code ${response.statusCode} data ${response.data}");
+      logger.d(
+          "fetching api get, status code ${response.statusCode} data ${response.data}");
       return _handleResponse<T>(response);
     } catch (e) {
       throw ApiException(message: 'Network error: $e');
@@ -107,7 +148,8 @@ class ApiClient {
         queryParameters: queryParameters,
         options: Options(headers: headers),
       );
-       logger.d("fetching api post, status code ${response.statusCode} data ${response.data}");
+      logger.d(
+          "fetching api post, status code ${response.statusCode} data ${response.data}");
       return _handleResponse<T>(response);
     } catch (e) {
       throw ApiException(message: 'Network error: $e');
@@ -128,7 +170,8 @@ class ApiClient {
         queryParameters: queryParameters,
         options: Options(headers: headers),
       );
-       logger.d("fetching api put, status code ${response.statusCode} data ${response.data}");
+      logger.d(
+          "fetching api put, status code ${response.statusCode} data ${response.data}");
       return _handleResponse<T>(response);
     } catch (e) {
       throw ApiException(message: 'Network error: $e');
@@ -147,7 +190,8 @@ class ApiClient {
         queryParameters: queryParameters,
         options: Options(headers: headers),
       );
-       logger.d("fetching api delete, status code ${response.statusCode} data ${response.data}");
+      logger.d(
+          "fetching api delete, status code ${response.statusCode} data ${response.data}");
       return _handleResponse<T>(response);
     } catch (e) {
       throw ApiException(message: 'Network error: $e');

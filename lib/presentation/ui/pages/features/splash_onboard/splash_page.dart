@@ -15,9 +15,7 @@ class SplashPageScope extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthBloc>(
-          create: (context) => AuthBloc(
-            authRepository: di<AuthRepository>(),
-          )..add(AuthCheckRequested()),
+          create: (context) => di<AuthBloc>()),
         ),
       ],
       child: const SplashPage(),

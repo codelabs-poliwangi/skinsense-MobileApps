@@ -24,11 +24,11 @@ void init() {
   di.registerSingleton<Dio>(Dio());
   di.registerSingleton<TokenService>(TokenService());
   di.registerSingleton<ApiClient>(ApiClient(di<TokenService>()));
-  di.registerSingleton<SharedPreferencesService>(SharedPreferencesService());
-
-  // auth
   di.registerSingleton<AuthenticationProvider>(AuthenticationProvider(di<ApiClient>()));
+  di.registerSingleton<SharedPreferencesService>(SharedPreferencesService());
+  // auth
   di.registerSingleton<AuthRepository>(AuthRepository(di<ApiClient>(), di<AuthenticationProvider>(), di<TokenService>(),di<SharedPreferencesService>()));
+  di.registerSingleton<AuthBloc>(AuthBloc(di<AuthRepository>()));
 
   // Product
   di.registerSingleton<ProductProvider>(ProductProvider());

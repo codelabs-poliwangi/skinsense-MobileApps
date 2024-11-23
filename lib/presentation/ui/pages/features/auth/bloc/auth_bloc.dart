@@ -7,10 +7,9 @@ import 'package:equatable/equatable.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';
 
-
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository authRepository;
-  
+
   AuthBloc({required this.authRepository}) : super(AuthInitial()) {
     on<AuthCheckRequested>(init);
     // on<AuthLoginRequested>(_onAuthLoginRequested);
@@ -43,19 +42,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   //! function untuk logout
-  Future<void> _onAuthLogoutRequested(
-    AuthLogoutRequested event,
-    Emitter<AuthState> emit,
-  ) async {
-    emit(AuthLoading());
+  void _onAuthLogoutRequested(
+      AuthLogoutRequested event, Emitter<AuthState> emit) async {
     try {
       await authRepository.logout();
-      logger.d("User Logout");
       emit(AuthUnauthenticated());
     } catch (e) {
-      emit(AuthFailure(e.toString()));
+      emit(AuthUnauthenticated());
     }
   }
   // checking apakah ada data me dan refresh token di lokal-> return true/false
 }
-

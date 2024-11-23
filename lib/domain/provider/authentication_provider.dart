@@ -112,10 +112,8 @@ class AuthenticationProvider {
   // Logout method
   Future<void> logout(String token) async {
     try {
-      final response = await apiClient.post(
-        '/auth/logout',
-        headers: {'Authorization': 'Bearer $token'},
-      );
+      final response = await apiClient.post('/auth/logout',
+          headers: {'Authorization': 'Bearer $token'}, requireAuth: true);
 
       if (response.statusCode != 200) {
         logger.e('Error: ${response.data['message']}');
@@ -144,10 +142,25 @@ class AuthenticationProvider {
           .signInWithCredential(credential);
       if (authResult.user == null)
         throw Exception("Google sign-in failed: No user returned.");
-
+      logger.d('Authentication via google');
       return authResult;
     } catch (e) {
       throw Exception("Google sign-in failed: $e");
+    }
+  }
+
+  // refreshToken
+  Future<ApiResponse<dynamic>> refreshToken(String refreshToken) async {
+    try {
+      final response =
+          await apiClient.post('/auth/refresh', requireAuth: false, data: {
+        "refresh_token": refreshToken,
+      });
+
+      return response;
+    } catch (e) {
+      logger.e('Logout error: $e');
+      throw Exception('Failed to logout: $e');
     }
   }
 }
