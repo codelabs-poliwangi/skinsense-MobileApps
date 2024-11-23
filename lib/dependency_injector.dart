@@ -29,7 +29,6 @@ void init() {
 
   // Forgot password
   di.registerSingleton<ForgotPasswordProvider>(ForgotPasswordProvider(di<ApiClient>())); 
-
   // Product
   di.registerSingleton<ProductProvider>(ProductProvider());
 
