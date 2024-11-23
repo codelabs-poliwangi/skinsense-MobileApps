@@ -6,6 +6,7 @@ import 'package:skinisense/domain/provider/question_provider.dart';
 import 'package:skinisense/domain/provider/routine_provider.dart';
 import 'package:skinisense/domain/provider/skin_condition_provider.dart';
 import 'package:skinisense/domain/services/sharedPreferences-services.dart';
+import 'package:skinisense/presentation/ui/pages/features/auth/bloc/auth_bloc.dart';
 import 'package:skinisense/presentation/ui/pages/features/auth/repository/auth_repository.dart';
 import 'package:skinisense/domain/services/api_client.dart';
 import 'package:skinisense/domain/services/token-service.dart';
@@ -24,11 +25,17 @@ void init() {
   di.registerSingleton<Dio>(Dio());
   di.registerSingleton<TokenService>(TokenService());
   di.registerSingleton<ApiClient>(ApiClient(di<TokenService>()));
-  di.registerSingleton<AuthenticationProvider>(AuthenticationProvider(di<ApiClient>()));
+  di.registerSingleton<AuthenticationProvider>(
+      AuthenticationProvider(di<ApiClient>()));
   di.registerSingleton<SharedPreferencesService>(SharedPreferencesService());
   // auth
-  di.registerSingleton<AuthRepository>(AuthRepository(di<ApiClient>(), di<AuthenticationProvider>(), di<TokenService>(),di<SharedPreferencesService>()));
-  di.registerSingleton<AuthBloc>(AuthBloc(di<AuthRepository>()));
+  di.registerSingleton<AuthRepository>(AuthRepository(
+      di<ApiClient>(),
+      di<AuthenticationProvider>(),
+      di<TokenService>(),
+      di<SharedPreferencesService>()));
+  di.registerSingleton<AuthBloc>(
+      AuthBloc(authRepository: di<AuthRepository>()));
 
   // Product
   di.registerSingleton<ProductProvider>(ProductProvider());
@@ -49,7 +56,8 @@ void init() {
 
   //question
   di.registerSingleton<QuestionProvider>(QuestionProvider(di<ApiClient>()));
-  di.registerSingleton<QuestionRepository>(QuestionRepository(di<QuestionProvider>()));
+  di.registerSingleton<QuestionRepository>(
+      QuestionRepository(di<QuestionProvider>()));
   // hive databse local
 
   // connectiviy

@@ -112,6 +112,7 @@ class AuthRepository {
     // clear sharePreferences -> save id nama
     // clear sharePreferences id user
     // clear sharePreferences nama user
+    logger.d('trigger logout in repository');
     final token = await tokenService.getAccessToken();
     await authenticationProvider.logout(token!);
     await sharedPreferencesService.clearAllData();

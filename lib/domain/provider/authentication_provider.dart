@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:skinisense/domain/model/user.dart' as UserModel;
 import 'package:skinisense/domain/services/api_client.dart';
 import 'package:skinisense/domain/utils/logger.dart';

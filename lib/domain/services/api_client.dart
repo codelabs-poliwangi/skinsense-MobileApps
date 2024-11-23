@@ -69,6 +69,7 @@ class ApiClient {
       onError: (DioException e, handler) async {
         if (e.response?.statusCode == 401) {
           // !cehcking accestoken is exp
+          logger.d('acces token exp');
           await _handleUnauthorizedError();
         }
         return handler.next(e);
@@ -92,8 +93,10 @@ class ApiClient {
       
       if (response.statusCode == 401) {
         // Invalid refresh token, trigger logout
+        logger.d('failed create accesToken and refreshToken and accesToken token exp,');
         await _forceLogout();
       } else {
+        logger.d('succesfull create accesToken');
         // Proses refresh token normal
         await tokenService.deleteAccessToken();
         final accesToken = response.data['data']['access_token'] as String;
@@ -109,7 +112,7 @@ class ApiClient {
     await tokenService.deleteAccessToken();
     await tokenService.deleteRefreshToken();
     await di<SharedPreferencesService>().clearAllData();
-
+    logger.d('set authentication to authLogoutRequest');
     // Trigger event logout di AuthBloc
     di<AuthBloc>().add(AuthLogoutRequested());
   }
