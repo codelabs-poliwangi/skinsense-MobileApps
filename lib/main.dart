@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<AuthBloc>(
           create: (context) => AuthBloc(
             authRepository: di<AuthRepository>(),
-          ),
+          )..add(AuthCheckRequested()),
         ),
       ],
       child: const MyAppView(),
@@ -53,20 +53,24 @@ class MyAppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        SizeConfig.init(context);
-        return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            initialRoute: routeInitial,
-            onGenerateRoute: Routes.onRoute,
-            theme: ThemeData(
-              textTheme: GoogleFonts.poppinsTextTheme(
-                Theme.of(context).textTheme,
-              ),
-            ),
-        );
+    SizeConfig.init(context);
+
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthAuthenticated) {
+          Navigator.pushReplacementNamed(context, routeHome);
+        } 
       },
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        initialRoute: routeInitial,
+        onGenerateRoute: Routes.onRoute,
+        theme: ThemeData(
+          textTheme: GoogleFonts.poppinsTextTheme(
+            Theme.of(context).textTheme,
+          ),
+        ),
+      ),
     );
   }
 }

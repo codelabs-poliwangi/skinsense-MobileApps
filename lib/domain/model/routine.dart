@@ -22,7 +22,7 @@ class Routine {
         int? id,
         String? image,
         String? activity,
-        bool? isComlete,
+        bool? isComlete, required bool isComplete,
     }) => 
         Routine(
             id: id ?? this.id,

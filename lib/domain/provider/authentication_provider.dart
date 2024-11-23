@@ -1,5 +1,8 @@
-import 'package:skinisense/domain/model/user_model.dart';
+import 'package:skinisense/domain/model/user.dart' as UserModel;
 import 'package:skinisense/domain/services/api_client.dart';
+import 'package:skinisense/domain/utils/logger.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebaseAuth;
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:skinisense/domain/utils/logger.dart';
 
 class AuthenticationProvider {
@@ -8,7 +11,7 @@ class AuthenticationProvider {
   AuthenticationProvider(this.apiClient);
 
   // Login method to authenticate the user
-  Future<User> login({
+  Future<UserModel.Data> login({
     required String email,
     required String password,
   }) async {
@@ -22,6 +25,7 @@ class AuthenticationProvider {
       );
 
       if (response.statusCode == 200) {
+        // get credentials user -> user_id, name, email, phone, 
         final user = await me(response.data['access_token']);
         return user;
       } else {
@@ -67,7 +71,7 @@ class AuthenticationProvider {
   }
 
   // Fetch current user details
-  Future<User> me(String token) async {
+  Future<UserModel.Data> me(String token) async {
     try {
       final response = await apiClient.get(
         '/auth/me',
@@ -75,7 +79,8 @@ class AuthenticationProvider {
       );
 
       if (response.statusCode == 200) {
-        final user = User.fromJson(response.data);
+        // save credentials 
+        final user = UserModel.Data.fromJson(response.data);
         return user;
       } else {
         logger.e('Error fetching user: ${response.data}');
@@ -103,6 +108,28 @@ class AuthenticationProvider {
     } catch (e) {
       logger.e('Logout error: $e');
       throw Exception('Failed to logout: $e');
+    }
+  }
+  Future<firebaseAuth.UserCredential> signInGoogle() async {
+    try {
+      final googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) throw Exception("Google sign-in was cancelled.");
+
+      final googleAuth = await googleUser.authentication;
+
+      final credential = firebaseAuth.GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final authResult = await firebaseAuth.FirebaseAuth.instance
+          .signInWithCredential(credential);
+      if (authResult.user == null)
+        throw Exception("Google sign-in failed: No user returned.");
+
+      return authResult;
+    } catch (e) {
+      throw Exception("Google sign-in failed: $e");
     }
   }
 }

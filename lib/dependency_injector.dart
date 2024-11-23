@@ -4,6 +4,7 @@ import 'package:skinisense/domain/provider/product_provider.dart';
 import 'package:skinisense/domain/provider/question_provider.dart';
 import 'package:skinisense/domain/provider/routine_provider.dart';
 import 'package:skinisense/domain/provider/skin_condition_provider.dart';
+import 'package:skinisense/domain/services/sharedPreferences-services.dart';
 import 'package:skinisense/presentation/ui/pages/features/auth/repository/auth_repository.dart';
 import 'package:skinisense/domain/services/api_client.dart';
 import 'package:skinisense/domain/services/token-service.dart';
@@ -21,10 +22,11 @@ void init() {
   // Mendaftarkan AuthRepository dan ProductProvider sebagai singleton
   di.registerSingleton<TokenService>(TokenService());
   di.registerSingleton<ApiClient>(ApiClient(di<TokenService>()));
+  di.registerSingleton<SharedPreferencesService>(SharedPreferencesService());
 
   // auth
   di.registerSingleton<AuthenticationProvider>(AuthenticationProvider(di<ApiClient>()));
-  di.registerSingleton<AuthRepository>(AuthRepository(di<ApiClient>(), di<AuthenticationProvider>(), di<TokenService>()));
+  di.registerSingleton<AuthRepository>(AuthRepository(di<ApiClient>(), di<AuthenticationProvider>(), di<TokenService>(),di<SharedPreferencesService>()));
 
   // Product
   di.registerSingleton<ProductProvider>(ProductProvider());

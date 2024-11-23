@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:skinisense/domain/utils/logger.dart';
 import 'package:skinisense/presentation/ui/pages/features/auth/repository/auth_repository.dart';
-import 'package:skinisense/domain/model/user_model.dart';
+import 'package:skinisense/domain/model/user.dart' as User;
 import 'package:equatable/equatable.dart';
 
 part 'auth_event.dart';
@@ -12,12 +12,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository authRepository;
   
   AuthBloc({required this.authRepository}) : super(AuthInitial()) {
-    on<AuthCheckRequested>(_onAuthCheckRequested);
+    on<AuthCheckRequested>(init);
     // on<AuthLoginRequested>(_onAuthLoginRequested);
     on<AuthLogoutRequested>(_onAuthLogoutRequested);
   }
 
-  Future<void> _onAuthCheckRequested(
+  //! checking user apakah sudah login dengan mengcek accesToken dan username nya apakah masih ada atau tidak
+  Future<void> init(
     AuthCheckRequested event,
     Emitter<AuthState> emit,
   ) async {
@@ -39,25 +40,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  // Future<void> _onAuthLoginRequested(
-  //   AuthLoginRequested event,
-  //   Emitter<AuthState> emit,
-  // ) async {
-  //   emit(AuthLoading());
-  //   try {
-  //     final user = await authRepository.login(
-  //       email: event.email,
-  //       password: event.password,
-  //     );
-      
-  //     await authRepository.saveUserCredentials();
-      
-  //     emit(AuthAuthenticated(user));
-  //   } catch (e) {
-  //     emit(AuthFailure(e.toString()));
-  //   }
-  // }
-
+  //! function untuk logout
   Future<void> _onAuthLogoutRequested(
     AuthLogoutRequested event,
     Emitter<AuthState> emit,
@@ -71,5 +54,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthFailure(e.toString()));
     }
   }
+  // checking apakah ada data me dan refresh token di lokal-> return true/false
 }
 
