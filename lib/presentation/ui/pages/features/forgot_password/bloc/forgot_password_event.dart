@@ -10,7 +10,7 @@ sealed class ForgotPasswordEvent extends Equatable {
 class ForgotPasswordEmailSubmitted extends ForgotPasswordEvent {
   final String email;
 
-  const ForgotPasswordEmailSubmitted({required this.email});
+  const ForgotPasswordEmailSubmitted(this.email);
 
   @override
   List<Object> get props => [email];
@@ -23,4 +23,19 @@ class ForgotPasswordOtpSubmitted extends ForgotPasswordEvent {
 
   @override
   List<Object> get props => [otp];
+}
+
+class ForgotPasswordResetSubmitted extends ForgotPasswordEvent {
+  final String token;
+  final String password;
+  final String confirmPassword;
+
+  const ForgotPasswordResetSubmitted({
+    required this.token,
+    required this.password,
+    required this.confirmPassword,
+  });
+
+  @override
+  List<Object> get props => [token, password, confirmPassword];
 }
