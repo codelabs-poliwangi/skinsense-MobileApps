@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:skinisense/domain/provider/authentication_provider.dart';
 import 'package:skinisense/domain/provider/product_provider.dart';
@@ -20,6 +21,7 @@ void init() {
   // final AuthProvider authProvider;
   // final TokenService tokenService;
   // Mendaftarkan AuthRepository dan ProductProvider sebagai singleton
+  di.registerSingleton<Dio>(Dio());
   di.registerSingleton<TokenService>(TokenService());
   di.registerSingleton<ApiClient>(ApiClient(di<TokenService>()));
   di.registerSingleton<SharedPreferencesService>(SharedPreferencesService());

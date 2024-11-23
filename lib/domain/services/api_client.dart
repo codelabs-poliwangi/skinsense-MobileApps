@@ -1,14 +1,12 @@
-// lib/core/network/api_client.dart
 import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:dio/dio.dart';
 import 'package:skinisense/config/api/api.dart';
 import 'package:skinisense/domain/services/token-service.dart';
+import '../utils/logger.dart';
 
 class ApiResponse<T> {
   final T data;
-  final T message;
+  final String message;
   final int statusCode;
   final Map<String, String> headers;
 
@@ -34,52 +32,62 @@ class ApiException implements Exception {
   @override
   String toString() => message;
 }
+
 class ApiClient {
   final Duration timeout;
   final TokenService tokenService;
-  
-  ApiClient(this.tokenService, { 
+  late Dio dio;
+
+  ApiClient(
+    this.tokenService, {
     this.timeout = const Duration(seconds: 30),
-  });
+  }) {
+    dio = Dio(BaseOptions(
+      baseUrl: baseUrl,
+      connectTimeout: timeout,
+      receiveTimeout: timeout,
+      contentType: 'application/json',
+      responseType: ResponseType.json,
+    ));
 
-  Future<Map<String, String>> _getHeaders({bool requireAuth = true}) async {
-    final headers = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    };
-
-    if (requireAuth) {
-      final token = await tokenService.getAccessToken();
-      if (token != null) {
-        headers['Authorization'] = 'Bearer $token';
-      }
-    }
-
-    return headers;
+    // Menambahkan interceptor untuk menangani JWT
+    dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) async {
+        final token = await tokenService.getAccessToken();
+        if (token != null) {
+          options.headers['Authorization'] = 'Bearer $token';
+        }
+        return handler.next(options);
+      },
+      onResponse: (response, handler) {
+        return handler.next(response);
+      },
+      onError: (DioException e, handler) async {
+        if (e.response?.statusCode == 401) {
+          // Token mungkin sudah tidak valid, lakukan refresh atau logout
+          await tokenService
+              .deleteAccessToken(); // Menghapus token yang tidak valid
+          await tokenService.deleteRefreshToken();
+        }
+        return handler.next(e);
+      },
+    ));
   }
 
   Future<ApiResponse<T>> get<T>(
     String path, {
-    Map<String, String>? queryParameters,
+    Map<String, dynamic>? queryParameters,
     Map<String, String>? headers,
     bool requireAuth = true,
   }) async {
     try {
-      final uri = Uri.parse(baseUrl+path).replace(
+      final response = await dio.get(
+        path,
         queryParameters: queryParameters,
+        options: Options(headers: headers),
       );
-
-      final defaultHeaders = await _getHeaders(requireAuth: requireAuth);
-      final response = await http
-          .get(
-            uri,
-            headers: {...defaultHeaders, ...?headers},
-          )
-          .timeout(timeout);
-
+      logger.d("fetching api get, status code ${response.statusCode} data ${response.data}");
       return _handleResponse<T>(response);
-    } on TimeoutException {
-      throw ApiException(message: 'Request timeout');
     } catch (e) {
       throw ApiException(message: 'Network error: $e');
     }
@@ -88,27 +96,19 @@ class ApiClient {
   Future<ApiResponse<T>> post<T>(
     String path, {
     Map<String, dynamic>? data,
-    Map<String, String>? queryParameters,
+    Map<String, dynamic>? queryParameters,
     Map<String, String>? headers,
     bool requireAuth = true,
   }) async {
     try {
-      final uri = Uri.parse(baseUrl+path).replace(
+      final response = await dio.post(
+        path,
+        data: data,
         queryParameters: queryParameters,
+        options: Options(headers: headers),
       );
-
-      final defaultHeaders = await _getHeaders(requireAuth: requireAuth);
-      final response = await http
-          .post(
-            uri,
-            headers: {...defaultHeaders, ...?headers},
-            body: data != null ? json.encode(data) : null,
-          )
-          .timeout(timeout);
-
+       logger.d("fetching api post, status code ${response.statusCode} data ${response.data}");
       return _handleResponse<T>(response);
-    } on TimeoutException {
-      throw ApiException(message: 'Request timeout');
     } catch (e) {
       throw ApiException(message: 'Network error: $e');
     }
@@ -117,27 +117,19 @@ class ApiClient {
   Future<ApiResponse<T>> put<T>(
     String path, {
     Map<String, dynamic>? data,
-    Map<String, String>? queryParameters,
+    Map<String, dynamic>? queryParameters,
     Map<String, String>? headers,
     bool requireAuth = true,
   }) async {
     try {
-      final uri = Uri.parse(baseUrl+path).replace(
+      final response = await dio.put(
+        path,
+        data: data,
         queryParameters: queryParameters,
+        options: Options(headers: headers),
       );
-
-      final defaultHeaders = await _getHeaders(requireAuth: requireAuth);
-      final response = await http
-          .put(
-            uri,
-            headers: {...defaultHeaders, ...?headers},
-            body: data != null ? json.encode(data) : null,
-          )
-          .timeout(timeout);
-
+       logger.d("fetching api put, status code ${response.statusCode} data ${response.data}");
       return _handleResponse<T>(response);
-    } on TimeoutException {
-      throw ApiException(message: 'Request timeout');
     } catch (e) {
       throw ApiException(message: 'Network error: $e');
     }
@@ -145,77 +137,92 @@ class ApiClient {
 
   Future<ApiResponse<T>> delete<T>(
     String path, {
-    Map<String, String>? queryParameters,
+    Map<String, dynamic>? queryParameters,
     Map<String, String>? headers,
     bool requireAuth = true,
   }) async {
     try {
-      final uri = Uri.parse(baseUrl+path).replace(
+      final response = await dio.delete(
+        path,
         queryParameters: queryParameters,
+        options: Options(headers: headers),
       );
-
-      final defaultHeaders = await _getHeaders(requireAuth: requireAuth);
-      final response = await http
-          .delete(
-            uri,
-            headers: {...defaultHeaders, ...?headers},
-          )
-          .timeout(timeout);
-
+       logger.d("fetching api delete, status code ${response.statusCode} data ${response.data}");
       return _handleResponse<T>(response);
-    } on TimeoutException {
-      throw ApiException(message: 'Request timeout');
     } catch (e) {
       throw ApiException(message: 'Network error: $e');
     }
   }
 
-  ApiResponse<T> _handleResponse<T>(http.Response response) {
-    final body = response.body.isNotEmpty ? json.decode(response.body) : null;
+  ApiResponse<T> _handleResponse<T>(Response response) {
+    final body = response.data;
 
-    if (response.statusCode >= 200 && response.statusCode < 300) {
+    // Fungsi pembantu untuk mengonversi headers
+    Map<String, String> _convertHeaders(Headers headers) {
+      return headers.map.map((key, value) =>
+          MapEntry(key, (value is List) ? value.join(',') : value.toString()));
+    }
+
+    // Fungsi pembantu untuk mengekstrak pesan dengan aman
+    String _safeGetMessage(dynamic body) {
+      if (body is Map) {
+        return body['message'] ?? 'No message available';
+      }
+      return 'No message available';
+    }
+
+    // Fungsi pembantu untuk mengekstrak data dengan aman
+    dynamic _safeGetData(dynamic body) {
+      if (body is Map) {
+        return body['data'] ?? body;
+      }
+      return body;
+    }
+
+    // Pemeriksaan null safety untuk status code
+    if ((response.statusCode ?? 0) >= 200 && (response.statusCode ?? 0) < 300) {
       return ApiResponse<T>(
-        headers: response.headers,
-        statusCode: response.statusCode,
-        message: body?['message'] ?? '',
-        data: body?['data'] ?? body,
+        headers: _convertHeaders(response.headers),
+        statusCode: response.statusCode!,
+        message: _safeGetMessage(body),
+        data: _safeGetData(body),
       );
     }
 
     switch (response.statusCode) {
       case 400:
         throw ApiException(
-          message: body?['message'] ?? 'Bad request',
+          message: _safeGetMessage(body),
           statusCode: response.statusCode,
           data: body,
         );
       case 401:
         throw ApiException(
-          message: body?['message'] ?? 'Unauthorized',
+          message: _safeGetMessage(body),
           statusCode: response.statusCode,
           data: body,
         );
       case 403:
         throw ApiException(
-          message: body?['message'] ?? 'Forbidden',
+          message: _safeGetMessage(body),
           statusCode: response.statusCode,
           data: body,
         );
       case 404:
         throw ApiException(
-          message: body?['message'] ?? 'Not found',
+          message: _safeGetMessage(body),
           statusCode: response.statusCode,
           data: body,
         );
       case 500:
         throw ApiException(
-          message: body?['message'] ?? 'Internal server error',
+          message: _safeGetMessage(body),
           statusCode: response.statusCode,
           data: body,
         );
       default:
         throw ApiException(
-          message: body?['message'] ?? 'Unknown error occurred',
+          message: _safeGetMessage(body),
           statusCode: response.statusCode,
           data: body,
         );

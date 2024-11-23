@@ -9,6 +9,7 @@ import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/dependency_injector.dart';
 import 'package:skinisense/domain/provider/product_provider.dart';
+import 'package:skinisense/domain/services/sharedPreferences-services.dart';
 import 'package:skinisense/presentation/ui/pages/features/home/bloc/product_bloc.dart';
 import 'package:skinisense/presentation/ui/pages/features/home/bloc/routine_bloc.dart';
 import 'package:skinisense/presentation/ui/pages/features/home/bloc/skin_condition_bloc.dart';
@@ -368,9 +369,11 @@ class SkinConditionWidget extends StatelessWidget {
 }
 
 class CardWelcomeWidget extends StatelessWidget {
-  const CardWelcomeWidget({
-    super.key,
-  });
+  const CardWelcomeWidget({super.key});
+
+  Future<String?> _fetchUserName(BuildContext context) async {
+    return di<SharedPreferencesService>().getString('name') ?? 'Guest';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -384,86 +387,101 @@ class CardWelcomeWidget extends StatelessWidget {
       ),
       width: double.infinity,
       height: SizeConfig.calHeightMultiplier(260),
-      child: Stack(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(
-                horizontal: SizeConfig.calWidthMultiplier(24),
-                vertical: SizeConfig.calHeightMultiplier(16)),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: FutureBuilder<String?>(
+        future: _fetchUserName(context),
+        builder: (context, snapshot) {
+          String userName = 'Guest';
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            userName = 'Loading...';
+          } else if (snapshot.hasError) {
+            userName = 'Error';
+          } else if (snapshot.hasData) {
+            userName = snapshot.data!;
+          }
+
+          return Stack(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: SizeConfig.calWidthMultiplier(24),
+                  vertical: SizeConfig.calHeightMultiplier(16),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          'Good Morning!',
-                          style: TextStyle(
-                              fontSize: SizeConfig.calHeightMultiplier(16),
-                              color: Colors.white),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Good Morning!',
+                              style: TextStyle(
+                                fontSize: SizeConfig.calHeightMultiplier(16),
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              userName,
+                              style: TextStyle(
+                                fontSize: SizeConfig.calHeightMultiplier(20),
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
                         ),
-                        Text(
-                          'Hendery Huang',
-                          style: TextStyle(
-                              fontSize: SizeConfig.calHeightMultiplier(20),
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
+                        Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context)
+                                    .pushNamed(routeProductSearch);
+                              },
+                              child: Icon(
+                                FluentSystemIcons.ic_fluent_search_regular,
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(
+                              width: SizeConfig.calWidthMultiplier(16),
+                            ),
+                            NotificationWidget(
+                              isNotification: false,
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            // Navigator.pushReplacementNamed(context, routeProductSearch);
-                            Navigator.of(context).pushNamed(routeProductSearch);
-                            // removeRepositoryProduct();
-                          },
-                          child: Icon(
-                            FluentSystemIcons.ic_fluent_search_regular,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(
-                          width: SizeConfig.calWidthMultiplier(16),
-                        ),
-                        NotificationWidget(
-                          isNotification: false,
-                        ),
-                      ],
+                    SizedBox(
+                      height: SizeConfig.calHeightMultiplier(40),
+                    ),
+                    Text(
+                      "🌞Don't forget to use sunscreen\nand re-apply it every 3 hours🌞",
+                      style: TextStyle(
+                        fontSize: SizeConfig.calHeightMultiplier(16),
+                        fontWeight: FontWeight.normal,
+                        color: Colors.white,
+                      ),
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: SizeConfig.calHeightMultiplier(40),
-                ),
-                Text(
-                  "🌞Don't forget to use sunscreen\nand re-apply it every 3 hours🌞",
-                  style: TextStyle(
-                    fontSize: SizeConfig.calHeightMultiplier(16),
-                    fontWeight: FontWeight.normal,
-                    color: Colors.white,
+              ),
+              Positioned(
+                right: -90,
+                bottom: -135,
+                child: ClipRRect(
+                  child: Image(
+                    height: 300,
+                    image: const AssetImage(logoSplashScreen),
+                    color: Colors.white.withOpacity(0.2),
                   ),
                 ),
-              ],
-            ),
-          ),
-          Positioned(
-            right: -90,
-            bottom: -135,
-            child: ClipRRect(
-              child: Image(
-                height: 300,
-                image: const AssetImage(logoSplashScreen),
-                color: Colors.white.withOpacity(0.2),
               ),
-            ),
-          )
-        ],
+            ],
+          );
+        },
       ),
     );
   }

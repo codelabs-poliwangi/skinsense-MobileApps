@@ -22,9 +22,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthCheckRequested event,
     Emitter<AuthState> emit,
   ) async {
-    emit(AuthLoading());
+    // emit(AuthLoading());
     try {
+      logger.d('checking user login');
       final isLoggedIn = await authRepository.isLoggedIn();
+      logger.d('user is login  $isLoggedIn');
       if (isLoggedIn) {
         final user = await authRepository.me();
         if (user != null) {

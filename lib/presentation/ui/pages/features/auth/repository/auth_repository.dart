@@ -17,7 +17,10 @@ class AuthRepository {
   // Check if the user is logged in based on the token
   Future<bool> isLoggedIn() async {
     final token = await tokenService.getAccessToken();
-    final username = await sharedPreferencesService.getString('name');
+    final username = await sharedPreferencesService
+        .getString('name'); //! ini akan di ganti menjadi id user
+    logger.d('checking is login token = $token');
+    logger.d('checking is username token = $username');
     return token != null && token.isNotEmpty && username!.isNotEmpty;
   }
 
@@ -27,11 +30,22 @@ class AuthRepository {
     required String password,
   }) async {
     try {
-      // login via email dan password
-      final user =
+      // Login via email dan password, dapatkan semua data dari provider
+      final response =
           await authenticationProvider.login(email: email, password: password);
-      // After successful login, save the user credentials and token
-      await saveUserCredentials(user);
+
+      // Pisahkan data untuk mempermudah pemrosesan
+      final user = response['user'] as UserModel.Data;
+      final accessToken = response['access_token'] as String;
+      final refreshToken = response['refresh_token'] as String;
+
+      // Simpan user credentials dan token
+      await saveUserCredentials(user, accessToken, refreshToken);
+
+      // Log hasil untuk debugging
+      logger.d('User: $user');
+      logger.d('Access Token: $accessToken');
+      logger.d('Refresh Token: $refreshToken');
 
       return user;
     } catch (e) {
@@ -63,6 +77,7 @@ class AuthRepository {
   Future<UserModel.Data> me() async {
     try {
       final token = await tokenService.getAccessToken();
+      logger.d('checking is login token = $token');
       if (token == null || token.isEmpty) {
         throw Exception('User is not logged in.');
       }
@@ -73,19 +88,19 @@ class AuthRepository {
   }
 
   // Save user credentials (token and user data)
-  Future<void> saveUserCredentials(UserModel.Data user) async {
+  Future<void> saveUserCredentials(UserModel.Data user,String accesToken,String refreshToken) async {
     try {
       // save credentials user -> user_id, name, email, phone
       await sharedPreferencesService.saveString('user_id', user.id);
       await sharedPreferencesService.saveString('name', user.name);
-      await sharedPreferencesService.saveString('name', user.email);
-      await sharedPreferencesService.saveString('name', user.phone);
+      await sharedPreferencesService.saveString('email', user.email);
+      await sharedPreferencesService.saveString('phone', user.phone);
 
       // save refresh and acces token
       await tokenService.saveAccessToken(
-          'access_token'); // Replace with actual token from response
+          accesToken); // Replace with actual token from response
       await tokenService.saveRefreshToken(
-          'refresh_token'); // Replace with actual refresh token
+          refreshToken); // Replace with actual refresh token
     } catch (e) {
       throw Exception('Failed to save user credentials: $e');
     }
@@ -114,10 +129,10 @@ class AuthRepository {
         sharedPreferencesService.saveString(
             'name', response.user!.displayName!);
         sharedPreferencesService.saveString(
-            'email', response.user!.email??" ");
+            'email', response.user!.email ?? " ");
         sharedPreferencesService.saveString(
-            'phone', response.user!.phoneNumber??" ");
-        
+            'phone', response.user!.phoneNumber ?? " ");
+
         logger.d('additiional User Info ${response.additionalUserInfo}');
         logger.d('credential user info ${response.credential}');
         logger.d('credential user info ${response.user}');

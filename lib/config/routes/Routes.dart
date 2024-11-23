@@ -34,7 +34,7 @@ class Routes {
         return PageTransition(
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
-          child: SplashPage(),
+          child: SplashPageScope(),
           // child: const LoginScope(),
           // child: ProductKatalogPage(),
           // child: HomeWrapper(),

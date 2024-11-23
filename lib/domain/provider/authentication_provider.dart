@@ -1,9 +1,10 @@
+import 'dart:convert';
+
 import 'package:skinisense/domain/model/user.dart' as UserModel;
 import 'package:skinisense/domain/services/api_client.dart';
 import 'package:skinisense/domain/utils/logger.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebaseAuth;
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:skinisense/domain/utils/logger.dart';
 
 class AuthenticationProvider {
   final ApiClient apiClient;
@@ -11,7 +12,7 @@ class AuthenticationProvider {
   AuthenticationProvider(this.apiClient);
 
   // Login method to authenticate the user
-  Future<UserModel.Data> login({
+  Future<Map<String, dynamic>> login({
     required String email,
     required String password,
   }) async {
@@ -22,12 +23,26 @@ class AuthenticationProvider {
           'email': email,
           'password': password,
         },
+        requireAuth: false,
       );
 
       if (response.statusCode == 200) {
-        // get credentials user -> user_id, name, email, phone, 
-        final user = await me(response.data['access_token']);
-        return user;
+        final accessToken = response.data['access_token'];
+        final refreshToken = response.data['refresh_token'];
+
+        // Log token untuk debugging
+        logger.d('Access token: $accessToken');
+        logger.d('Refresh token: $refreshToken');
+
+        // Fetch user data menggunakan access token
+        final user = await me(accessToken);
+
+        // Return user data bersama token
+        return {
+          'user': user,
+          'access_token': accessToken,
+          'refresh_token': refreshToken,
+        };
       } else {
         logger.e('Error: ${response.data['message']}');
         throw Exception('Failed to login: ${response.data['message']}');
@@ -73,13 +88,15 @@ class AuthenticationProvider {
   // Fetch current user details
   Future<UserModel.Data> me(String token) async {
     try {
+      logger.d('fething to me');
       final response = await apiClient.get(
-        '/auth/me',
+        '/user/me',
         headers: {'Authorization': 'Bearer $token'},
+        requireAuth: true,
       );
-
+      logger.d(response.data);
       if (response.statusCode == 200) {
-        // save credentials 
+        // save credentials
         final user = UserModel.Data.fromJson(response.data);
         return user;
       } else {
@@ -110,6 +127,7 @@ class AuthenticationProvider {
       throw Exception('Failed to logout: $e');
     }
   }
+
   Future<firebaseAuth.UserCredential> signInGoogle() async {
     try {
       final googleUser = await GoogleSignIn().signIn();

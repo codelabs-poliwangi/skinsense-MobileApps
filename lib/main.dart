@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/services.dart'; // Import untuk SystemChrome
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/routes/Routes.dart';
 import 'package:skinisense/config/common/screen.dart';
@@ -9,8 +8,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:skinisense/dependency_injector.dart';
 import 'firebase_options.dart';
-import 'package:skinisense/presentation/ui/pages/features/auth/repository/auth_repository.dart';
-import 'package:skinisense/presentation/ui/pages/features/auth/bloc/auth_bloc.dart';
 
 // ...
 void main() async {
@@ -35,40 +32,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<AuthBloc>(
-          create: (context) => AuthBloc(
-            authRepository: di<AuthRepository>(),
-          )..add(AuthCheckRequested()),
-        ),
-      ],
-      child: const MyAppView(),
-    );
-  }
-}
-
-class MyAppView extends StatelessWidget {
-  const MyAppView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
     SizeConfig.init(context);
 
-    return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) {
-        if (state is AuthAuthenticated) {
-          Navigator.pushReplacementNamed(context, routeHome);
-        } 
-      },
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        initialRoute: routeInitial,
-        onGenerateRoute: Routes.onRoute,
-        theme: ThemeData(
-          textTheme: GoogleFonts.poppinsTextTheme(
-            Theme.of(context).textTheme,
-          ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      initialRoute: routeInitial,
+      onGenerateRoute: Routes.onRoute,
+      theme: ThemeData(
+        textTheme: GoogleFonts.poppinsTextTheme(
+          Theme.of(context).textTheme,
         ),
       ),
     );
