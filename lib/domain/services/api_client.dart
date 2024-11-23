@@ -114,7 +114,7 @@ class ApiClient {
     await di<SharedPreferencesService>().clearAllData();
     logger.d('set authentication to authLogoutRequest');
     // Trigger event logout di AuthBloc
-    di<AuthBloc>().add(AuthLogoutRequested());
+    // di<AuthBloc>().add(AuthLogoutRequested());
   }
 
   Future<ApiResponse<T>> get<T>(

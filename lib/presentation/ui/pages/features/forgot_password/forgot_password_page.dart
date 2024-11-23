@@ -7,7 +7,6 @@ import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/domain/provider/forgot_password_provider.dart';
 import 'package:skinisense/presentation/ui/pages/features/forgot_password/otp_verification_page.dart';
-import 'package:skinisense/presentation/ui/pages/features/forgot_password/test.dart';
 import 'package:skinisense/presentation/ui/widget/custom_button.dart';
 import 'package:skinisense/presentation/ui/widget/custom_input.dart';
 import 'package:skinisense/dependency_injector.dart';
