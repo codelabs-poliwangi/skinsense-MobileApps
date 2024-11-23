@@ -10,7 +10,6 @@ import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/presentation/ui/pages/features/forgot_password/bloc/forgot_password_bloc.dart';
 import 'package:pinput/pinput.dart';
 import 'package:skinisense/presentation/ui/pages/features/forgot_password/reset_password_page.dart';
-
 import 'package:skinisense/presentation/ui/widget/custom_button.dart';
 
 class OtpVerificationPage extends StatefulWidget {

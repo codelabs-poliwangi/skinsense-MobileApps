@@ -55,8 +55,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<LoginBloc, LoginState>(
-      listener: (context, state) {
+    return BlocConsumer<LoginBloc, LoginState>(listener: (context, state) {
       if (state is LoginLoading) {
         showDialog(
           context: context,
@@ -79,9 +78,20 @@ class _LoginPageState extends State<LoginPage> {
       } else if (state is LoginFailure) {
         Navigator.of(context).pop(); // Close loading dialog
         showCustomModalBottomSheet(context, imageTryAgain, primaryBlueColor);
+      } else if (state is LoginWithGoogleSuccess) {
+        // Navigate to home page on successful login
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          routeHome,
+          (route) => false,
+        );
+      } else if (state is LoginWithGoogleError) {
+        // Handle error state (e.g., show a snackbar)
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(state.error!)),
+        );
       }
-    }, 
-    builder: (context, state) {
+    }, builder: (context, state) {
       return Scaffold(
         appBar: null,
         backgroundColor: Colors.white,
@@ -247,7 +257,11 @@ class _LoginPageState extends State<LoginPage> {
                             children: [
                               CustomLogoButton(
                                 icon: imgLogoGoogle,
-                                onPressed: () {},
+                                onPressed: () {
+                                  context
+                                      .read<LoginBloc>()
+                                      .add(LoginWithGoogleEvent());
+                                },
                               ),
                               const SizedBox(width: 16),
                               CustomLogoButton(

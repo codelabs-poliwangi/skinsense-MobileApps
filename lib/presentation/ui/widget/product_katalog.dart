@@ -118,7 +118,7 @@ class ProductItemWidget extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                                 text: TextSpan(
-                                  text: storeProduct,
+                                  text: _getStoreText(storeProduct),
                                   style: TextStyle(
                                     fontSize: 11,
                                     fontWeight: FontWeight.bold,
@@ -146,5 +146,14 @@ class ProductItemWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+  String _getStoreText(String storeName) {
+    List<String> words = storeName.split(' ');
+
+    if (words.length > 1) {
+      return '${words[0]}...'; // Return the first word followed by "..."
+    }
+
+    return storeName; // Return the original name if it's one word
   }
 }

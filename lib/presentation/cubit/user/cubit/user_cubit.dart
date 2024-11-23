@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:skinisense/domain/model/user_model.dart';
+import 'package:skinisense/domain/model/user.dart';
 
 part 'user_state.dart';
 
