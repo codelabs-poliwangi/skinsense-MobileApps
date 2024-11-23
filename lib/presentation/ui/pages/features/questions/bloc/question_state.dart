@@ -1,0 +1,25 @@
+part of 'question_bloc.dart';
+
+sealed class QuestionState extends Equatable {
+  const QuestionState();
+
+  @override
+  List<Object> get props => [];
+}
+
+final class QuestionInitial extends QuestionState {}
+
+final class QuestionLoading extends QuestionState {}
+
+final class QuestionOnLoaded extends QuestionState {
+  final List<Question> listQuestions; // Change to List<Question>
+  final int currentIndex; // Track the current question index
+
+  QuestionOnLoaded(this.listQuestions, this.currentIndex);
+}
+
+final class QuestionError extends QuestionState {
+  final String message;
+
+  QuestionError(this.message);
+}

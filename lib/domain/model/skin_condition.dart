@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-part 'skinCondition.g.dart';
+part 'skin_condition.g.dart';
 @JsonSerializable()
 class SkinCondition {
     @JsonKey(name: "id")

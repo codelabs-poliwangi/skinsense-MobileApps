@@ -12,6 +12,7 @@ const String imgLogoGoogle = 'assets/images/img_logo_google.png';
 const String imgLogoFacebook = 'assets/images/img_logo_facebook.png';
 const String imgLogoTwitter = 'assets/images/img_logo_twitter.png';
 const String scanFaceSmile = "assets/images/img_scan_face_smile.png";
+const String imgStop = "assets/images/img_stop.png";
 
 // icon
 const String icCalender = 'assets/images/ic_calender.png';

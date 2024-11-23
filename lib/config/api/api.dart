@@ -9,5 +9,9 @@ const String baseUrl = "http://qsck4sg0wgksw8oso4gsw4os.103.74.5.192.sslip.io/ap
 const String routineUrl =  "https://retoolapi.dev/76WqTn/routine";
 
 // skin Condition mock api 
-const String skinCOnditionUrl = "https://retoolapi.dev/kCYWJj/skin_condition";
+const String skinConditionUrl = "https://retoolapi.dev/kCYWJj/skin_condition";
+
+
+// question mock api
+const String questionUrl = "https://mocki.io/v1/8d631335-2bd8-468a-9ae9-197bdf30f4f4";
 

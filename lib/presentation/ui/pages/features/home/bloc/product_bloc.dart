@@ -11,8 +11,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   
   ProductBloc(this._productRepository) : super(ProductInitial()) {
     on<FetchProducts>((event, emit) async {
-      emit(ProductLoading());
+      emit(ProductInitial());
       try {
+      emit(ProductLoading());
         final products = await _productRepository.fetchProducts();
         emit(ProductLoaded(products));
       } catch (e) {
