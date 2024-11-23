@@ -5,9 +5,12 @@ import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
+import 'package:skinisense/domain/provider/forgot_password_provider.dart';
 import 'package:skinisense/presentation/ui/pages/features/forgot_password/otp_verification_page.dart';
+import 'package:skinisense/presentation/ui/pages/features/forgot_password/test.dart';
 import 'package:skinisense/presentation/ui/widget/custom_button.dart';
 import 'package:skinisense/presentation/ui/widget/custom_input.dart';
+import 'package:skinisense/dependency_injector.dart';
 
 import 'bloc/forgot_password_bloc.dart';
 
@@ -17,35 +20,41 @@ class ForgotPasswordScope extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ForgotPasswordBloc>(
-        create: (context) => ForgotPasswordBloc(),
-        child: const ForgotPasswordPage());
+        create: (context) => ForgotPasswordBloc(forgotPasswordProvider: di<ForgotPasswordProvider>()),
+        child: ForgotPasswordPage());
   }
 }
 
 class ForgotPasswordPage extends StatelessWidget {
-  const ForgotPasswordPage({super.key});
+  ForgotPasswordPage({super.key});
+
+  
+  final formKey = GlobalKey<FormState>();
+  final TextEditingController emailController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormState>();
-    final TextEditingController emailController = TextEditingController();
-
     return BlocConsumer<ForgotPasswordBloc, ForgotPasswordState>(
         listener: (context, state) {
-      if (state is ForgotPasswordEmailSuccess) {
-        Navigator.of(context).pushReplacement(PageTransition(
-            type: PageTransitionType.fade,
-            duration: const Duration(milliseconds: 300),
-            child: BlocProvider.value(
-              value: BlocProvider.of<ForgotPasswordBloc>(
-                  context), // Mengirim RegisterBloc yang ada
-              child: const OtpVerificationPage(),
-            )));
-      } else if (state is ForgotPasswordFailure) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(state.error)));
-      }
-    }, builder: (context, state) {
+          if (state is ForgotPasswordEmailSuccess) {
+            Navigator.of(context).push(
+              PageTransition(
+                type: PageTransitionType.fade,
+                duration: const Duration(milliseconds: 300),
+                child: BlocProvider.value(
+                  value: BlocProvider.of<ForgotPasswordBloc>(context),
+                  child: const OtpVerificationPage(),
+                )
+              )
+            );
+          }
+          if (state is ForgotPasswordFailure) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.error)));
+          }
+        },
+        builder: (context, state) {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Forgot Password'),
@@ -110,9 +119,7 @@ class ForgotPasswordPage extends StatelessWidget {
                   CustomButton(
                       onPressed: () {
                         if (formKey.currentState!.validate()) {
-                          context.read<ForgotPasswordBloc>().add(
-                              ForgotPasswordEmailSubmitted(email: emailController.text));
-                          Navigator.of(context).pushNamed(routeOtpVerification);
+                          context.read<ForgotPasswordBloc>().add(ForgotPasswordEmailSubmitted(emailController.text));
                         }
                       },
                       text: 'Send OTP',

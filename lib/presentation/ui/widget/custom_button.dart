@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:skinisense/config/theme/color.dart';
 
 class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -10,7 +11,7 @@ class CustomButton extends StatelessWidget {
     Key? key,
     required this.onPressed,
     required this.text,
-    required this.backgroundColor,
+    this.backgroundColor = primaryBlueColor,
     this.fontSize = 18.0,
   }) : super(key: key);
 
