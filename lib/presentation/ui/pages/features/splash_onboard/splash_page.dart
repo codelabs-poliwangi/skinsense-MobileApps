@@ -5,7 +5,6 @@ import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/dependency_injector.dart';
 import 'package:skinisense/presentation/ui/pages/features/auth/bloc/auth_bloc.dart';
-import 'package:skinisense/presentation/ui/pages/features/auth/repository/auth_repository.dart';
 
 class SplashPageScope extends StatelessWidget {
   const SplashPageScope({super.key});
