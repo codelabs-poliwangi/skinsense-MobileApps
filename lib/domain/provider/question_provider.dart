@@ -3,7 +3,6 @@ import 'package:logger/logger.dart';
 import 'package:skinisense/config/api/api.dart';
 import 'package:skinisense/domain/model/question.dart';
 import 'package:skinisense/domain/services/api_client.dart';
-import 'package:skinisense/domain/utils/logger.dart';
 
 class QuestionProvider {
   final ApiClient apiClient;

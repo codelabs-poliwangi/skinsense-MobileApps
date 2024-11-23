@@ -22,9 +22,12 @@ class RoutineBloc extends Bloc<RoutineEvent, RoutineState> {
     });
 
     on<ToggleRoutineComplete>((event, emit) {
-      // Toggle the completion status
-      routines[event.index].isComplete = !routines[event.index].isComplete;
-      emit(RoutineOnLoaded(List.from(routines))); // Emit updated list
+      // Create a new list for immutability
+      final updatedRoutines = List<Routine>.from(routines);
+      updatedRoutines[event.index] = updatedRoutines[event.index].copyWith(
+        isComplete: !updatedRoutines[event.index].isComplete,
+      );
+      emit(RoutineOnLoaded(updatedRoutines)); // Emit updated list
     });
   }
 }
