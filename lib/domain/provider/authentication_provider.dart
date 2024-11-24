@@ -1,7 +1,7 @@
 import 'package:skinisense/domain/model/user.dart' as UserModel;
 import 'package:skinisense/domain/services/api_client.dart';
 import 'package:skinisense/domain/utils/logger.dart';
-import 'package:firebase_auth/firebase_auth.dart' as firebaseAuth;
+import 'package:firebase_auth/firebase_auth.dart' as firebaseAuth; 
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthenticationProvider {
