@@ -4,8 +4,10 @@ import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/dependency_injector.dart';
+import 'package:skinisense/domain/utils/logger.dart';
 import 'package:skinisense/presentation/ui/pages/features/auth/bloc/auth_bloc.dart';
 import 'package:skinisense/presentation/ui/pages/features/auth/repository/auth_repository.dart';
+
 
 class SplashPageScope extends StatelessWidget {
   const SplashPageScope({super.key});
@@ -13,21 +15,32 @@ class SplashPageScope extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AuthBloc(authRepository: di<AuthRepository>()),
-      child: const SplashPage(),
+      create: (context) => di<AuthBloc>(),
+      child: SplashPage(),
     );
   }
 }
 
-class SplashPage extends StatelessWidget {
+class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
 
   @override
+  State<SplashPage> createState() => _SplashPageState();
+}
+
+class _SplashPageState extends State<SplashPage> {
+  @override
+  void initState() {
+    context.read<AuthBloc>().add(AuthCheckRequested());
+    logger.d('auth bloc ${di<AuthBloc>().state}');
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Init State on Stateless Widget
-    Future.microtask(() => context.read<AuthBloc>().add(AuthCheckRequested()));
-    
     return BlocListener<AuthBloc, AuthState>(
+      bloc: di<AuthBloc>(),
       listener: (context, state) {
         if (state is AuthAuthenticated) {
           Future.delayed(const Duration(seconds: 2), () {
