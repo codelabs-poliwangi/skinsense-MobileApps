@@ -6,7 +6,7 @@ import 'package:skinisense/config/theme/color.dart';
 class ProductDetailPage extends StatelessWidget {
   final String productId;
   const ProductDetailPage({super.key, required this.productId});
-
+  // ! nama, rating, toko, gambar, link toko  
   @override
   Widget build(BuildContext context) {
     return Scaffold(

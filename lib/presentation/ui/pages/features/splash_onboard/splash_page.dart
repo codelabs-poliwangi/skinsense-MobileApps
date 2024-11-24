@@ -6,7 +6,6 @@ import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/dependency_injector.dart';
 import 'package:skinisense/domain/utils/logger.dart';
 import 'package:skinisense/presentation/ui/pages/features/auth/bloc/auth_bloc.dart';
-import 'package:skinisense/presentation/ui/pages/features/auth/repository/auth_repository.dart';
 
 
 class SplashPageScope extends StatelessWidget {
@@ -40,7 +39,6 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
-      bloc: di<AuthBloc>(),
       listener: (context, state) {
         if (state is AuthAuthenticated) {
           Future.delayed(const Duration(seconds: 2), () {
