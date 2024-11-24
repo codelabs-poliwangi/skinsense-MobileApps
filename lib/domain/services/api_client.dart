@@ -52,6 +52,7 @@ class ApiClient {
       receiveTimeout: timeout,
       contentType: 'application/json',
       responseType: ResponseType.json,
+      validateStatus: (status) => true
     ));
 
     // Menambahkan interceptor untuk menangani JWT
@@ -69,7 +70,7 @@ class ApiClient {
       onError: (DioException e, handler) async {
         if (e.response?.statusCode == 401) {
           // !cehcking accestoken is exp
-          logger.d('acces token exp');
+          logger.d('access token exp');
           await _handleUnauthorizedError();
         }
         return handler.next(e);
@@ -154,8 +155,12 @@ class ApiClient {
       logger.d(
           "fetching api post, status code ${response.statusCode} data ${response.data}");
       return _handleResponse<T>(response);
-    } catch (e) {
-      throw ApiException(message: 'Network error: $e');
+    } on DioException catch (e) {
+      throw ApiException(
+        statusCode: e.response!.statusCode,
+        message: e.response!.statusMessage.toString(),
+        data: e.response!.data
+      );
     }
   }
 

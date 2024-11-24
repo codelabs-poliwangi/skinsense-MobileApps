@@ -22,8 +22,8 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
 
         emit(ForgotPasswordEmailSuccess(email: event.email));  
       } catch (e) {
-        logger.e('Provider Error: $e');
-        emit(ForgotPasswordFailure(e.toString()));
+        logger.e('Failed : $e');
+        emit(ForgotPasswordFailure('Failed: ${e ?? 'Something Wrong'}'));
       }
     });
 

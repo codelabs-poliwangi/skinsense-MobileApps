@@ -5,16 +5,15 @@ import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/dependency_injector.dart';
 import 'package:skinisense/presentation/ui/pages/features/auth/bloc/auth_bloc.dart';
+import 'package:skinisense/presentation/ui/pages/features/auth/repository/auth_repository.dart';
 
 class SplashPageScope extends StatelessWidget {
   const SplashPageScope({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<AuthBloc>(create: (context) => di<AuthBloc>()),
-      ],
+    return BlocProvider(
+      create: (context) => AuthBloc(authRepository: di<AuthRepository>()),
       child: const SplashPage(),
     );
   }
@@ -25,6 +24,9 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Init State on Stateless Widget
+    Future.microtask(() => context.read<AuthBloc>().add(AuthCheckRequested()));
+    
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthAuthenticated) {

@@ -1,4 +1,3 @@
-import 'package:skinisense/domain/model/user_model.dart';
 import 'package:skinisense/domain/services/api_client.dart';
 import 'package:skinisense/domain/utils/logger.dart';
 
@@ -19,9 +18,9 @@ class ForgotPasswordProvider {
       if (response.statusCode == 200) {
         logger.i('Success send OTP to email');
       }
-    } catch (e) {
-      logger.e('error = $e');
-      throw Exception('Failed to login: $e');
+    } on ApiException catch (e) {
+      logger.e('Error Submit Email: $e');
+      throw ApiException(message: e.data['message']);
     }
   }
 
@@ -38,9 +37,13 @@ class ForgotPasswordProvider {
       if (response.statusCode == 200) {
         logger.i('Success Verify Token');
       }
-    } catch (e) {
-      logger.e('error = $e');
-      throw Exception('Failed to login: $e');
+
+      if (response.statusCode == 400) {
+        logger.i('Failed Verify Token');
+      }
+    } on ApiException catch (e) {
+      logger.e('Error verify OTP:  $e');
+      throw ApiException(message: e.data['message']);
     }
   }
 
@@ -63,9 +66,9 @@ class ForgotPasswordProvider {
       if (response.statusCode == 200) {
         logger.i('Success reset password');
       }
-    } catch (e) {
-      logger.e('error = $e');
-      throw Exception('Failed to login: $e');
+    } on ApiException catch (e) {
+      logger.e('Error New Password: $e');
+      throw ApiException(message: e.data['message']);
     }
   }
 

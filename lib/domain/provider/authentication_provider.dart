@@ -138,8 +138,9 @@ class AuthenticationProvider {
 
       final authResult = await firebaseAuth.FirebaseAuth.instance
           .signInWithCredential(credential);
-      if (authResult.user == null)
+      if (authResult.user == null) {
         throw Exception("Google sign-in failed: No user returned.");
+      }
       logger.d('Authentication via google');
       return authResult;
     } catch (e) {
