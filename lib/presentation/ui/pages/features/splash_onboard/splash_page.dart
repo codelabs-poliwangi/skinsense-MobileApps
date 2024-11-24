@@ -4,9 +4,10 @@ import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/dependency_injector.dart';
+import 'package:skinisense/domain/utils/logger.dart';
 import 'package:skinisense/presentation/ui/pages/features/auth/bloc/auth_bloc.dart';
+import 'package:skinisense/presentation/ui/pages/features/auth/repository/auth_repository.dart';
 
-import '../../../../../domain/utils/logger.dart';
 
 class SplashPageScope extends StatelessWidget {
   const SplashPageScope({super.key});
@@ -41,10 +42,6 @@ class _SplashPageState extends State<SplashPage> {
     return BlocListener<AuthBloc, AuthState>(
       bloc: di<AuthBloc>(),
       listener: (context, state) {
-        if(state is AuthInitial){
-          context.read<AuthBloc>().add(AuthCheckRequested());
-        }
-        logger.d('state is ${state}');
         if (state is AuthAuthenticated) {
           Future.delayed(const Duration(seconds: 2), () {
             Navigator.of(context).pushReplacementNamed(routeHome);

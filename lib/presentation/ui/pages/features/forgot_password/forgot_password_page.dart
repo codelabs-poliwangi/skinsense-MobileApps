@@ -36,7 +36,19 @@ class ForgotPasswordPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<ForgotPasswordBloc, ForgotPasswordState>(
         listener: (context, state) {
+          if (state is ForgotPasswordLoading) {
+            showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => const Center(
+              child: CircularProgressIndicator(
+                color: primaryBlueColor,
+              ),
+            ),
+          );
+          }
           if (state is ForgotPasswordEmailSuccess) {
+            Navigator.of(context).pop(); // Close loading dialog
             Navigator.of(context).push(
               PageTransition(
                 type: PageTransitionType.fade,
@@ -49,6 +61,7 @@ class ForgotPasswordPage extends StatelessWidget {
             );
           }
           if (state is ForgotPasswordFailure) {
+            Navigator.of(context).pop(); // Close loading dialog
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text(state.error)));
           }
