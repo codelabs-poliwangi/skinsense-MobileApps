@@ -1,26 +1,36 @@
 {
   "project_info": {
-    "project_number": "648977170225",
-    "project_id": "skini-b108e",
-    "storage_bucket": "skini-b108e.firebasestorage.app"
+    "project_number": "176414907816",
+    "project_id": "skini-cuy",
+    "storage_bucket": "skini-cuy.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:648977170225:android:49b0d4cd37066a046b7a10",
+        "mobilesdk_app_id": "1:176414907816:android:8b9d228cef27c8859a519d",
         "android_client_info": {
-          "package_name": "com.example.skinisense"
+          "package_name": "com.example.skin"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "176414907816-qcvcrv3igs0ofkcq6jg6u1feemchc210.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyBQxgt2Yby63M1pW04-OE06p8q17QVO5pA"
+          "current_key": "AIzaSyCsJPSWOqH-Ablx20I7lssWTT39RsDeK1c"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "176414907816-qcvcrv3igs0ofkcq6jg6u1feemchc210.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

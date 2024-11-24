@@ -47,19 +47,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBQxgt2Yby63M1pW04-OE06p8q17QVO5pA',
-    appId: '1:648977170225:android:49b0d4cd37066a046b7a10',
-    messagingSenderId: '648977170225',
-    projectId: 'skini-b108e',
-    storageBucket: 'skini-b108e.firebasestorage.app',
+    apiKey: 'AIzaSyCsJPSWOqH-Ablx20I7lssWTT39RsDeK1c',
+    appId: '1:176414907816:android:8b9d228cef27c8859a519d',
+    messagingSenderId: '176414907816',
+    projectId: 'skini-cuy',
+    storageBucket: 'skini-cuy.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDZya4zULQ6svZosYwE5lwaI77yYiUE8zk',
-    appId: '1:648977170225:ios:112da8dd3b324ce96b7a10',
-    messagingSenderId: '648977170225',
-    projectId: 'skini-b108e',
-    storageBucket: 'skini-b108e.firebasestorage.app',
+    apiKey: 'AIzaSyDuZUwsTHaC74sEIKUoSfGpVQlrOc0X2yM',
+    appId: '1:176414907816:ios:0b741b85030c024a9a519d',
+    messagingSenderId: '176414907816',
+    projectId: 'skini-cuy',
+    storageBucket: 'skini-cuy.firebasestorage.app',
+    iosClientId: '176414907816-l3f8vop73no2uq37v9oluukpnhkfd57k.apps.googleusercontent.com',
     iosBundleId: 'com.example.skinisense',
   );
 
