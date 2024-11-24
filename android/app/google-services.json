@@ -1,34 +1,49 @@
 {
   "project_info": {
-    "project_number": "176414907816",
-    "project_id": "skini-cuy",
-    "storage_bucket": "skini-cuy.firebasestorage.app"
+    "project_number": "18665434995",
+    "project_id": "skinisense-2a791",
+    "storage_bucket": "skinisense-2a791.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:176414907816:android:8b9d228cef27c8859a519d",
+        "mobilesdk_app_id": "1:18665434995:android:b574b380e9df56c66d9f06",
         "android_client_info": {
-          "package_name": "com.example.skin"
+          "package_name": "com.example.skinisense"
         }
       },
       "oauth_client": [
         {
-          "client_id": "176414907816-qcvcrv3igs0ofkcq6jg6u1feemchc210.apps.googleusercontent.com",
+          "client_id": "18665434995-mn7g5agt7sj27p845ttomu66nqsfkvbu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.skinisense",
+            "certificate_hash": "9a2dcffb7de0617637bec73194d92bb2f5f5236a"
+          }
+        },
+        {
+          "client_id": "18665434995-ip91l0go0f8ep2ev3p7up6hgbjes4c46.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCsJPSWOqH-Ablx20I7lssWTT39RsDeK1c"
+          "current_key": "AIzaSyCGLSticuUPY-NRQwVIJDSZ2VjN4BJ2Y88"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "176414907816-qcvcrv3igs0ofkcq6jg6u1feemchc210.apps.googleusercontent.com",
+              "client_id": "18665434995-ip91l0go0f8ep2ev3p7up6hgbjes4c46.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "18665434995-57umnkgapk053lkrrnlu8buplv9ss3ll.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.skinisense"
+              }
             }
           ]
         }

@@ -47,31 +47,32 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCsJPSWOqH-Ablx20I7lssWTT39RsDeK1c',
-    appId: '1:176414907816:android:8b9d228cef27c8859a519d',
-    messagingSenderId: '176414907816',
-    projectId: 'skini-cuy',
-    storageBucket: 'skini-cuy.firebasestorage.app',
+    apiKey: 'AIzaSyCGLSticuUPY-NRQwVIJDSZ2VjN4BJ2Y88',
+    appId: '1:18665434995:android:b574b380e9df56c66d9f06',
+    messagingSenderId: '18665434995',
+    projectId: 'skinisense-2a791',
+    storageBucket: 'skinisense-2a791.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDuZUwsTHaC74sEIKUoSfGpVQlrOc0X2yM',
-    appId: '1:176414907816:ios:0b741b85030c024a9a519d',
-    messagingSenderId: '176414907816',
-    projectId: 'skini-cuy',
-    storageBucket: 'skini-cuy.firebasestorage.app',
-    iosClientId: '176414907816-l3f8vop73no2uq37v9oluukpnhkfd57k.apps.googleusercontent.com',
+    apiKey: 'AIzaSyAfL3cg0mkP2mj4aHKW8r08r1hRRwkZ73g',
+    appId: '1:18665434995:ios:2d8ff15063f0ae266d9f06',
+    messagingSenderId: '18665434995',
+    projectId: 'skinisense-2a791',
+    storageBucket: 'skinisense-2a791.firebasestorage.app',
+    androidClientId: '18665434995-mn7g5agt7sj27p845ttomu66nqsfkvbu.apps.googleusercontent.com',
+    iosClientId: '18665434995-57umnkgapk053lkrrnlu8buplv9ss3ll.apps.googleusercontent.com',
     iosBundleId: 'com.example.skinisense',
   );
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyB9LJ8AI2EROiTfPy_O94z-xG5g2KnCizU',
-    appId: '1:648977170225:web:3d4dad7f5be58c2c6b7a10',
-    messagingSenderId: '648977170225',
-    projectId: 'skini-b108e',
-    authDomain: 'skini-b108e.firebaseapp.com',
-    storageBucket: 'skini-b108e.firebasestorage.app',
-    measurementId: 'G-D33MLMNM23',
+    apiKey: 'AIzaSyBKNoxsQj4NJtWqWY57t7m20G7d0_MT1no',
+    appId: '1:18665434995:web:4a055a67d0cdc7e46d9f06',
+    messagingSenderId: '18665434995',
+    projectId: 'skinisense-2a791',
+    authDomain: 'skinisense-2a791.firebaseapp.com',
+    storageBucket: 'skinisense-2a791.firebasestorage.app',
+    measurementId: 'G-GD4S75T9T1',
   );
 
 }
