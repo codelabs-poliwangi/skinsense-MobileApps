@@ -32,17 +32,20 @@ class ProfilePage extends StatelessWidget {
             }
           },
           child: Center(
-            child:Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Profile'),
-                ButtonPrimary(mainButtonMessage: 'Logout', mainButton: () {
-                  // TODO: implement logout
-                  logger.d('auth bloc execute logout');
-                  context.read<AuthBloc>().add(AuthLogoutRequested());
-                }),
-              ],
+            child:Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Profile'),
+                  ButtonPrimary(mainButtonMessage: 'Logout', mainButton: () {
+                    // TODO: implement logout
+                    logger.d('auth bloc execute logout');
+                    context.read<AuthBloc>().add(AuthLogoutRequested());
+                  }),
+                ],
+              ),
             ),
           ),
         )
