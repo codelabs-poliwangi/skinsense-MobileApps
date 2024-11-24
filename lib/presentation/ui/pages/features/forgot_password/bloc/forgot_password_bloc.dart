@@ -28,16 +28,19 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
     });
 
     on<ForgotPasswordOtpSubmitted>((event, emit) async {
-      emit(ForgotPasswordLoading()); 
+      try {
+        if(event.otp.isEmpty) {
+          emit(const ForgotPasswordFailure('Pin harus terisi'));
+          return;
+        }
 
-      if(event.otp.isEmpty) {
-        emit(const ForgotPasswordFailure('Pin harus terisi'));
-        return;
+        await forgotPasswordProvider.verifyToken(token: event.otp);
+        emit(ForgotPasswordOtpSuccess(otp: event.otp));
+
+      } catch (e) {
+        logger.e('Failed : $e');
+        emit(ForgotPasswordFailure('Failed: ${e ?? 'Something Wrong'}'));
       }
-
-      await forgotPasswordProvider.verifyToken(token: event.otp);
-
-      emit(ForgotPasswordOtpSuccess(otp: event.otp));
     });
 
     on<ForgotPasswordResetSubmitted>((event, emit) async {

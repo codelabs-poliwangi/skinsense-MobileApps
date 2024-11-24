@@ -448,7 +448,7 @@ class CardWelcomeWidget extends StatelessWidget {
                               width: SizeConfig.calWidthMultiplier(16),
                             ),
                             NotificationWidget(
-                              isNotification: false,
+                              isNotification: true,
                             ),
                           ],
                         ),

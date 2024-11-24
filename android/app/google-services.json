@@ -14,11 +14,12 @@
       },
       "oauth_client": [
         {
-          "client_id": "18665434995-mn7g5agt7sj27p845ttomu66nqsfkvbu.apps.googleusercontent.com",
+
+          "client_id": "18665434995-1jmubbbm7in44d477rrn8gr9j15ilf80.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.skinisense",
-            "certificate_hash": "9a2dcffb7de0617637bec73194d92bb2f5f5236a"
+            "certificate_hash": "7a4546cf7504abf0bcfa5efaf99c7d8d7affa341"
           }
         },
         {
