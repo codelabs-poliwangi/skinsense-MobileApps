@@ -52,4 +52,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
   // checking apakah ada data me dan refresh token di lokal-> return true/false
+
+  @override
+  void onChange(Change<AuthState> change) {
+    super.onChange(change);
+    logger.i('State changed from ${change.currentState} to ${change.nextState}');
+  }
+
 }

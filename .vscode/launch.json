@@ -7,7 +7,8 @@
         {
             "name": "skinsense-MobileApps",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "args": ["verbose"]
         },
         {
             "name": "skinsense-MobileApps (profile mode)",
