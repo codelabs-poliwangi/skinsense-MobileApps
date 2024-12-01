@@ -27,13 +27,14 @@ class ProfilePageScope extends StatelessWidget {
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
-  // Future<String> _fetchUserName() async {
-  //   return di<SharedPreferencesService>().getString('name') ?? 'Guest';
-  // }
+  Future<String?> _fetchUserName() async {
+    return di<SharedPreferencesService>().getString('name') ?? 'Guest';
+  }
 
-  // Future<String> _fetchUserEmail() async {
-  //   return di<SharedPreferencesService>().getString('email') ?? 'guest@email.com';
-  // }
+  Future<String?> _fetchUserEmail() async {
+    return di<SharedPreferencesService>().getString('email') ??
+        'guest@email.com';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,20 +98,59 @@ class ProfilePage extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 12),
-                          Text(
-                            'Guest User',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                            ),
+                          // FutureBuilder<String?>(
+                          // future: _fetchUserName(context),
+                          // builder: (context, snapshot) {
+                          //   String userName = 'Guest';
+                          //   if (snapshot.connectionState == ConnectionState.waiting) {
+                          //     userName = 'Loading...';
+                          //   } else if (snapshot.hasError) {
+                          //     userName = 'Error';
+                          //   } else if (snapshot.hasData) {
+                          //     userName = snapshot.data!;
+                          //   }
+                          FutureBuilder(
+                            future: _fetchUserName(),
+                            builder: (context, snapshot) {
+                              String userName = 'Guest';
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                userName = 'Loading...';
+                              } else if (snapshot.hasError) {
+                                userName = 'Guest';
+                              } else if (snapshot.hasData) {
+                                userName = snapshot.data!;
+                              }
+                              return Text(
+                                userName,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                              );
+                            },
                           ),
-                          Text(
-                            'guest@guest.com',
-                            style: TextStyle(
-                              fontWeight: FontWeight.normal,
-                              fontSize: 12,
-                              color: Colors.grey,
-                            ),
+                          FutureBuilder(
+                            future: _fetchUserEmail(),
+                            builder: (context, snapshot) {
+                              String userEmail = 'Guest';
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                userEmail = 'Loading...';
+                              } else if (snapshot.hasError) {
+                                userEmail = 'guest@guest.com';
+                              } else if (snapshot.hasData) {
+                                userEmail = snapshot.data!;
+                              }
+                              return Text(
+                                userEmail,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
