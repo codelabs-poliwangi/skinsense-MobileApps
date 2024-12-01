@@ -15,7 +15,8 @@ const String routeForgotPassword = '/forgot-password';
 const String routeOtpVerification = '/otp-verification';
 
 
-
+const String routeScanChoice = '/scan/choice';
+const String routeScanGallery = '/scan/gallery';
 const String routeScanFront = '/scan/front';
 const String routeScanFrontPreview = '/scan/front/preview';
 const String routeScanRight = '/scan/right';

@@ -21,4 +21,5 @@ const String icHome = 'assets/images/ic_home.png';
 const String icProfile = 'assets/images/ic_profile.png';
 const String icScanFace = 'assets/images/ic_scan_face.png';
 const String icEdgeFrame = 'assets/images/ic-edge-frame.png';
+const String icGallery = "assets/images/ic_gallery.png";
 
