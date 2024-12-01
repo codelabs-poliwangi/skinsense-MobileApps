@@ -18,7 +18,7 @@ import 'package:skinisense/presentation/ui/pages/features/questions/repository/q
 
 final di = GetIt.instance;
 
-void init() {
+void init() async {
   //   final ApiClient apiClient;
   // final AuthProvider authProvider;
   // final TokenService tokenService;
