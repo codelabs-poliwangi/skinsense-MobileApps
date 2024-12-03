@@ -16,6 +16,8 @@ import 'package:skinisense/presentation/ui/pages/features/questions/questions_in
 import 'package:skinisense/presentation/ui/pages/features/scan/preview_page_front.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/preview_page_left.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/preview_page_right.dart';
+import 'package:skinisense/presentation/ui/pages/features/scan/scan_choice.dart';
+import 'package:skinisense/presentation/ui/pages/features/scan/scan_gallery.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/scan_page_front.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/scan_page_left.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/scan_page_right.dart';
@@ -34,14 +36,7 @@ class Routes {
         return PageTransition(
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
-          child: SplashPage(),
-          // child: const LoginScope(),
-          // child: ProductKatalogPage(),
-          // child: HomeWrapper(),
-          // child: QuestionScope(),
-          // child: ScanPage(),
-          // child: QuestionsIntro(),
-          // child: QuestionsPageScope(),
+          child: const SplashPage(),
           settings: settings,
         );
       case routeHome:
@@ -57,6 +52,20 @@ class Routes {
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
           child: const OnboardPage(),
+          settings: settings,
+        );
+      case routeScanChoice:
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 300),
+          child: const ScanChoiceScope(),
+          settings: settings,
+        );
+      case routeScanGallery:
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 300),
+          child: const ScanGalleryScope(),
           settings: settings,
         );
       case routeScanFront:
