@@ -189,15 +189,6 @@ class Routes {
           settings: settings,
         );
       case routeProductDetail:
-        if (args != null && args.containsKey('id')) {
-          final productId = args['id'];
-          return PageTransition(
-            type: PageTransitionType.fade,
-            duration: const Duration(milliseconds: 300),
-            child: ProductDetailPage(productId: productId), // Kirim productId
-            settings: settings,
-          );
-        }
         return PageTransition(
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),

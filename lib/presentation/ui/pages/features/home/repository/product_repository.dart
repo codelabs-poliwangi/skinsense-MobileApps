@@ -1,5 +1,6 @@
 import 'package:skinisense/domain/model/product.dart';
 import 'package:skinisense/domain/provider/product_provider.dart';
+import 'package:skinisense/domain/utils/logger.dart';
 
 class ProductRepository {
   final ProductProvider _productProvider;
@@ -8,17 +9,12 @@ class ProductRepository {
 
   Future<List<Product>> fetchProducts() async {
     try {
-      return await _productProvider.getProducts();
+      final response = await _productProvider.getProductWithLimit(40);
+      logger.d('succes fecthing products from repository $response');
+      return response;
+      // return await _productProvider.getProductWithLimit(40);
     } catch (e) {
       throw Exception('Failed to fetch products: $e');
-    }
-  }
-
-  Future<Product> fetchProductById(String id) async {
-    try {
-      return await _productProvider.getProductById(id);
-    } catch (e) {
-      throw Exception('Failed to fetch product by ID: $e');
     }
   }
 }

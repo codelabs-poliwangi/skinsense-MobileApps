@@ -3,51 +3,65 @@ part 'product.g.dart';
 @JsonSerializable()
 class Product {
     @JsonKey(name: "id")
-    final int id;
-    @JsonKey(name: "link")
-    final String link;
+    final String id;
     @JsonKey(name: "name")
     final String name;
+    @JsonKey(name: "link_product")
+    final String linkProduct;
     @JsonKey(name: "price")
-    final int price;
-    @JsonKey(name: "store")
-    final String store;
+    final String price;
     @JsonKey(name: "rating")
-    final int rating;
-    @JsonKey(name: "product_image")
-    final String productImage;
+    final double? rating;
+    @JsonKey(name: "shop")
+    final String shop;
+    @JsonKey(name: "image")
+    final String image;
+    @JsonKey(name: "sold")
+    final String sold;
+    @JsonKey(name: "createdAt")
+    final DateTime createdAt;
+    @JsonKey(name: "updatedAt")
+    final DateTime updatedAt;
 
     Product({
         required this.id,
-        required this.link,
         required this.name,
+        required this.linkProduct,
         required this.price,
-        required this.store,
         required this.rating,
-        required this.productImage,
+        required this.shop,
+        required this.image,
+        required this.sold,
+        required this.createdAt,
+        required this.updatedAt,
     });
 
     Product copyWith({
-        int? id,
-        String? link,
+        String? id,
         String? name,
-        int? price,
-        String? store,
-        int? rating,
-        String? productImage,
+        String? linkProduct,
+        String? price,
+        double? rating,
+        String? shop,
+        String? image,
+        String? sold,
+        DateTime? createdAt,
+        DateTime? updatedAt,
     }) => 
         Product(
             id: id ?? this.id,
-            link: link ?? this.link,
             name: name ?? this.name,
+            linkProduct: linkProduct ?? this.linkProduct,
             price: price ?? this.price,
-            store: store ?? this.store,
             rating: rating ?? this.rating,
-            productImage: productImage ?? this.productImage,
+            shop: shop ?? this.shop,
+            image: image ?? this.image,
+            sold: sold ?? this.sold,
+            createdAt: createdAt ?? this.createdAt,
+            updatedAt: updatedAt ?? this.updatedAt,
         );
 
     factory Product.fromJson(Map<String, dynamic> json) => _$ProductFromJson(json);
 
     Map<String, dynamic> toJson() => _$ProductToJson(this);
-  
 }

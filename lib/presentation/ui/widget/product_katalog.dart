@@ -6,11 +6,10 @@ import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/presentation/ui/widget/rating_widget.dart';
 
 class ProductItemWidget extends StatelessWidget {
-  final int indexProduct;
+  final String indexProduct;
   final String imageProduct;
   final String nameProduct;
   final String storeProduct;
-  final String storeImage;
   final double ratingProduct;
   final bool isKatalog;
   const ProductItemWidget(
@@ -19,7 +18,6 @@ class ProductItemWidget extends StatelessWidget {
       required this.imageProduct,
       required this.nameProduct,
       required this.storeProduct,
-      required this.storeImage,
       required this.ratingProduct,
       required this.isKatalog});
 
@@ -50,7 +48,7 @@ class ProductItemWidget extends StatelessWidget {
             child: Container(
               height: isKatalog
                   ? MediaQuery.sizeOf(context).width * 0.425
-                  : SizeConfig.calHeightMultiplier(160) , // Tinggi gambar
+                  : SizeConfig.calHeightMultiplier(160), // Tinggi gambar
               width: double.infinity, // Gambar mengisi lebar penuh kontainer
               decoration: BoxDecoration(
                 // color: Colors.blue, // Tambahkan gambar di sini
@@ -126,18 +124,14 @@ class ProductItemWidget extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                            )
+                            ),
+                            RatingWidget(
+                              rating: ratingProduct, // Rating produk
+                            ),
                           ],
                         ),
                       )
                     ],
-                  ),
-                  Positioned(
-                    right: 0,
-                    bottom: 10,
-                    child: RatingWidget(
-                      rating: ratingProduct, // Rating produk
-                    ),
                   ),
                 ],
               ),
@@ -147,6 +141,7 @@ class ProductItemWidget extends StatelessWidget {
       ),
     );
   }
+
   String _getStoreText(String storeName) {
     List<String> words = storeName.split(' ');
 

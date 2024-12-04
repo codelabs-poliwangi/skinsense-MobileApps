@@ -41,7 +41,7 @@ void init() async {
   // Forgot password
   di.registerSingleton<ForgotPasswordProvider>(ForgotPasswordProvider(di<ApiClient>())); 
   // Product
-  di.registerSingleton<ProductProvider>(ProductProvider());
+  di.registerSingleton<ProductProvider>(ProductProvider(di<ApiClient>()));
 
   di.registerSingleton<ProductRepository>(
       ProductRepository(di<ProductProvider>()));

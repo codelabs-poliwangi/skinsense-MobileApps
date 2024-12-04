@@ -14,11 +14,11 @@ class ProductRepository {
     }
   }
 
-  Future<Product> fetchProductById(String id) async {
-    try {
-      return await _productProvider.getProductById(id);
-    } catch (e) {
-      throw Exception('Failed to fetch product by ID: $e');
-    }
-  }
+  // Future<Product> fetchProductById(String id) async {
+  //   try {
+  //     return await _productProvider.getProductById(id);
+  //   } catch (e) {
+  //     throw Exception('Failed to fetch product by ID: $e');
+  //   }
+  // }
 }

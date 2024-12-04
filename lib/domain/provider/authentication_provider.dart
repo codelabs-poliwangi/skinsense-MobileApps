@@ -1,3 +1,4 @@
+import 'package:skinisense/config/api/api.dart';
 import 'package:skinisense/domain/model/user.dart' as UserModel;
 import 'package:skinisense/domain/services/api_client.dart';
 import 'package:skinisense/domain/utils/logger.dart';
@@ -16,7 +17,7 @@ class AuthenticationProvider {
   }) async {
     try {
       final response = await apiClient.post(
-        '/auth/login',
+        loginUrl,
         data: {
           'email': email,
           'password': password,
@@ -61,7 +62,7 @@ class AuthenticationProvider {
   }) async {
     try {
       final response = await apiClient.post(
-        '/auth/register',
+        registerUrl,
         data: {
           'name': name,
           'email': email,
@@ -88,7 +89,7 @@ class AuthenticationProvider {
     try {
       logger.d('fething to me');
       final response = await apiClient.get(
-        '/user/me',
+        meUrl,
         headers: {'Authorization': 'Bearer $token'},
         requireAuth: true,
       );
@@ -110,7 +111,7 @@ class AuthenticationProvider {
   // Logout method
   Future<void> logout(String token) async {
     try {
-      final response = await apiClient.post('/auth/logout',
+      final response = await apiClient.post(logoutUrl,
           headers: {'Authorization': 'Bearer $token'}, requireAuth: true);
 
       if (response.statusCode != 200) {
@@ -152,7 +153,7 @@ class AuthenticationProvider {
   Future<ApiResponse<dynamic>> refreshToken(String refreshToken) async {
     try {
       final response =
-          await apiClient.post('/auth/refresh', requireAuth: false, data: {
+          await apiClient.post(refreshTokenUrl, requireAuth: false, data: {
         "refresh_token": refreshToken,
       });
 

@@ -145,13 +145,11 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
                           child: ProductItemWidget(
                             isKatalog: true,
                             indexProduct: state.products[index].id,
-                            imageProduct: state.products[index].productImage,
+                            imageProduct: state.products[index].image,
                             nameProduct: state.products[index].name,
-                            storeProduct: state.products[index].store,
-                            storeImage: state
-                                .products[index].store, // Ensure correct data
+                            storeProduct: state.products[index].shop,
                             ratingProduct:
-                                state.products[index].rating.toDouble(),
+                                state.products[index].rating?? 0,
                           ),
                         );
                       },
