@@ -137,40 +137,31 @@ class HomePage extends StatelessWidget {
                           itemBuilder: (BuildContext context, int index) {
                             return GestureDetector(
                               onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  routeProductDetail,
-                                  arguments: {
-                                    'id': state.products[index].id.toString()
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) {
+                                    return ProductDetailPage(
+                                      id: state.products[index].id,
+                                      name: state.products[index].name,
+                                      price: state.products[index].price,
+                                      rating: state.products[index].rating ?? 0,
+                                      shop: state.products[index].shop,
+                                      image: state.products[index].image,
+                                      sold: state.products[index].sold,
+                                      linkProduct:
+                                          state.products[index].linkProduct,
+                                      category: state.products[index].category,
+                                    );
                                   },
-                                );
+                                ));
                               },
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) {
-                                      return ProductDetailPage(
-                                        id: state.products[index].id,
-                                        name: state.products[index].name,
-                                        price: state.products[index].price,
-                                        rating:
-                                            state.products[index].rating ?? 0,
-                                        shop: state.products[index].shop,
-                                        image: state.products[index].image,
-                                        sold: state.products[index].sold, linkProduct: state.products[index].linkProduct,
-                                      );
-                                    },
-                                  ));
-                                },
-                                child: ProductItemWidget(
-                                  isKatalog: true,
-                                  indexProduct: state.products[index].id,
-                                  imageProduct: state.products[index].image,
-                                  nameProduct: state.products[index].name,
-                                  storeProduct: state.products[index].shop,
-                                  ratingProduct:
-                                      state.products[index].rating ?? 0,
-                                ),
+                              child: ProductItemWidget(
+                                isKatalog: false,
+                                indexProduct: state.products[index].id,
+                                imageProduct: state.products[index].image,
+                                nameProduct: state.products[index].name,
+                                storeProduct: state.products[index].shop,
+                                ratingProduct:
+                                    state.products[index].rating ?? 0,
                               ),
                             );
                           },
@@ -456,7 +447,7 @@ class CardWelcomeWidget extends StatelessWidget {
                             GestureDetector(
                               onTap: () {
                                 Navigator.of(context)
-                                    .pushNamed(routeProductSearch);
+                                    .pushNamed(routeProductKatalog);
                               },
                               child: Icon(
                                 FluentSystemIcons.ic_fluent_search_regular,

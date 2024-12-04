@@ -9,10 +9,18 @@ class ProductProvider {
   ProductProvider(this.apiClient);
   Future<List<Product>> getProducts() async {
     try {
-      final response = await apiClient.get(productUrl, requireAuth: true);
+      final response = await apiClient.get("$productUrl", requireAuth: true);
+
       if (response.statusCode == 200) {
-        List<dynamic> data = jsonDecode(response.data);
-        return data.map((json) => Product.fromJson(json)).toList();
+        logger.i('Data product: ${response.data}');
+
+        // Pastikan response.data adalah List<dynamic>
+        final products = (response.data as List<dynamic>)
+            .map((json) => Product.fromJson(json as Map<String, dynamic>))
+            .toList();
+
+        logger.d('Successfully fetched ${products.length} products with limit');
+        return products;
       } else {
         throw Exception('Failed to load products');
       }
@@ -50,8 +58,18 @@ class ProductProvider {
       final response =
           await apiClient.get("$productUrl?search=$name", requireAuth: true);
       if (response.statusCode == 200) {
-        List<dynamic> data = jsonDecode(response.data);
-        return data.map((json) => Product.fromJson(json)).toList();
+        // Pastikan response.data adalah List<dynamic>
+        final products = (response.data as List<dynamic>)
+            .map((json) => Product.fromJson(json as Map<String, dynamic>))
+            .toList();
+        if (products.isEmpty) {
+          logger.d('there is no product with name $name');
+          // Jika produk tidak ditemukan, bisa lempar exception atau kembalikan daftar kosong
+          throw Exception('No products found');
+        }
+        logger.d(
+            'Successfully fetched ${products.length} products with name $name');
+        return products;
       } else {
         throw Exception('Failed to load products');
       }
@@ -65,8 +83,12 @@ class ProductProvider {
       final response =
           await apiClient.get("$productUrl?page=$page", requireAuth: true);
       if (response.statusCode == 200) {
-        List<dynamic> data = jsonDecode(response.data);
-        return data.map((json) => Product.fromJson(json)).toList();
+        final products = (response.data as List<dynamic>)
+            .map((json) => Product.fromJson(json as Map<String, dynamic>))
+            .toList();
+        logger.d(
+            'Successfully fetched ${products.length} products with page $page');
+        return products;
       } else {
         throw Exception('Failed to load products');
       }

@@ -18,6 +18,8 @@ class Product {
     final String image;
     @JsonKey(name: "sold")
     final String sold;
+    @JsonKey(name: "category")
+    final String category;
     @JsonKey(name: "createdAt")
     final DateTime createdAt;
     @JsonKey(name: "updatedAt")
@@ -32,6 +34,7 @@ class Product {
         required this.shop,
         required this.image,
         required this.sold,
+        required this.category,
         required this.createdAt,
         required this.updatedAt,
     });
@@ -45,6 +48,7 @@ class Product {
         String? shop,
         String? image,
         String? sold,
+        String? category,
         DateTime? createdAt,
         DateTime? updatedAt,
     }) => 
@@ -57,6 +61,7 @@ class Product {
             shop: shop ?? this.shop,
             image: image ?? this.image,
             sold: sold ?? this.sold,
+            category: category ?? this.category,
             createdAt: createdAt ?? this.createdAt,
             updatedAt: updatedAt ?? this.updatedAt,
         );

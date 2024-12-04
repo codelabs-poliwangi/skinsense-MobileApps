@@ -11,7 +11,6 @@ import 'package:skinisense/presentation/ui/pages/features/forgot_password/otp_ve
 import 'package:skinisense/presentation/ui/pages/features/home/home_wrapper.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/product_detail_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/product_katalog_page.dart';
-import 'package:skinisense/presentation/ui/pages/features/product/product_search_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/questions/questions_intro.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/preview_page_front.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/preview_page_left.dart';
@@ -172,13 +171,6 @@ class Routes {
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
           child: const RegisterScope(),
-          settings: settings,
-        );
-      case routeProductSearch:
-        return PageTransition(
-          type: PageTransitionType.fade,
-          duration: const Duration(milliseconds: 300),
-          child: const ProductSearchPage(),
           settings: settings,
         );
       case routeProductKatalog:

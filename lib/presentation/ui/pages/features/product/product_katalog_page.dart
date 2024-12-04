@@ -7,6 +7,7 @@ import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/dependency_injector.dart';
 import 'package:skinisense/domain/utils/logger.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/bloc/product_bloc.dart';
+import 'package:skinisense/presentation/ui/pages/features/product/product_detail_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/repository/product_repository.dart';
 import 'package:skinisense/presentation/ui/widget/product_katalog.dart';
 import 'package:skinisense/presentation/ui/widget/search_textfield.dart';
@@ -49,16 +50,27 @@ class ProductKatalogPage extends StatefulWidget {
 }
 
 class _ProductKatalogPageState extends State<ProductKatalogPage> {
+  // Tambahkan TextEditingController
+  final TextEditingController _controller = TextEditingController();
+  // Variable untuk mengontrol visibility suffix icon
+  bool _showClearButton = false;
   @override
   void initState() {
     super.initState();
     // Triggering the event to fetch products once the page is loaded
     context.read<ProductBloc>().add(FetchProducts());
+    _controller.addListener(() {
+      setState(() {
+        _showClearButton = _controller.text.isNotEmpty;
+      });
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
+    // Jangan lupa dispose controller
+    _controller.dispose();
   }
 
   @override
@@ -96,7 +108,79 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Expanded(child: SearchTextfield()),
+                      Expanded(
+                        child: Container(
+                          height: 48,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.white,
+                              strokeAlign: 1,
+                              width: 1,
+                            ),
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Row(
+                            children: [
+                              // TextField for searching
+                              Expanded(
+                                child: TextField(
+                                  controller: _controller,
+                                  decoration: InputDecoration(
+                                    hintText: 'Cari Product..',
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    prefixIcon: Icon(
+                                      FluentSystemIcons.ic_fluent_search_filled,
+                                      color: Colors.grey,
+                                    ),
+                                    suffixIcon: _showClearButton
+                                        ? IconButton(
+                                            icon: Icon(Icons.close,
+                                                color: Colors.grey),
+                                            onPressed: () {
+                                              _controller.clear();
+                                            },
+                                          )
+                                        : null,
+                                    border: InputBorder.none,
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 12, horizontal: 20),
+                                  ),
+                                ),
+                              ),
+                              // Container with Search Icon on the right
+                              Container(
+                                width:
+                                    40, // Set width for the container with the search icon
+                                height:
+                                    50, // Adjust height to match the parent container
+                                decoration: BoxDecoration(
+                                  color: primaryBlueColor.withOpacity(0.7),
+                                  borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(16),
+                                    bottomRight: Radius.circular(16),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: IconButton(
+                                    onPressed: () {
+                                      logger.d(
+                                          'searching product in view ${_controller.text}');
+                                      context
+                                          .read<ProductBloc>()
+                                          .add(SearchProduct(_controller.text));
+                                    },
+                                    icon: Icon(
+                                      FluentSystemIcons.ic_fluent_search_filled,
+                                      color: Colors.white, // Icon color
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -134,13 +218,22 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
                       itemBuilder: (BuildContext context, int index) {
                         return GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              routeProductDetail,
-                              arguments: {
-                                'id': state.products[index].id.toString()
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) {
+                                return ProductDetailPage(
+                                  id: state.products[index].id,
+                                  name: state.products[index].name,
+                                  price: state.products[index].price,
+                                  rating: state.products[index].rating ?? 0,
+                                  shop: state.products[index].shop,
+                                  image: state.products[index].image,
+                                  sold: state.products[index].sold,
+                                  linkProduct:
+                                      state.products[index].linkProduct,
+                                  category: state.products[index].category,
+                                );
                               },
-                            );
+                            ));
                           },
                           child: ProductItemWidget(
                             isKatalog: true,
@@ -148,8 +241,7 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
                             imageProduct: state.products[index].image,
                             nameProduct: state.products[index].name,
                             storeProduct: state.products[index].shop,
-                            ratingProduct:
-                                state.products[index].rating?? 0,
+                            ratingProduct: state.products[index].rating ?? 0,
                           ),
                         );
                       },
@@ -160,6 +252,44 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
                   return SliverToBoxAdapter(
                     child: Center(
                       child: Text('Error: ${state.message}'),
+                    ),
+                  );
+                } else if (state is ProductNotFound) {
+                  return SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24 ,vertical: 40),
+                      child: Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              size: 100,
+                              FluentSystemIcons.ic_fluent_document_search_regular,
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              'Hasil tidak Ditemukan',
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 20,
+                              ),
+                            ),
+                            Text(
+                              textAlign: TextAlign.center,
+                              '${state.message}',
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   );
                 } else {

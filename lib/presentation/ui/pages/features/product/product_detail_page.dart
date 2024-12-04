@@ -13,6 +13,7 @@ class ProductDetailPage extends StatelessWidget {
   final String image;
   final String sold;
   final String linkProduct;
+  final String category;
 
   const ProductDetailPage({
     super.key,
@@ -24,6 +25,7 @@ class ProductDetailPage extends StatelessWidget {
     required this.image,
     required this.sold,
     required this.linkProduct,
+    required this.category,
   });
 
   Future<void> _launchUrl(Uri url) async {
@@ -119,19 +121,42 @@ class ProductDetailPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(
-                      FluentSystemIcons.ic_fluent_store_regular,
-                      color: primaryBlueColor,
-                      size: 18,
+                    Row(
+                      children: [
+                        Icon(
+                          FluentSystemIcons.ic_fluent_store_regular,
+                          color: primaryBlueColor,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          shop,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 4),
-                    Text(
-                      shop,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black,
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 24),
+                      padding: EdgeInsets.symmetric(vertical: 3, horizontal: 9),
+                      child: Text(
+                        '$category',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                        color: primaryBlueColor,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(8),
+                        ),
                       ),
                     ),
                   ],

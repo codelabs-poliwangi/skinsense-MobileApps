@@ -45,13 +45,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       final firebaseUser = await authRepository.loginWithGoogle();
       if (firebaseUser != null) {
         // You may want to map firebaseUser  to your User model
-        final user = User.Data(
-          id: firebaseUser.user!.uid,
-          name: firebaseUser.user!.displayName ?? "",
-          email: firebaseUser.user!.email ?? "",
-          phone: firebaseUser.user!.phoneNumber ?? "",
-        );
-        emit(LoginWithGoogleSuccess(user));
+        emit(LoginWithGoogleSuccess(firebaseUser));
       } else {
         emit(LoginWithGoogleError());
       }
