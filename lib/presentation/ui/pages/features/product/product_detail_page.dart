@@ -1,6 +1,7 @@
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:skinisense/config/theme/color.dart';
+import 'package:skinisense/domain/utils/currency_rupiah.dart';
 import 'package:skinisense/presentation/ui/widget/button_primary.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -105,42 +106,17 @@ class ProductDetailPage extends StatelessWidget {
               // Harga produk
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Text(
-                  'Rp. $price',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 13),
-
-              // Toko
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        Icon(
-                          FluentSystemIcons.ic_fluent_store_regular,
-                          color: primaryBlueColor,
-                          size: 18,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          shop,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      CurrencyRupiah.formatPrice(price),
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                      ),
                     ),
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 24),
@@ -157,6 +133,31 @@ class ProductDetailPage extends StatelessWidget {
                         borderRadius: BorderRadius.all(
                           Radius.circular(8),
                         ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 13),
+
+              // Toko
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Row(
+                  children: [
+                    Icon(
+                      FluentSystemIcons.ic_fluent_store_regular,
+                      color: primaryBlueColor,
+                      size: 18,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      shop,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
                       ),
                     ),
                   ],
