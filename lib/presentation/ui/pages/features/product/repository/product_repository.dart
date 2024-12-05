@@ -9,7 +9,7 @@ class ProductRepository {
 
   Future<List<Product>> fetchProducts() async {
     try {
-      final response = await _productProvider.getProducts();
+      final response = await _productProvider.getProductWithLimit(100);
       logger.d('succes fecthing products from repository $response');
       return response;
     } catch (e) {

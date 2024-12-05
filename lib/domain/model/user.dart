@@ -41,12 +41,15 @@ class Data {
     final String name;
     @JsonKey(name: "phone")
     final String phone;
+    @JsonKey(name: "isFirstScan")
+    final bool isFirstScan;
 
     Data({
         required this.id,
         required this.email,
         required this.name,
         required this.phone,
+        required this.isFirstScan,
     });
 
     Data copyWith({
@@ -54,12 +57,14 @@ class Data {
         String? email,
         String? name,
         String? phone,
+        bool? isFirstScan,
     }) => 
         Data(
             id: id ?? this.id,
             email: email ?? this.email,
             name: name ?? this.name,
             phone: phone ?? this.phone,
+            isFirstScan: isFirstScan ?? this.isFirstScan,
         );
 
     factory Data.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
