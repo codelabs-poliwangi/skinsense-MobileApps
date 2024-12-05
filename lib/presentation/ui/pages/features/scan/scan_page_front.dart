@@ -7,6 +7,7 @@ import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/domain/services/sharedPreferences-services.dart';
 import 'package:skinisense/presentation/ui/widget/alertdialog_widget.dart';
 import 'package:skinisense/presentation/ui/widget/camera_frame_scan.dart';
+import 'package:flutter/scheduler.dart' show WidgetsBinding;
 
 late List<CameraDescription> _cameras; // List camera use
 
@@ -27,7 +28,12 @@ class _ScanPageState extends State<ScanPageFront> {
   @override
   void initState() {
     super.initState();
-    _requestCameraPermission();
+     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showIntroDialog();
+      _requestCameraPermission();
+    });
+    // _showIntroDialog();
+    // _requestCameraPermission();
   }
 
   // Function to request camera permission
@@ -45,6 +51,22 @@ class _ScanPageState extends State<ScanPageFront> {
     } else if (status.isPermanentlyDenied) {
       _showSettingsDialog();
     }
+  }
+  void _showIntroDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialogWidget(
+          title: 'Harap Perhatikan Sebelum Memulai Scan',
+          message:
+              'Sebelum memulai proses scan, pastikan wajah Anda bersih dari makeup. Ini penting agar analisis dapat mendeteksi kondisi kulit Anda dengan lebih tepat.',
+          mainButton: () async {
+              Navigator.of(context).pop();
+          },
+          mainButtonMessage: 'Oke, Saya Sudah Membersihkan Make up',
+        );
+      },
+    );
   }
 
   void _showPermissionDialog() {

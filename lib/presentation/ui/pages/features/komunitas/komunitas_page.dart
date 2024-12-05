@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:skinisense/presentation/ui/pages/coming_soon.dart';
 
 class KomunitasPageScope extends StatelessWidget {
   const KomunitasPageScope({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return const KomunitasPage();
   }
 }
 class KomunitasPage extends StatelessWidget {
@@ -13,11 +14,6 @@ class KomunitasPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: SafeArea(
-          child: Center(
-        child: Text('Komunitas Screen'),
-      )),
-    );
+    return ComingSoonPage();
   }
 }

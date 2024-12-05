@@ -88,7 +88,8 @@ class AuthRepository {
   }
 
   // Save user credentials (token and user data)
-  Future<void> saveUserCredentials(UserModel.Data user,String accesToken,String refreshToken) async {
+  Future<void> saveUserCredentials(
+      UserModel.Data user, String accesToken, String refreshToken) async {
     try {
       // save credentials user -> user_id, name, email, phone
       await sharedPreferencesService.saveString('user_id', user.id);
@@ -99,8 +100,8 @@ class AuthRepository {
       // save refresh and acces token
       await tokenService.saveAccessToken(
           accesToken); // Replace with actual token from response
-      await tokenService.saveRefreshToken(
-          refreshToken); // Replace with actual refresh token
+      await tokenService
+          .saveRefreshToken(refreshToken); // Replace with actual refresh token
     } catch (e) {
       throw Exception('Failed to save user credentials: $e');
     }
@@ -120,7 +121,7 @@ class AuthRepository {
     await tokenService.deleteRefreshToken();
   }
 
-  Future<firebaseAuth.UserCredential?> loginWithGoogle() async {
+  Future<UserModel.Data?> loginWithGoogle() async {
     try {
       final firebaseAuth.UserCredential response =
           await authenticationProvider.signInGoogle();
@@ -138,7 +139,21 @@ class AuthRepository {
         logger.d('credential user info ${response.credential}');
         logger.d('credential user info ${response.user}');
         logger.d('token jwt ${await response.user!.getIdToken()}');
-        return response;
+        // ! get jwt google
+        String? token = await response.user!.getIdToken();
+        // ! send jwt to server
+        final responseGetToken =
+            await authenticationProvider.getTokenAfterSignInGoogle(token!);
+
+        // !save user, accesToken, refreshToken from server
+        final user = responseGetToken['user'] as UserModel.Data;
+        final accessToken = responseGetToken['access_token'] as String;
+        final refreshToken = responseGetToken['refresh_token'] as String;
+
+        // !save credentials user
+        saveUserCredentials(user, accessToken, refreshToken);
+
+        return user;
       }
     } catch (e) {
       throw Exception('Login Google failed: $e');

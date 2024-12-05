@@ -1,3 +1,4 @@
+import 'package:skinisense/config/api/api.dart';
 import 'package:skinisense/domain/services/api_client.dart';
 import 'package:skinisense/domain/utils/logger.dart';
 
@@ -9,7 +10,7 @@ class ForgotPasswordProvider {
   Future<void> forgotPassword({required String email}) async {
     try {
       final response = await apiClient.post(
-        '/auth/forgot-password',
+        forgotPasswordUrl,
         data: {
           'email': email,
         },
@@ -28,7 +29,7 @@ class ForgotPasswordProvider {
   Future<void> verifyToken({required String token}) async {
     try {
       final response = await apiClient.post(
-        '/auth/verify-token',
+        verifyTokenUrl,
         data: {
           'token': token,
         },
@@ -55,7 +56,7 @@ class ForgotPasswordProvider {
     }) async {
     try {
       final response = await apiClient.post(
-        '/auth/reset-password',
+        resetPasswordUrl,
         data: {
           'token': token,
           'password': password,

@@ -18,7 +18,7 @@ import 'package:skinisense/presentation/ui/pages/features/questions/repository/q
 
 final di = GetIt.instance;
 
-void init() {
+void init() async {
   //   final ApiClient apiClient;
   // final AuthProvider authProvider;
   // final TokenService tokenService;
@@ -41,7 +41,7 @@ void init() {
   // Forgot password
   di.registerSingleton<ForgotPasswordProvider>(ForgotPasswordProvider(di<ApiClient>())); 
   // Product
-  di.registerSingleton<ProductProvider>(ProductProvider());
+  di.registerSingleton<ProductProvider>(ProductProvider(di<ApiClient>()));
 
   di.registerSingleton<ProductRepository>(
       ProductRepository(di<ProductProvider>()));

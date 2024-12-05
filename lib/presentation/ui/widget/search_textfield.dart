@@ -43,7 +43,7 @@ class _SearchTextfieldState extends State<SearchTextfield> {
       child: TextField(
         controller: _controller, // Gunakan controller
         decoration: InputDecoration(
-          hintText: 'Search Product..',
+          hintText: 'Cari Product..',
           hintStyle: TextStyle(color: Colors.grey),
           prefixIcon: Icon(
             FluentSystemIcons.ic_fluent_search_filled,

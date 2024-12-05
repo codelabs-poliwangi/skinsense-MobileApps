@@ -11,11 +11,12 @@ import 'package:skinisense/presentation/ui/pages/features/forgot_password/otp_ve
 import 'package:skinisense/presentation/ui/pages/features/home/home_wrapper.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/product_detail_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/product_katalog_page.dart';
-import 'package:skinisense/presentation/ui/pages/features/product/product_search_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/questions/questions_intro.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/preview_page_front.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/preview_page_left.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/preview_page_right.dart';
+import 'package:skinisense/presentation/ui/pages/features/scan/scan_choice.dart';
+import 'package:skinisense/presentation/ui/pages/features/scan/scan_gallery.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/scan_page_front.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/scan_page_left.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/scan_page_right.dart';
@@ -34,14 +35,7 @@ class Routes {
         return PageTransition(
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
-          child: SplashPage(),
-          // child: const LoginScope(),
-          // child: ProductKatalogPage(),
-          // child: HomeWrapper(),
-          // child: QuestionScope(),
-          // child: ScanPage(),
-          // child: QuestionsIntro(),
-          // child: QuestionsPageScope(),
+          child: const SplashPage(),
           settings: settings,
         );
       case routeHome:
@@ -57,6 +51,20 @@ class Routes {
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
           child: const OnboardPage(),
+          settings: settings,
+        );
+      case routeScanChoice:
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 300),
+          child: const ScanChoiceScope(),
+          settings: settings,
+        );
+      case routeScanGallery:
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 300),
+          child: const ScanGalleryScope(),
           settings: settings,
         );
       case routeScanFront:
@@ -165,13 +173,6 @@ class Routes {
           child: const RegisterScope(),
           settings: settings,
         );
-      case routeProductSearch:
-        return PageTransition(
-          type: PageTransitionType.fade,
-          duration: const Duration(milliseconds: 300),
-          child: const ProductSearchPage(),
-          settings: settings,
-        );
       case routeProductKatalog:
         return PageTransition(
           type: PageTransitionType.fade,
@@ -180,15 +181,6 @@ class Routes {
           settings: settings,
         );
       case routeProductDetail:
-        if (args != null && args.containsKey('id')) {
-          final productId = args['id'];
-          return PageTransition(
-            type: PageTransitionType.fade,
-            duration: const Duration(milliseconds: 300),
-            child: ProductDetailPage(productId: productId), // Kirim productId
-            settings: settings,
-          );
-        }
         return PageTransition(
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),

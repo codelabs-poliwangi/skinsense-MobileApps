@@ -23,6 +23,7 @@ Data _$DataFromJson(Map<String, dynamic> json) => Data(
       email: json['email'] as String,
       name: json['name'] as String,
       phone: json['phone'] as String,
+      isFirstScan: json['isFirstScan'] as bool,
     );
 
 Map<String, dynamic> _$DataToJson(Data instance) => <String, dynamic>{
@@ -30,4 +31,5 @@ Map<String, dynamic> _$DataToJson(Data instance) => <String, dynamic>{
       'email': instance.email,
       'name': instance.name,
       'phone': instance.phone,
+      'isFirstScan': instance.isFirstScan,
     };
