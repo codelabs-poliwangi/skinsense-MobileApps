@@ -64,6 +64,7 @@ dependencies:
   google_sign_in: ^6.2.1
   dio: ^5.7.0
   image_picker: ^1.1.2
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:

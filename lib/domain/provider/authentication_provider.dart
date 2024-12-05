@@ -1,7 +1,8 @@
+import 'package:skinisense/config/api/api.dart';
 import 'package:skinisense/domain/model/user.dart' as UserModel;
 import 'package:skinisense/domain/services/api_client.dart';
 import 'package:skinisense/domain/utils/logger.dart';
-import 'package:firebase_auth/firebase_auth.dart' as firebaseAuth; 
+import 'package:firebase_auth/firebase_auth.dart' as firebaseAuth;
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthenticationProvider {
@@ -16,7 +17,7 @@ class AuthenticationProvider {
   }) async {
     try {
       final response = await apiClient.post(
-        '/auth/login',
+        loginUrl,
         data: {
           'email': email,
           'password': password,
@@ -61,7 +62,7 @@ class AuthenticationProvider {
   }) async {
     try {
       final response = await apiClient.post(
-        '/auth/register',
+        registerUrl,
         data: {
           'name': name,
           'email': email,
@@ -88,7 +89,7 @@ class AuthenticationProvider {
     try {
       logger.d('fething to me');
       final response = await apiClient.get(
-        '/user/me',
+        meUrl,
         headers: {'Authorization': 'Bearer $token'},
         requireAuth: true,
       );
@@ -110,7 +111,7 @@ class AuthenticationProvider {
   // Logout method
   Future<void> logout(String token) async {
     try {
-      final response = await apiClient.post('/auth/logout',
+      final response = await apiClient.post(logoutUrl,
           headers: {'Authorization': 'Bearer $token'}, requireAuth: true);
 
       if (response.statusCode != 200) {
@@ -148,11 +149,46 @@ class AuthenticationProvider {
     }
   }
 
+  Future<Map<String, dynamic>> getTokenAfterSignInGoogle(
+      String jwtGoogle) async {
+    try {
+      final response = await apiClient.post(
+        loginGoogleUrl,
+        headers: {'Authorization': 'Bearer $jwtGoogle'},
+        requireAuth: false,
+      );
+      if (response.statusCode == 200) {
+        final accessToken = response.data['access_token'];
+        final refreshToken = response.data['refresh_token'];
+
+        // Log token untuk debugging
+        logger.d('Access token: $accessToken');
+        logger.d('Refresh token: $refreshToken');
+
+        // Fetch user data menggunakan access token
+        final user = await me(accessToken);
+
+        // Return user data bersama token
+        return {
+          'user': user,
+          'access_token': accessToken,
+          'refresh_token': refreshToken,
+        };
+      } else {
+        logger.e('Error: ${response.data['message']}');
+        throw Exception('Failed to login: ${response.data['message']}');
+      }
+    } catch (e) {
+      logger.e('Error get token after signin google: $e');
+      throw Exception('Failed to login: $e');
+    }
+  }
+
   // refreshToken
   Future<ApiResponse<dynamic>> refreshToken(String refreshToken) async {
     try {
       final response =
-          await apiClient.post('/auth/refresh', requireAuth: false, data: {
+          await apiClient.post(refreshTokenUrl, requireAuth: false, data: {
         "refresh_token": refreshToken,
       });
 

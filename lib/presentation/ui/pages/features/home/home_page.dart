@@ -16,6 +16,7 @@ import 'package:skinisense/presentation/ui/pages/features/home/bloc/skin_conditi
 import 'package:skinisense/presentation/ui/pages/features/home/repository/product_repository.dart';
 import 'package:skinisense/presentation/ui/pages/features/home/repository/routine_repository.dart';
 import 'package:skinisense/presentation/ui/pages/features/home/repository/skin_condition_repository.dart';
+import 'package:skinisense/presentation/ui/pages/features/product/product_detail_page.dart';
 import 'package:skinisense/presentation/ui/widget/product_katalog.dart';
 import 'package:skinisense/presentation/ui/widget/progress_skin.dart';
 import 'package:skinisense/presentation/ui/widget/routine_list.dart';
@@ -136,24 +137,31 @@ class HomePage extends StatelessWidget {
                           itemBuilder: (BuildContext context, int index) {
                             return GestureDetector(
                               onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  routeProductDetail,
-                                  arguments: {
-                                    'id': state.products[index].id.toString()
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) {
+                                    return ProductDetailPage(
+                                      id: state.products[index].id,
+                                      name: state.products[index].name,
+                                      price: state.products[index].price,
+                                      rating: state.products[index].rating ?? 0,
+                                      shop: state.products[index].shop,
+                                      image: state.products[index].image,
+                                      sold: state.products[index].sold,
+                                      linkProduct:
+                                          state.products[index].linkProduct,
+                                      category: state.products[index].category,
+                                    );
                                   },
-                                );
+                                ));
                               },
                               child: ProductItemWidget(
-                                isKatalog: true,
+                                isKatalog: false,
                                 indexProduct: state.products[index].id,
-                                imageProduct:
-                                    state.products[index].productImage,
+                                imageProduct: state.products[index].image,
                                 nameProduct: state.products[index].name,
-                                storeProduct: state.products[index].store,
-                                storeImage: state.products[index].store,
+                                storeProduct: state.products[index].shop,
                                 ratingProduct:
-                                    state.products[index].rating.toDouble(),
+                                    state.products[index].rating ?? 0,
                               ),
                             );
                           },
@@ -230,7 +238,8 @@ class TrackRoutineWidget extends StatelessWidget {
                       true, // Diperlukan agar tidak mengambil seluruh tinggi layar
                   physics:
                       NeverScrollableScrollPhysics(), // Mencegah ListView ini dapat di-scroll
-                  itemCount: state.routines.length, // Ganti dengan jumlah elemen sebenarnya
+                  itemCount: state
+                      .routines.length, // Ganti dengan jumlah elemen sebenarnya
                   itemBuilder: (context, index) {
                     return Container(
                       margin: EdgeInsets.only(bottom: 16),
@@ -240,10 +249,12 @@ class TrackRoutineWidget extends StatelessWidget {
                           Checkbox(
                             activeColor: primaryBlueColor,
 
-                            value:
-                                state.routines[index].isComplete, // Sesuaikan dengan logika state yang diinginkan
+                            value: state.routines[index]
+                                .isComplete, // Sesuaikan dengan logika state yang diinginkan
                             onChanged: (bool? value) {
-                               context.read<RoutineBloc>().add(ToggleRoutineComplete(index));
+                              context
+                                  .read<RoutineBloc>()
+                                  .add(ToggleRoutineComplete(index));
                               // Aksi ketika checklist diubah
                             },
                           ),
@@ -251,8 +262,7 @@ class TrackRoutineWidget extends StatelessWidget {
                           Expanded(
                             child: RoutineListTile(
                               routineImage: state.routines[index].image,
-                              routineName:
-                                  state.routines[index].activity,
+                              routineName: state.routines[index].activity,
                             ),
                           ),
                         ],
@@ -437,7 +447,7 @@ class CardWelcomeWidget extends StatelessWidget {
                             GestureDetector(
                               onTap: () {
                                 Navigator.of(context)
-                                    .pushNamed(routeProductSearch);
+                                    .pushNamed(routeProductKatalog);
                               },
                               child: Icon(
                                 FluentSystemIcons.ic_fluent_search_regular,
