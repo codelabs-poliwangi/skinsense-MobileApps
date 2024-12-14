@@ -1,4 +1,4 @@
-import 'package:skinisense/domain/model/product.dart';
+import 'package:skinisense/domain/model/products.dart';
 import 'package:skinisense/domain/provider/product_provider.dart';
 import 'package:skinisense/domain/utils/logger.dart';
 
@@ -7,7 +7,7 @@ class ProductRepository {
 
   ProductRepository(this._productProvider);
 
-  Future<List<Product>> fetchProducts() async {
+  Future<Products> fetchProducts() async {
     try {
       final response = await _productProvider.getProductWithLimit(100);
       logger.d('succes fecthing products from repository $response');
@@ -16,7 +16,7 @@ class ProductRepository {
       throw Exception('Failed to fetch products: $e');
     }
   }
-  Future<List<Product>> fetchProductsByName(String query)async{
+  Future<Products> fetchProductsByName(String query)async{
     try {
        final response = await _productProvider.getProductbyName(query);
       logger.d('succes searhing products by query $query');

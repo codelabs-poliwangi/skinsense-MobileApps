@@ -1,4 +1,4 @@
-import 'package:skinisense/domain/model/product.dart';
+import 'package:skinisense/domain/model/products.dart';
 import 'package:skinisense/domain/provider/product_provider.dart';
 import 'package:skinisense/domain/utils/logger.dart';
 
@@ -7,7 +7,7 @@ class ProductRepository {
 
   ProductRepository(this._productProvider);
 
-  Future<List<Product>> fetchProducts() async {
+  Future<Products> fetchProducts() async {
     try {
       final response = await _productProvider.getProductWithLimit(40);
       logger.d('succes fecthing products from repository $response');

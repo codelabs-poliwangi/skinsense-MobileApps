@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:skinisense/domain/model/product.dart';
+import 'package:skinisense/domain/model/products.dart';
 import 'package:skinisense/domain/utils/logger.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/repository/product_repository.dart';
 
@@ -25,7 +25,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         final products =
             await _productRepository.fetchProductsByName(event.query);
         logger.d('hasil pencarian bloc : $products');
-        if (products.isEmpty) {
+        if (products.data.isEmpty) {
           // Jika produk kosong, bisa beri response khusus
           emit(ProductNotFound('Maaf, Product yang anda cari tidak ada, mungkin bisa mencari produk lainnya'));
         } else {

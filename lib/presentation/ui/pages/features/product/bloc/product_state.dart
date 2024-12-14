@@ -13,7 +13,7 @@ final class ProductInitial extends ProductState {}
 final class ProductLoading extends ProductState {}
 
 final class ProductLoaded extends ProductState{
-  final List<Product> products;
+  Products products;
 
   ProductLoaded(this.products);
 }

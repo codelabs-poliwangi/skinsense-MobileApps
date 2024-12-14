@@ -221,31 +221,31 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) {
                                 return ProductDetailPage(
-                                  id: state.products[index].id,
-                                  name: state.products[index].name,
-                                  price: state.products[index].price,
-                                  rating: state.products[index].rating ?? 0,
-                                  shop: state.products[index].shop,
-                                  image: state.products[index].image,
-                                  sold: state.products[index].sold,
+                                  id: state.products.data[index].id,
+                                  name: state.products.data[index].name,
+                                  price: state.products.data[index].price,
+                                  rating: state.products.data[index].rating ?? 0,
+                                  shop: state.products.data[index].shop,
+                                  image: state.products.data[index].image,
+                                  sold: state.products.data[index].sold,
                                   linkProduct:
-                                      state.products[index].linkProduct,
-                                  category: state.products[index].category,
+                                      state.products.data[index].linkProduct,
+                                  category: state.products.data[index].category,
                                 );
                               },
                             ));
                           },
                           child: ProductItemWidget(
                             isKatalog: true,
-                            indexProduct: state.products[index].id,
-                            imageProduct: state.products[index].image,
-                            nameProduct: state.products[index].name,
-                            storeProduct: state.products[index].shop,
-                            ratingProduct: state.products[index].rating ?? 0,
+                            indexProduct: state.products.data[index].id,
+                            imageProduct: state.products.data[index].image,
+                            nameProduct: state.products.data[index].name,
+                            storeProduct: state.products.data[index].shop,
+                            ratingProduct: state.products.data[index].rating ?? 0,
                           ),
                         );
                       },
-                      itemCount: state.products.length,
+                      itemCount: state.products.data.length,
                     ),
                   );
                 } else if (state is ProductError) {

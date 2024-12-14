@@ -9,7 +9,6 @@ import 'package:skinisense/presentation/ui/pages/features/register/register_pass
 import 'package:skinisense/presentation/ui/pages/features/forgot_password/forgot_password_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/forgot_password/otp_verification_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/home/home_wrapper.dart';
-import 'package:skinisense/presentation/ui/pages/features/product/product_detail_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/product_katalog_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/questions/questions_intro.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/preview_page_front.dart';
