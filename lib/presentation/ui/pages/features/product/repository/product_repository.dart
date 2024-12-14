@@ -7,9 +7,9 @@ class ProductRepository {
 
   ProductRepository(this._productProvider);
 
-  Future<Products> fetchProducts() async {
+  Future<Products> fetchProducts(int page) async {
     try {
-      final response = await _productProvider.getProductWithLimit(100);
+      final response = await _productProvider.getProductbyPage(page);
       logger.d('succes fecthing products from repository $response');
       return response;
     } catch (e) {
