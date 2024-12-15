@@ -63,7 +63,7 @@ class _ScanPageState extends State<ScanPageFront> {
           mainButton: () async {
               Navigator.of(context).pop();
           },
-          mainButtonMessage: 'Oke, Saya Sudah Membersihkan Make up',
+          mainButtonMessage: 'Oke',
         );
       },
     );
