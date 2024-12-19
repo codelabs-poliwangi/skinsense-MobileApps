@@ -60,7 +60,7 @@ class ForgotPasswordProvider {
         data: {
           'token': token,
           'password': password,
-          'confirmPassword': confirmPassword,
+          'confirm_password': confirmPassword,
         },
       );
 
