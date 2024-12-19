@@ -65,6 +65,7 @@ dependencies:
   dio: ^5.7.0
   image_picker: ^1.1.2
   url_launcher: ^6.3.1
+  gauge_indicator: ^0.4.3
 
 dev_dependencies:
   flutter_test:
