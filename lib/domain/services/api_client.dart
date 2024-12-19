@@ -13,9 +13,11 @@ class ApiResponse<T> {
   final String message;
   final int statusCode;
   final Map<String, String> headers;
+  final dynamic? metadata;
 
   ApiResponse({
     required this.data,
+    this.metadata,
     required this.statusCode,
     required this.message,
     required this.headers,
@@ -47,13 +49,12 @@ class ApiClient {
     this.timeout = const Duration(seconds: 30),
   }) {
     dio = Dio(BaseOptions(
-      baseUrl: baseUrl,
-      connectTimeout: timeout,
-      receiveTimeout: timeout,
-      contentType: 'application/json',
-      responseType: ResponseType.json,
-      validateStatus: (status) => true
-    ));
+        baseUrl: baseUrl,
+        connectTimeout: timeout,
+        receiveTimeout: timeout,
+        contentType: 'application/json',
+        responseType: ResponseType.json,
+        validateStatus: (status) => true));
 
     // Menambahkan interceptor untuk menangani JWT
     dio.interceptors.add(InterceptorsWrapper(
@@ -90,11 +91,13 @@ class ApiClient {
   Future<void> generateRefreshToken() async {
     final refreshToken = await tokenService.getRefreshToken();
     try {
-      final response = await di<AuthenticationProvider>().refreshToken(refreshToken!);
-      
+      final response =
+          await di<AuthenticationProvider>().refreshToken(refreshToken!);
+
       if (response.statusCode == 401) {
         // Invalid refresh token, trigger logout
-        logger.d('failed create accesToken and refreshToken and accesToken token exp,');
+        logger.d(
+            'failed create accesToken and refreshToken and accesToken token exp,');
         await _forceLogout();
       } else {
         logger.d('succesfull create accesToken');
@@ -157,10 +160,9 @@ class ApiClient {
       return _handleResponse<T>(response);
     } on DioException catch (e) {
       throw ApiException(
-        statusCode: e.response!.statusCode,
-        message: e.response!.statusMessage.toString(),
-        data: e.response!.data
-      );
+          statusCode: e.response!.statusCode,
+          message: e.response!.statusMessage.toString(),
+          data: e.response!.data);
     }
   }
 
@@ -231,6 +233,13 @@ class ApiClient {
       return body;
     }
 
+    dynamic _safeGetMeta(dynamic body) {
+      if (body is Map) {
+        return body['meta']; // Kembalikan null jika tidak ada
+      }
+      return null;
+    }
+
     // Pemeriksaan null safety untuk status code
     if ((response.statusCode ?? 0) >= 200 && (response.statusCode ?? 0) < 300) {
       return ApiResponse<T>(
@@ -238,6 +247,7 @@ class ApiClient {
         statusCode: response.statusCode!,
         message: _safeGetMessage(body),
         data: _safeGetData(body),
+        metadata: _safeGetMeta(body),
       );
     }
 
