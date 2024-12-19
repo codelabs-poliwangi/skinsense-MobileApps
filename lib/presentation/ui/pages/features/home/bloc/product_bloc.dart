@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:skinisense/domain/model/product.dart';
+import 'package:skinisense/domain/model/products.dart';
 import 'package:skinisense/domain/utils/logger.dart';
 import 'package:skinisense/presentation/ui/pages/features/home/repository/product_repository.dart';
 

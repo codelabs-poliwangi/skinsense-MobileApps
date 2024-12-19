@@ -18,10 +18,13 @@ import 'package:skinisense/presentation/ui/pages/features/home/repository/routin
 import 'package:skinisense/presentation/ui/pages/features/home/repository/skin_condition_repository.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/product_detail_page.dart';
 import 'package:skinisense/presentation/ui/widget/product_katalog.dart';
+import 'package:skinisense/presentation/ui/widget/product_katalog_loading.dart';
 import 'package:skinisense/presentation/ui/widget/progress_skin.dart';
+import 'package:skinisense/presentation/ui/widget/routine_laoding_widget.dart';
 import 'package:skinisense/presentation/ui/widget/routine_list.dart';
 import 'package:skinisense/presentation/ui/widget/search_textfield.dart';
 import 'package:skinisense/presentation/ui/widget/alertdialog_widget.dart';
+import 'package:skinisense/presentation/ui/widget/skin_condition_loading_widget.dart';
 
 class HomePageScope extends StatelessWidget {
   const HomePageScope({super.key});
@@ -118,8 +121,22 @@ class HomePage extends StatelessWidget {
                           child: Text('Please Wait'),
                         );
                       } else if (state is ProductLoading) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
+                        return GridView.builder(
+                          scrollDirection: Axis.horizontal,
+                          physics: BouncingScrollPhysics(),
+                          padding: EdgeInsets.symmetric(horizontal: 24),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 4, // Jumlah baris
+                            crossAxisSpacing: 16, // Jarak antar kolom
+                            mainAxisSpacing: 16, // Jarak antar baris
+                            childAspectRatio:
+                                1 / 0.69, // Rasio aspek untuk kotak
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return ProductKatalogLoading();
+                          },
+                          itemCount: 40,
                         );
                       } else if (state is ProductLoaded) {
                         return GridView.builder(
@@ -140,32 +157,35 @@ class HomePage extends StatelessWidget {
                                 Navigator.push(context, MaterialPageRoute(
                                   builder: (context) {
                                     return ProductDetailPage(
-                                      id: state.products[index].id,
-                                      name: state.products[index].name,
-                                      price: state.products[index].price,
-                                      rating: state.products[index].rating ?? 0,
-                                      shop: state.products[index].shop,
-                                      image: state.products[index].image,
-                                      sold: state.products[index].sold,
-                                      linkProduct:
-                                          state.products[index].linkProduct,
-                                      category: state.products[index].category,
+                                      id: state.products.data[index].id,
+                                      name: state.products.data[index].name,
+                                      price: state.products.data[index].price,
+                                      rating:
+                                          state.products.data[index].rating ??
+                                              0,
+                                      shop: state.products.data[index].shop,
+                                      image: state.products.data[index].image,
+                                      sold: state.products.data[index].sold,
+                                      linkProduct: state
+                                          .products.data[index].linkProduct,
+                                      category:
+                                          state.products.data[index].category,
                                     );
                                   },
                                 ));
                               },
                               child: ProductItemWidget(
                                 isKatalog: false,
-                                indexProduct: state.products[index].id,
-                                imageProduct: state.products[index].image,
-                                nameProduct: state.products[index].name,
-                                storeProduct: state.products[index].shop,
+                                indexProduct: state.products.data[index].id,
+                                imageProduct: state.products.data[index].image,
+                                nameProduct: state.products.data[index].name,
+                                storeProduct: state.products.data[index].shop,
                                 ratingProduct:
-                                    state.products[index].rating ?? 0,
+                                    state.products.data[index].rating ?? 0,
                               ),
                             );
                           },
-                          itemCount: state.products.length,
+                          itemCount: state.products.data.length,
                         );
                       } else if (state is ProductError) {
                         return Center(
@@ -217,8 +237,8 @@ class TrackRoutineWidget extends StatelessWidget {
             ),
           ),
           SizedBox(
-              height: SizeConfig.calHeightMultiplier(
-                  12)), // Tambahkan sedikit jarak
+            height: SizeConfig.calHeightMultiplier(12),
+          ), // Tambahkan sedikit jarak
           // ListView builder di dalam SliverList
           BlocBuilder<RoutineBloc, RoutineState>(
             builder: (context, state) {
@@ -228,8 +248,11 @@ class TrackRoutineWidget extends StatelessWidget {
                   child: Text('Please Wait'),
                 );
               } else if (state is RoutineLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
+                return ListView.builder(
+                  itemCount: 4,
+                  itemBuilder: (context, index) {
+                    return RoutineLaodingWidget();
+                  },
                 );
               } else if (state is RoutineOnLoaded) {
                 Logger().d(state);
@@ -241,6 +264,7 @@ class TrackRoutineWidget extends StatelessWidget {
                   itemCount: state
                       .routines.length, // Ganti dengan jumlah elemen sebenarnya
                   itemBuilder: (context, index) {
+                    
                     return Container(
                       margin: EdgeInsets.only(bottom: 16),
                       child: Row(
@@ -324,7 +348,7 @@ class SkinConditionWidget extends StatelessWidget {
               );
             } else if (state is SkinConditionLoading) {
               return const Center(
-                child: CircularProgressIndicator(),
+                child: SkinConditionLoadingWidget(),
               );
             } else if (state is SkinConditionLoaded) {
               return Column(
