@@ -12,7 +12,7 @@ class RoutineLaodingWidget extends StatelessWidget {
       width: double.infinity,
       height: 80,
       decoration: BoxDecoration(
-        color: Colors.white70,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(

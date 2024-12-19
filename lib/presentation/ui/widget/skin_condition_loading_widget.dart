@@ -7,54 +7,65 @@ class SkinConditionLoadingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Shimmer.fromColors(
-            baseColor: Colors.grey[300]!,
-            highlightColor: Colors.grey[200]!,
-            child: Container(
-              height: 20,
-              width: 80,
-            )),
-        Shimmer.fromColors(
-            baseColor: Colors.grey[300]!,
-            highlightColor: Colors.grey[200]!,
-            child: Container(
-              height: 10,
-              width: 90,
-            )),
-        SizedBox(
-          height: SizeConfig.calHeightMultiplier(12),
-        ),
-        Shimmer.fromColors(
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Shimmer.fromColors(
+              baseColor: Colors.grey[300]!,
+              highlightColor: Colors.grey[200]!,
+              child: Container(
+                height: 20,
+                width: 80,
+                color: Colors.white,
+              )),
+              SizedBox(
+            height: SizeConfig.calHeightMultiplier(4),
+          ),
+          Shimmer.fromColors(
+              baseColor: Colors.grey[300]!,
+              highlightColor: Colors.grey[200]!,
+              child: Container(
+                height: 10,
+                width: 90,
+                color: Colors.white,
+              )),
+          SizedBox(
+            height: SizeConfig.calHeightMultiplier(12),
+          ),
+          Shimmer.fromColors(
+              baseColor: Colors.grey[300]!,
+              highlightColor: Colors.grey[200]!,
+              child: Container(
+                height: 28,
+                width: double.infinity,
+                color: Colors.white,
+              )),
+          SizedBox(
+            height: SizeConfig.calHeightMultiplier(16),
+          ),
+          Shimmer.fromColors(
+              baseColor: Colors.grey[300]!,
+              highlightColor: Colors.grey[200]!,
+              child: Container(
+                height: 28,
+                width: double.infinity,
+                color: Colors.white,
+              )),
+          SizedBox(
+            height: SizeConfig.calHeightMultiplier(16),
+          ),
+          Shimmer.fromColors(
             baseColor: Colors.grey[300]!,
             highlightColor: Colors.grey[200]!,
             child: Container(
               height: 28,
               width: double.infinity,
-            )),
-        SizedBox(
-          height: SizeConfig.calHeightMultiplier(16),
-        ),
-        Shimmer.fromColors(
-            baseColor: Colors.grey[300]!,
-            highlightColor: Colors.grey[200]!,
-            child: Container(
-              height: 28,
-              width: double.infinity,
-            )),
-        SizedBox(
-          height: SizeConfig.calHeightMultiplier(16),
-        ),
-        Shimmer.fromColors(
-            baseColor: Colors.grey[300]!,
-            highlightColor: Colors.grey[200]!,
-            child: Container(
-              height: 28,
-              width: double.infinity,
-            )),
-      ],
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

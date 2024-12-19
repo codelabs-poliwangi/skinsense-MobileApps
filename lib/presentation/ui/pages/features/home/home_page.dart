@@ -248,11 +248,9 @@ class TrackRoutineWidget extends StatelessWidget {
                   child: Text('Please Wait'),
                 );
               } else if (state is RoutineLoading) {
-                return ListView.builder(
-                  itemCount: 4,
-                  itemBuilder: (context, index) {
-                    return RoutineLaodingWidget();
-                  },
+                return Column(
+                  children:
+                      List.generate(3, (index) => const RoutineLaodingWidget()),
                 );
               } else if (state is RoutineOnLoaded) {
                 Logger().d(state);
@@ -264,7 +262,7 @@ class TrackRoutineWidget extends StatelessWidget {
                   itemCount: state
                       .routines.length, // Ganti dengan jumlah elemen sebenarnya
                   itemBuilder: (context, index) {
-                    
+
                     return Container(
                       margin: EdgeInsets.only(bottom: 16),
                       child: Row(
@@ -294,6 +292,7 @@ class TrackRoutineWidget extends StatelessWidget {
                     );
                   },
                 );
+                
               } else if (state is RoutineError) {
                 return Center(
                   child: Text('Error: ${state.Message}'),
@@ -347,9 +346,7 @@ class SkinConditionWidget extends StatelessWidget {
                 child: Text('Please Wait'),
               );
             } else if (state is SkinConditionLoading) {
-              return const Center(
-                child: SkinConditionLoadingWidget(),
-              );
+              return SkinConditionLoadingWidget();
             } else if (state is SkinConditionLoaded) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
