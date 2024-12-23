@@ -22,7 +22,7 @@ Data _$DataFromJson(Map<String, dynamic> json) => Data(
       id: json['id'] as String,
       email: json['email'] as String,
       name: json['name'] as String,
-      phone: json['phone'] as String,
+      phone: json['phone'] as String?,
       isFirstScan: json['isFirstScan'] as bool,
     );
 

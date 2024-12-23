@@ -36,7 +36,7 @@ class ForgotPasswordPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<ForgotPasswordBloc, ForgotPasswordState>(
         listener: (context, state) {
-          if (state is ForgotPasswordLoading) {
+          if (state.status == ForgotPasswordStatus.loading) {
             showDialog(
             context: context,
             barrierDismissible: false,
@@ -47,7 +47,7 @@ class ForgotPasswordPage extends StatelessWidget {
             ),
           );
           }
-          if (state is ForgotPasswordEmailSuccess) {
+          if (state.status == ForgotPasswordStatus.emailSuccess) {
             Navigator.of(context).pop(); // Close loading dialog
             Navigator.of(context).push(
               PageTransition(
@@ -60,10 +60,13 @@ class ForgotPasswordPage extends StatelessWidget {
               )
             );
           }
-          if (state is ForgotPasswordFailure) {
+          if (state.status == ForgotPasswordStatus.failure) {
             Navigator.of(context).pop(); // Close loading dialog
+
+            Future.delayed(Durations.short4);
+
             ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.error)));
+                .showSnackBar(SnackBar(content: Text(state.error), backgroundColor: Colors.redAccent,));
           }
         },
         builder: (context, state) {

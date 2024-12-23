@@ -67,7 +67,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<ForgotPasswordBloc, ForgotPasswordState>(
       listener: (context, state) {
-        if (state is ForgotPasswordOtpSuccess) {
+        if (state.status == ForgotPasswordStatus.otpSuccess) {
           Navigator.of(context).push(
             PageTransition(
               type: PageTransitionType.fade,
@@ -79,15 +79,12 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
             ),
           );
         }
+        if (state.status == ForgotPasswordStatus.failure) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.error), backgroundColor: Colors.redAccent,));
+        }
       },
       builder: (context, state) {
-        String emailText = 'Email not found';
-
-        // Pengambilan state email
-        if (state is ForgotPasswordEmailSuccess) {
-          emailText = state.email;
-        }
-
         return Scaffold(
           body: SafeArea(
             child: SingleChildScrollView(
@@ -125,7 +122,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                     SizedBox(height: SizeConfig.calHeightMultiplier(24)),
 
                     Text(
-                      emailText,
+                      state.email,
                       style: Theme.of(context).textTheme.titleSmall!.copyWith(
                             color: primaryBlueColor,
                           ),
@@ -152,12 +149,6 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                           return 'PIN must only contain digits';
                         }
                         return null;
-                      },
-                      onCompleted: (pin) {
-                        debugPrint('onCompleted: $pin');
-                      },
-                      onChanged: (value) {
-                        debugPrint('onChanged: $value');
                       },
                       defaultPinTheme: PinTheme(
                         width: 56,
@@ -225,7 +216,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                             } else {
                               context
                                   .read<ForgotPasswordBloc>()
-                                  .add(ForgotPasswordEmailSubmitted(emailText));
+                                  .add(ForgotPasswordEmailSubmitted(state.email));
                               resetTimer();
                             }
                           },
@@ -240,10 +231,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           // Jika valid, kirim OTP
-                          context.read<ForgotPasswordBloc>().add(
-                                ForgotPasswordOtpSubmitted(
-                                    otp: pinController.text),
-                              );
+                          context.read<ForgotPasswordBloc>().add(ForgotPasswordOtpSubmitted(otp: pinController.text));
                         }
                       },
                       text: 'Submit',
