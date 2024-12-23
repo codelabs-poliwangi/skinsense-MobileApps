@@ -40,7 +40,7 @@ class Data {
     @JsonKey(name: "name")
     final String name;
     @JsonKey(name: "phone")
-    final String phone;
+    final String? phone;
     @JsonKey(name: "isFirstScan")
     final bool isFirstScan;
 

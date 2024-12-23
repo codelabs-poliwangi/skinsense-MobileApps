@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/theme/color.dart';
@@ -44,12 +45,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<ForgotPasswordBloc, ForgotPasswordState>(
       listener: (context, state) {
+        if (state.status == ForgotPasswordStatus.resetSuccess) {
+          Navigator.pushNamed(context, routeLogin);
+        }
       },
       builder: (context, state) {
-        String? tokenText;
-        if(state is ForgotPasswordOtpSuccess) {
-          tokenText = state.otp;
-        }
         return Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
@@ -123,7 +123,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         if (_formKey.currentState!.validate()) {
                           context.read<ForgotPasswordBloc>().add(
                                 ForgotPasswordResetSubmitted(
-                                  token: tokenText!,
+                                  token: state.otp!,
                                   password: _passwordController.text,
                                   confirmPassword: _confirmPasswordController.text
                                 ),

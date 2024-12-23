@@ -11,6 +11,7 @@ import 'package:skinisense/presentation/ui/pages/features/forgot_password/otp_ve
 import 'package:skinisense/presentation/ui/pages/features/home/home_wrapper.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/product_katalog_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/questions/questions_intro.dart';
+import 'package:skinisense/presentation/ui/pages/features/result/result_recom_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/preview_page_front.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/preview_page_left.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/preview_page_right.dart';
@@ -19,6 +20,7 @@ import 'package:skinisense/presentation/ui/pages/features/scan/scan_gallery.dart
 import 'package:skinisense/presentation/ui/pages/features/scan/scan_page_front.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/scan_page_left.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/scan_page_right.dart';
+import 'package:skinisense/presentation/ui/pages/features/result/result_scan_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/splash_onboard/splash_page.dart';
 // import 'package:skinisense/presentation/ui/pages/features/auth/login_screen.dart';
 import 'package:skinisense/presentation/ui/pages/not_found_page.dart';
@@ -106,6 +108,20 @@ class Routes {
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
           child: const PreviewPageRight(),
+          settings: settings,
+        );
+      case routeResultScan:
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 300),
+          child: ResultScanPage(),
+          settings: settings,
+        );
+      case routeResultRecom:
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 300),
+          child: ResultRecomScope(),
           settings: settings,
         );
       case routeRegister:
