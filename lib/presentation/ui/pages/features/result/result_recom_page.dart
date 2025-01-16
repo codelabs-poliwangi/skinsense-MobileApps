@@ -21,7 +21,8 @@ class ResultRecomScope extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ProductBloc(ProductRepository(di<ProductProvider>())),
+      create: (context) =>
+          ProductBloc(ProductRepository(di<ProductProvider>())),
       child: const ResultRecomPage(),
     );
   }
@@ -140,32 +141,35 @@ class ResultRecomPage extends StatelessWidget {
                                 Navigator.push(context, MaterialPageRoute(
                                   builder: (context) {
                                     return ProductDetailPage(
-                                      id: state.products[index].id,
-                                      name: state.products[index].name,
-                                      price: state.products[index].price,
-                                      rating: state.products[index].rating ?? 0,
-                                      shop: state.products[index].shop,
-                                      image: state.products[index].image,
-                                      sold: state.products[index].sold,
-                                      linkProduct:
-                                          state.products[index].linkProduct,
-                                      category: state.products[index].category,
+                                      id: state.products.data[index].id,
+                                      name: state.products.data[index].name,
+                                      price: state.products.data[index].price,
+                                      rating:
+                                          state.products.data[index].rating ??
+                                              0,
+                                      shop: state.products.data[index].shop,
+                                      image: state.products.data[index].image,
+                                      sold: state.products.data[index].sold,
+                                      linkProduct: state
+                                          .products.data[index].linkProduct,
+                                      category:
+                                          state.products.data[index].category,
                                     );
                                   },
                                 ));
                               },
                               child: ProductItemWidget(
                                 isKatalog: false,
-                                indexProduct: state.products[index].id,
-                                imageProduct: state.products[index].image,
-                                nameProduct: state.products[index].name,
-                                storeProduct: state.products[index].shop,
+                                indexProduct: state.products.data[index].id,
+                                imageProduct: state.products.data[index].image,
+                                nameProduct: state.products.data[index].name,
+                                storeProduct: state.products.data[index].shop,
                                 ratingProduct:
-                                    state.products[index].rating ?? 0,
+                                    state.products.data[index].rating ?? 0,
                               ),
                             );
                           },
-                          itemCount: state.products.length,
+                          itemCount: state.products.data.length,
                         );
                       } else if (state is ProductError) {
                         return Center(
@@ -227,23 +231,22 @@ class CardResultWidget extends StatelessWidget {
                     style: TextStyle(
                         fontSize: SizeConfig.calHeightMultiplier(15),
                         color: Colors.white,
-                        fontWeight: FontWeight.w300
-                        ),
+                        fontWeight: FontWeight.w300),
                   ),
                 ],
               ),
             ),
             Positioned(
-                right: -90,
-                bottom: -135,
-                child: ClipRRect(
-                  child: Image(
-                    height: 300,
-                    image: const AssetImage(logoSplashScreen),
-                    color: Colors.white.withOpacity(0.2),
-                  ),
+              right: -90,
+              bottom: -135,
+              child: ClipRRect(
+                child: Image(
+                  height: 300,
+                  image: const AssetImage(logoSplashScreen),
+                  color: Colors.white.withOpacity(0.2),
                 ),
               ),
+            ),
           ],
         ));
   }

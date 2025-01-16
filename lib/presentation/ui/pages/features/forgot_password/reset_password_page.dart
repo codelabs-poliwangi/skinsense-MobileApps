@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
+import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/presentation/ui/pages/features/forgot_password/bloc/forgot_password_bloc.dart';
 import 'package:skinisense/presentation/ui/widget/custom_button.dart';
@@ -18,7 +19,8 @@ class ResetPasswordPage extends StatefulWidget {
 class _ResetPasswordPageState extends State<ResetPasswordPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   bool _obscureText = true;
   bool _obscureTextConfirm = true;
 
@@ -65,7 +67,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       width: SizeConfig.calWidthMultiplier(120),
                     ),
                     SizedBox(height: SizeConfig.calHeightMultiplier(24)),
-
                     Text(
                       'Reset Password',
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
@@ -81,7 +82,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       ),
                     ),
                     SizedBox(height: SizeConfig.calHeightMultiplier(24)),
-
                     CustomInput(
                       controller: _passwordController,
                       isPasswordField: true,
@@ -99,7 +99,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       },
                     ),
                     SizedBox(height: SizeConfig.calHeightMultiplier(16)),
-
                     CustomInput(
                       controller: _confirmPasswordController,
                       hintText: 'Confirm Password',
@@ -117,16 +116,15 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       },
                     ),
                     SizedBox(height: SizeConfig.calHeightMultiplier(12)),
-
                     CustomButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           context.read<ForgotPasswordBloc>().add(
                                 ForgotPasswordResetSubmitted(
-                                  token: state.otp!,
-                                  password: _passwordController.text,
-                                  confirmPassword: _confirmPasswordController.text
-                                ),
+                                    token: state.otp!,
+                                    password: _passwordController.text,
+                                    confirmPassword:
+                                        _confirmPasswordController.text),
                               );
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -139,13 +137,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       backgroundColor: primaryBlueColor,
                     ),
                     SizedBox(height: SizeConfig.calHeightMultiplier(24)),
-
                     Image.asset(
                       logoTransparent,
                       fit: BoxFit.cover,
                       width: 200,
                     ),
-
                     const Text(
                       '© 2024 SCIN. All rights reserved. Unauthorized copying or distribution is prohibited.',
                       style: TextStyle(fontSize: 10, color: Colors.grey),
