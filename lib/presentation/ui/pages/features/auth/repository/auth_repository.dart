@@ -95,7 +95,7 @@ class AuthRepository {
       await sharedPreferencesService.saveString('user_id', user.id);
       await sharedPreferencesService.saveString('name', user.name);
       await sharedPreferencesService.saveString('email', user.email);
-      await sharedPreferencesService.saveString('phone', user.phone);
+      await sharedPreferencesService.saveString('phone', user.phone??'0');
 
       // save refresh and acces token
       await tokenService.saveAccessToken(
