@@ -59,7 +59,7 @@ dependencies:
   hive_generator: ^2.0.1
   flutter_image_compress: ^2.3.0
   connectivity_plus: ^6.1.0
-  logger: ^2.4.0
+  logger: ^2.5.0
   pinput: ^5.0.0
   google_sign_in: ^6.2.1
   dio: ^5.7.0
