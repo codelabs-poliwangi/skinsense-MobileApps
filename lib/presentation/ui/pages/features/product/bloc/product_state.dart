@@ -17,8 +17,8 @@ class ProductLoaded extends ProductState {
 
   ProductLoaded({
     required this.products,
-    bool hasReachedMax = false,
-  }) : super(hasReachedMax: hasReachedMax);
+    super.hasReachedMax,
+  });
   ProductLoaded copyWith({
     Products? products,
     bool? hasReachedMax,

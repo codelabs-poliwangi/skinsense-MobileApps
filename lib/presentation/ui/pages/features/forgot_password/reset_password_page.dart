@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/presentation/ui/pages/features/forgot_password/bloc/forgot_password_bloc.dart';
 import 'package:skinisense/presentation/ui/widget/custom_button.dart';
 import 'package:skinisense/presentation/ui/widget/custom_input.dart';
+
+import '../../../../../config/routes/Route.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   const ResetPasswordPage({super.key});
@@ -123,7 +124,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         if (_formKey.currentState!.validate()) {
                           context.read<ForgotPasswordBloc>().add(
                                 ForgotPasswordResetSubmitted(
-                                  token: state.otp!,
+                                  token: state.otp,
                                   password: _passwordController.text,
                                   confirmPassword: _confirmPasswordController.text
                                 ),

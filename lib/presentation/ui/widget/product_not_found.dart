@@ -32,7 +32,7 @@ class ProductNotFoudWidget extends StatelessWidget {
               ),
               Text(
                 textAlign: TextAlign.center,
-                '${message}',
+                message,
                 style: TextStyle(
                   color: Colors.black54,
                   fontWeight: FontWeight.normal,

@@ -2,7 +2,6 @@ import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skinisense/config/common/screen.dart';
-import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/dependency_injector.dart';
 import 'package:skinisense/domain/model/products.dart' as Products;
@@ -13,7 +12,6 @@ import 'package:skinisense/presentation/ui/pages/features/product/repository/pro
 import 'package:skinisense/presentation/ui/widget/product_katalog.dart';
 import 'package:skinisense/presentation/ui/widget/product_katalog_loading.dart';
 import 'package:skinisense/presentation/ui/widget/product_not_found.dart';
-import 'package:skinisense/presentation/ui/widget/search_textfield.dart';
 
 class ProductKatalogScope extends StatelessWidget {
   const ProductKatalogScope({super.key});

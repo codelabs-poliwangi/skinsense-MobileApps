@@ -10,7 +10,7 @@ class CustomInput extends StatelessWidget {
   final FormFieldValidator<String>? validator;
 
   const CustomInput({
-    Key? key,
+    super.key,
     required this.controller,
     required this.hintText,
     this.keyboardType = TextInputType.text,
@@ -18,7 +18,7 @@ class CustomInput extends StatelessWidget {
     this.isPasswordField = false,
     this.onToggleVisibility,
     this.validator,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

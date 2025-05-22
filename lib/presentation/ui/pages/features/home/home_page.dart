@@ -1,7 +1,6 @@
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
@@ -22,8 +21,6 @@ import 'package:skinisense/presentation/ui/widget/product_katalog_loading.dart';
 import 'package:skinisense/presentation/ui/widget/progress_skin.dart';
 import 'package:skinisense/presentation/ui/widget/routine_laoding_widget.dart';
 import 'package:skinisense/presentation/ui/widget/routine_list.dart';
-import 'package:skinisense/presentation/ui/widget/search_textfield.dart';
-import 'package:skinisense/presentation/ui/widget/alertdialog_widget.dart';
 import 'package:skinisense/presentation/ui/widget/skin_condition_loading_widget.dart';
 
 class HomePageScope extends StatelessWidget {
@@ -525,9 +522,9 @@ class NotificationWidget extends StatelessWidget {
   final bool isNotification;
 
   const NotificationWidget({
-    Key? key,
+    super.key,
     this.isNotification = false, // Inisialisasi default isNotification
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -2,10 +2,8 @@ import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skinisense/config/common/image_assets.dart';
-import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/dependency_injector.dart';
-import 'package:skinisense/domain/utils/logger.dart';
 import 'package:skinisense/presentation/ui/pages/features/questions/bloc/question_bloc.dart';
 import 'package:skinisense/presentation/ui/pages/features/questions/repository/question_repository.dart';
 import 'package:skinisense/presentation/ui/widget/button_primary.dart';
@@ -170,6 +168,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
             // Conditional rendering for the Previous button
             if (context.watch<QuestionBloc>().currentIndex != 0) ...[
               GestureDetector(
+                onTap: previousQuestion,
                 child: Container(
                   width: 58,
                   height: 58,
@@ -182,7 +181,6 @@ class _QuestionsPageState extends State<QuestionsPage> {
                     child: Icon(FluentSystemIcons.ic_fluent_arrow_left_regular),
                   ),
                 ),
-                onTap: previousQuestion,
               ),
               SizedBox(width: 16),
             ],

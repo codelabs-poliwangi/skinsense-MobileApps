@@ -1,11 +1,8 @@
 // import 'package:carousel_slider/carousel_slider.dart';
-import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
-import 'package:skinisense/dependency_injector.dart';
 import 'package:gauge_indicator/gauge_indicator.dart';
 import 'package:skinisense/presentation/ui/widget/custom_button.dart';
 
@@ -231,7 +228,7 @@ class ResultScanPage extends StatelessWidget {
 }
 
 class CardResultWidget extends StatefulWidget {
-  CardResultWidget({super.key});
+  const CardResultWidget({super.key});
 
   @override
   State<CardResultWidget> createState() => _CardResultWidgetState();

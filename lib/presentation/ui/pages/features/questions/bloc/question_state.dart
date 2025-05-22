@@ -15,11 +15,11 @@ final class QuestionOnLoaded extends QuestionState {
   final List<Question> listQuestions; // Change to List<Question>
   final int currentIndex; // Track the current question index
 
-  QuestionOnLoaded(this.listQuestions, this.currentIndex);
+  const QuestionOnLoaded(this.listQuestions, this.currentIndex);
 }
 
 final class QuestionError extends QuestionState {
   final String message;
 
-  QuestionError(this.message);
+  const QuestionError(this.message);
 }

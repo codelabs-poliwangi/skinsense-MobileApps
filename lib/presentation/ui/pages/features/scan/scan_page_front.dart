@@ -7,7 +7,6 @@ import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/domain/services/sharedPreferences-services.dart';
 import 'package:skinisense/presentation/ui/widget/alertdialog_widget.dart';
 import 'package:skinisense/presentation/ui/widget/camera_frame_scan.dart';
-import 'package:flutter/scheduler.dart' show WidgetsBinding;
 
 late List<CameraDescription> _cameras; // List camera use
 
@@ -292,7 +291,7 @@ class _ScanPageState extends State<ScanPageFront> {
                         height: MediaQuery.of(context).size.height,
                         color: Colors.black,
                       )
-                : Container(
+                : SizedBox(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
                     child: Center(

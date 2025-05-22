@@ -9,10 +9,10 @@ class ProductProvider {
   ProductProvider(this.apiClient);
   Future<Products> getProducts() async {
     try {
-      final response = await apiClient.get("$productUrl", requireAuth: true);
+      final response = await apiClient.get(productUrl, requireAuth: true);
 
       if (response.statusCode == 200) {
-        logger.i('Data product: ${response}');
+        logger.i('Data product: $response');
 
         // Pastikan response.data adalah List<dynamic>
         // Parse response sesuai struktur Products
@@ -27,7 +27,7 @@ class ProductProvider {
               as Meta, // Atau buat Meta default jika diperlukan
         );
 
-        logger.d('Successfully fetched ${products}');
+        logger.d('Successfully fetched $products');
         return products;
       } else {
         throw Exception('Failed to load products');
@@ -58,7 +58,7 @@ class ProductProvider {
               as Meta, // Atau buat Meta default jika diperlukan
         );
 
-        logger.d('Successfully fetched ${products}');
+        logger.d('Successfully fetched $products');
         return products;
       } else {
         throw Exception('Failed to load products');
@@ -85,7 +85,7 @@ class ProductProvider {
               as Meta, // Atau buat Meta default jika diperlukan
         );
 
-        logger.d('Successfully fetched ${products}');
+        logger.d('Successfully fetched $products');
         return products;
       } else {
         throw Exception('Failed to load products');
@@ -112,7 +112,7 @@ class ProductProvider {
               as Meta, // Atau buat Meta default jika diperlukan
         );
 
-        logger.d('Successfully fetched ${products}');
+        logger.d('Successfully fetched $products');
         return products;
       } else {
         throw Exception('Failed to load products');

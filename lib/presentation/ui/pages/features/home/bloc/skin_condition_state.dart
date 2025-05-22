@@ -20,5 +20,5 @@ final class SkinConditionLoaded extends SkinConditionState {
 final class SkinConditionError extends SkinConditionState {
   final String message;
 
-  SkinConditionError(this.message);
+  const SkinConditionError(this.message);
 }

@@ -13,7 +13,7 @@ class ApiResponse<T> {
   final String message;
   final int statusCode;
   final Map<String, String> headers;
-  final dynamic? metadata;
+  final dynamic metadata;
 
   ApiResponse({
     required this.data,
@@ -212,13 +212,13 @@ class ApiClient {
     final body = response.data;
 
     // Fungsi pembantu untuk mengonversi headers
-    Map<String, String> _convertHeaders(Headers headers) {
+    Map<String, String> convertHeaders(Headers headers) {
       return headers.map.map((key, value) =>
           MapEntry(key, (value is List) ? value.join(',') : value.toString()));
     }
 
     // Fungsi pembantu untuk mengekstrak pesan dengan aman
-    String _safeGetMessage(dynamic body) {
+    String safeGetMessage(dynamic body) {
       if (body is Map) {
         return body['message'] ?? 'No message available';
       }
@@ -226,14 +226,14 @@ class ApiClient {
     }
 
     // Fungsi pembantu untuk mengekstrak data dengan aman
-    dynamic _safeGetData(dynamic body) {
+    dynamic safeGetData(dynamic body) {
       if (body is Map) {
         return body['data'] ?? body;
       }
       return body;
     }
 
-    dynamic _safeGetMeta(dynamic body) {
+    dynamic safeGetMeta(dynamic body) {
       if (body is Map) {
         return body['meta']; // Kembalikan null jika tidak ada
       }
@@ -243,48 +243,48 @@ class ApiClient {
     // Pemeriksaan null safety untuk status code
     if ((response.statusCode ?? 0) >= 200 && (response.statusCode ?? 0) < 300) {
       return ApiResponse<T>(
-        headers: _convertHeaders(response.headers),
+        headers: convertHeaders(response.headers),
         statusCode: response.statusCode!,
-        message: _safeGetMessage(body),
-        data: _safeGetData(body),
-        metadata: _safeGetMeta(body),
+        message: safeGetMessage(body),
+        data: safeGetData(body),
+        metadata: safeGetMeta(body),
       );
     }
 
     switch (response.statusCode) {
       case 400:
         throw ApiException(
-          message: _safeGetMessage(body),
+          message: safeGetMessage(body),
           statusCode: response.statusCode,
           data: body,
         );
       case 401:
         throw ApiException(
-          message: _safeGetMessage(body),
+          message: safeGetMessage(body),
           statusCode: response.statusCode,
           data: body,
         );
       case 403:
         throw ApiException(
-          message: _safeGetMessage(body),
+          message: safeGetMessage(body),
           statusCode: response.statusCode,
           data: body,
         );
       case 404:
         throw ApiException(
-          message: _safeGetMessage(body),
+          message: safeGetMessage(body),
           statusCode: response.statusCode,
           data: body,
         );
       case 500:
         throw ApiException(
-          message: _safeGetMessage(body),
+          message: safeGetMessage(body),
           statusCode: response.statusCode,
           data: body,
         );
       default:
         throw ApiException(
-          message: _safeGetMessage(body),
+          message: safeGetMessage(body),
           statusCode: response.statusCode,
           data: body,
         );

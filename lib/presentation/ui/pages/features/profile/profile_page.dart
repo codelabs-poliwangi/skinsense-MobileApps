@@ -1,7 +1,6 @@
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
@@ -9,7 +8,6 @@ import 'package:skinisense/dependency_injector.dart';
 import 'package:skinisense/domain/services/sharedPreferences-services.dart';
 import 'package:skinisense/domain/utils/logger.dart';
 import 'package:skinisense/presentation/ui/pages/features/auth/bloc/auth_bloc.dart';
-import 'package:skinisense/presentation/ui/widget/button_primary.dart';
 
 class ProfilePageScope extends StatelessWidget {
   const ProfilePageScope({super.key});
@@ -20,7 +18,6 @@ class ProfilePageScope extends StatelessWidget {
       create: (context) => di<AuthBloc>(),
       child: ProfilePage(),
     );
-    ;
   }
 }
 

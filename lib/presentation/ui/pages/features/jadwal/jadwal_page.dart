@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:skinisense/config/common/image_assets.dart';
-import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/presentation/ui/pages/coming_soon.dart';
 
 class JadwalPageScope extends StatelessWidget {

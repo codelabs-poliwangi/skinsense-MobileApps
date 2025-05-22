@@ -4,7 +4,7 @@ class CustomLogoButton extends StatelessWidget {
   final String icon;
   final VoidCallback onPressed;
 
-  const CustomLogoButton({required this.icon, required this.onPressed});
+  const CustomLogoButton({super.key, required this.icon, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

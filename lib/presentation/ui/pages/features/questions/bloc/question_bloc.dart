@@ -52,9 +52,9 @@ class QuestionBloc extends Bloc<QuestionEvent, QuestionState> {
 
     on<QuestionSubmited>((event, emit) {
       if (answers.contains(null)) {
-        logger.w("Some questions are unanswered: ${answers}");
+        logger.w("Some questions are unanswered: $answers");
       } else {
-        logger.d("All answers are submitted: ${answers}");
+        logger.d("All answers are submitted: $answers");
       }
     });
 

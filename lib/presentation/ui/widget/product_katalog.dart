@@ -86,7 +86,7 @@ class ProductItemWidget extends StatelessWidget {
                           // strutStyle: StrutStyle(fontSize: 12.0),
                           maxLines: 2,
                           text: TextSpan(
-                            text: '${nameProduct}',
+                            text: nameProduct,
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.bold,

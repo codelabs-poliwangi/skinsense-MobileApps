@@ -13,14 +13,14 @@ class SkinConditionLoadingWidget extends StatelessWidget {
         Shimmer.fromColors(
             baseColor: Colors.grey[300]!,
             highlightColor: Colors.grey[200]!,
-            child: Container(
+            child: SizedBox(
               height: 20,
               width: 80,
             )),
         Shimmer.fromColors(
             baseColor: Colors.grey[300]!,
             highlightColor: Colors.grey[200]!,
-            child: Container(
+            child: SizedBox(
               height: 10,
               width: 90,
             )),
@@ -30,7 +30,7 @@ class SkinConditionLoadingWidget extends StatelessWidget {
         Shimmer.fromColors(
             baseColor: Colors.grey[300]!,
             highlightColor: Colors.grey[200]!,
-            child: Container(
+            child: SizedBox(
               height: 28,
               width: double.infinity,
             )),
@@ -40,7 +40,7 @@ class SkinConditionLoadingWidget extends StatelessWidget {
         Shimmer.fromColors(
             baseColor: Colors.grey[300]!,
             highlightColor: Colors.grey[200]!,
-            child: Container(
+            child: SizedBox(
               height: 28,
               width: double.infinity,
             )),
@@ -50,7 +50,7 @@ class SkinConditionLoadingWidget extends StatelessWidget {
         Shimmer.fromColors(
             baseColor: Colors.grey[300]!,
             highlightColor: Colors.grey[200]!,
-            child: Container(
+            child: SizedBox(
               height: 28,
               width: double.infinity,
             )),

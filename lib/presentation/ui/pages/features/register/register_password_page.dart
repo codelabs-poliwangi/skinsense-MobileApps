@@ -55,7 +55,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
       listener: (context, state) {
         print("password:  ${_passwordController.text}");
         print("status:  ${state.status}");
-        print("state :  ${state}");
+        print("state :  $state");
         print("is loading :  ${state.isLoading}");
         if (state.isLoading) {
           showDialog(

@@ -1,18 +1,14 @@
 // import 'package:carousel_slider/carousel_slider.dart';
-import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
-import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/dependency_injector.dart';
-import 'package:gauge_indicator/gauge_indicator.dart';
 import 'package:skinisense/domain/provider/product_provider.dart';
 import 'package:skinisense/presentation/ui/pages/features/home/bloc/product_bloc.dart';
 import 'package:skinisense/presentation/ui/pages/features/home/repository/product_repository.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/product_detail_page.dart';
-import 'package:skinisense/presentation/ui/widget/custom_button.dart';
 import 'package:skinisense/presentation/ui/widget/product_katalog.dart';
 
 class ResultRecomScope extends StatelessWidget {
@@ -140,32 +136,32 @@ class ResultRecomPage extends StatelessWidget {
                                 Navigator.push(context, MaterialPageRoute(
                                   builder: (context) {
                                     return ProductDetailPage(
-                                      id: state.products[index].id,
-                                      name: state.products[index].name,
-                                      price: state.products[index].price,
-                                      rating: state.products[index].rating ?? 0,
-                                      shop: state.products[index].shop,
-                                      image: state.products[index].image,
-                                      sold: state.products[index].sold,
+                                      id: state.products.data[index].id,
+                                      name: state.products.data[index].name,
+                                      price: state.products.data[index].price,
+                                      rating: state.products.data[index].rating ?? 0,
+                                      shop: state.products.data[index].shop,
+                                      image: state.products.data[index].image,
+                                      sold: state.products.data[index].sold,
                                       linkProduct:
-                                          state.products[index].linkProduct,
-                                      category: state.products[index].category,
+                                          state.products.data[index].linkProduct,
+                                      category: state.products.data[index].category,
                                     );
                                   },
                                 ));
                               },
                               child: ProductItemWidget(
                                 isKatalog: false,
-                                indexProduct: state.products[index].id,
-                                imageProduct: state.products[index].image,
-                                nameProduct: state.products[index].name,
-                                storeProduct: state.products[index].shop,
+                                indexProduct: state.products.data[index].id,
+                                imageProduct: state.products.data[index].image,
+                                nameProduct: state.products.data[index].name,
+                                storeProduct: state.products.data[index].shop,
                                 ratingProduct:
-                                    state.products[index].rating ?? 0,
+                                    state.products.data[index].rating ?? 0,
                               ),
                             );
                           },
-                          itemCount: state.products.length,
+                          itemCount: state.products.data.length,
                         );
                       } else if (state is ProductError) {
                         return Center(

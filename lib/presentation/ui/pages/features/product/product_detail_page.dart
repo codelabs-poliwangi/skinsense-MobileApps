@@ -121,17 +121,17 @@ class ProductDetailPage extends StatelessWidget {
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 24),
                       padding: EdgeInsets.symmetric(vertical: 3, horizontal: 9),
-                      child: Text(
-                        '$category',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.white,
-                        ),
-                      ),
                       decoration: BoxDecoration(
                         color: primaryBlueColor,
                         borderRadius: BorderRadius.all(
                           Radius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        category,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
                         ),
                       ),
                     ),

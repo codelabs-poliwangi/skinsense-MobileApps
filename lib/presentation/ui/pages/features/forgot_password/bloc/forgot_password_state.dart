@@ -41,5 +41,6 @@ final class ForgotPasswordState extends Equatable {
     );
   }
 
+  @override
   List<Object> get props => [status, email, otp, token, password, confirmPassword, error];
 }

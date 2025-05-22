@@ -7,7 +7,7 @@ part 'routine_event.dart';
 part 'routine_state.dart';
 
 class RoutineBloc extends Bloc<RoutineEvent, RoutineState> {
-  RoutineRepository _routineRepository;
+  final RoutineRepository _routineRepository;
   List<Routine> routines = [];
   RoutineBloc(this._routineRepository) : super(RoutineInitial()) {
     on<FetchRoutine>((event, emit) async {
