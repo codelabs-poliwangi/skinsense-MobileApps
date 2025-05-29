@@ -41,7 +41,8 @@ class _QuestionsPageState extends State<QuestionsPage> {
   void nextQuestion() {
     if (selectedAnswerIndex != -1) {
       print(
-          "Jawaban yang dipilih: ${context.read<QuestionBloc>().listQuestion[context.read<QuestionBloc>().currentIndex].option[selectedAnswerIndex]}");
+        "Jawaban yang dipilih: ${context.read<QuestionBloc>().listQuestion[context.read<QuestionBloc>().currentIndex].option[selectedAnswerIndex]}",
+      );
       setState(() {
         selectedAnswerIndex = -1; // Reset pilihan setelah pindah pertanyaan
       });
@@ -52,9 +53,9 @@ class _QuestionsPageState extends State<QuestionsPage> {
   }
 
   void previousQuestion() {
-    context
-        .read<QuestionBloc>()
-        .add(QuestionPrevious()); // Dispatch previous question event
+    context.read<QuestionBloc>().add(
+      QuestionPrevious(),
+    ); // Dispatch previous question event
 
     setState(() {});
   }
@@ -85,74 +86,80 @@ class _QuestionsPageState extends State<QuestionsPage> {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 24),
                 child: BlocBuilder<QuestionBloc, QuestionState>(
-                    builder: (context, state) {
-                  if (state is QuestionLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (state is QuestionOnLoaded) {
-                    final question = state.listQuestions;
-                    var currentIndex =
-                        context.read<QuestionBloc>().currentIndex;
-                    List listOption = question[currentIndex].option;
-                    return Column(
-                      children: [
-                        SizedBox(height: 24),
-                        Text(
-                          question[currentIndex].question,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: primaryBlueColor,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                  builder: (context, state) {
+                    if (state is QuestionLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is QuestionOnLoaded) {
+                      final question = state.listQuestions;
+                      var currentIndex = context
+                          .read<QuestionBloc>()
+                          .currentIndex;
+                      List listOption = question[currentIndex].option;
+                      return Column(
+                        children: [
+                          SizedBox(height: 24),
+                          Text(
+                            question[currentIndex].question,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: primaryBlueColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 30),
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: question.length,
-                            itemBuilder: (context, index) {
-                              bool isSelected = index == selectedAnswerIndex;
-                              return GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    selectedAnswerIndex = index;
-                                  });
-                                  context.read<QuestionBloc>().add(
-                                      SelectAnswer(listOption[index].id));
-                                },
-                                child: Container(
-                                  margin: EdgeInsets.only(bottom: 12),
-                                  width: double.infinity,
-                                  height: 60,
-                                  decoration: BoxDecoration(
-                                    color: isSelected
-                                        ? primaryBlueColor
-                                        : Colors.grey,
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  padding: EdgeInsets.symmetric(horizontal: 16),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      listOption[index].option,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.white,
+                          SizedBox(height: 30),
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: question.length,
+                              itemBuilder: (context, index) {
+                                bool isSelected = index == selectedAnswerIndex;
+                                return GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      selectedAnswerIndex = index;
+                                    });
+                                    context.read<QuestionBloc>().add(
+                                      SelectAnswer(
+                                        answer: listOption[index].id,
+                                        questionId: question[currentIndex].id,
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.only(bottom: 12),
+                                    width: double.infinity,
+                                    height: 60,
+                                    decoration: BoxDecoration(
+                                      color: isSelected
+                                          ? primaryBlueColor
+                                          : Colors.grey,
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                    ),
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        listOption[index].option,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                      ],
-                    );
-                  } else {
-                    return Container();
-                  }
-                }),
+                        ],
+                      );
+                    } else {
+                      return Container();
+                    }
+                  },
+                ),
               ),
             ),
           ],
@@ -186,13 +193,15 @@ class _QuestionsPageState extends State<QuestionsPage> {
             ],
             Expanded(
               child: ButtonPrimary(
-                mainButtonMessage: context.watch<QuestionBloc>().currentIndex ==
+                mainButtonMessage:
+                    context.watch<QuestionBloc>().currentIndex ==
                         context.watch<QuestionBloc>().listQuestion.length - 1
                     ? 'Finish'
                     : 'Next',
                 mainButton: () {
                   final questionBloc = context.read<QuestionBloc>();
-                  final isLastQuestion = questionBloc.currentIndex ==
+                  final isLastQuestion =
+                      questionBloc.currentIndex ==
                       questionBloc.listQuestion.length - 1;
 
                   if (isLastQuestion) {

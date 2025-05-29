@@ -11,6 +11,7 @@ class QuestionBloc extends Bloc<QuestionEvent, QuestionState> {
   final QuestionRepository _questionRepository;
   List<Question> listQuestion = [];
   int currentIndex = 0;
+  List<String?> questionId = [];
   List<String?> answers = [];
 
   QuestionBloc(this._questionRepository) : super(QuestionInitial()) {
@@ -24,6 +25,7 @@ class QuestionBloc extends Bloc<QuestionEvent, QuestionState> {
 
         if (listQuestion.isNotEmpty) {
           answers = List<String?>.filled(listQuestion.length, null);
+          questionId = List<String?>.filled(listQuestion.length, null); // ✅ Tambahkan ini
           logger.d("currentIndex: $currentIndex");
           emit(QuestionOnLoaded(listQuestion, currentIndex));
         } else {
@@ -54,15 +56,17 @@ class QuestionBloc extends Bloc<QuestionEvent, QuestionState> {
       if (answers.contains(null)) {
         logger.w("Some questions are unanswered: $answers");
       } else {
+        logger.d('all question id is ${questionId}');
         logger.d("All answers are submitted: $answers");
       }
     });
 
     on<SelectAnswer>((event, emit) {
       // Store the selected answer
-      if (answers.length > currentIndex) {
+      if (answers.length > currentIndex && questionId.length > currentIndex) {
         answers[currentIndex] = event.answer;
-        logger.d("Answer selected for question $currentIndex: ${event.answer}");
+        questionId[currentIndex] = event.questionId;
+        logger.d("Answer selected for question $questionId is : ${event.answer}");
         emit(QuestionOnLoaded(
             listQuestion, currentIndex)); // Emit the current state
       } else {

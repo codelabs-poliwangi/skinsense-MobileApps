@@ -22,12 +22,13 @@ class ScanGallery extends StatefulWidget {
 class _ScanGalleryState extends State<ScanGallery> {
   final List<File> _selectedImages = [];
   final ImagePicker _picker = ImagePicker();
+  final List<String> _imagePositions = ['Depan', 'Kiri', 'Kanan'];
 
   Future<void> _pickImage() async {
     if (_selectedImages.length >= 3) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Maksimal 3 gambar')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Maksimal 3 gambar')));
       return;
     }
 
@@ -44,9 +45,9 @@ class _ScanGalleryState extends State<ScanGallery> {
       }
     } catch (e) {
       print('Error picking image: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal memilih gambar: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Gagal memilih gambar: $e')));
     }
   }
 
@@ -65,10 +66,7 @@ class _ScanGalleryState extends State<ScanGallery> {
         automaticallyImplyLeading: true,
         title: const Text(
           'Scan Menggunakan Gallery',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
         centerTitle: true,
       ),
@@ -82,7 +80,7 @@ class _ScanGalleryState extends State<ScanGallery> {
                 style: TextStyle(fontSize: 14, color: Colors.black54),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height:20),
+              SizedBox(height: 20),
 
               // Tombol upload di tengah
               if (_selectedImages.isEmpty)
@@ -98,10 +96,11 @@ class _ScanGalleryState extends State<ScanGallery> {
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
+              SizedBox(height: 20),
               // Grid untuk menampilkan gambar yang dipilih
               if (_selectedImages.isNotEmpty)
                 GridView.builder(
@@ -125,6 +124,7 @@ class _ScanGalleryState extends State<ScanGallery> {
                   child: _buildAddImageButton(),
                 ),
 
+              SizedBox(height: 20),
               // Tombol proses scan
               if (_selectedImages.isNotEmpty)
                 ElevatedButton(
@@ -165,11 +165,8 @@ class _ScanGalleryState extends State<ScanGallery> {
             const SizedBox(height: 8),
             Text(
               'Tambah Gambar',
-              style: TextStyle(
-                color: primaryBlueColor,
-                fontSize: 12,
-              ),
-            )
+              style: TextStyle(color: primaryBlueColor, fontSize: 12),
+            ),
           ],
         ),
       ),
@@ -188,6 +185,12 @@ class _ScanGalleryState extends State<ScanGallery> {
             ),
           ),
         ),
+        Center(
+          child: Text(
+            _imagePositions[index],
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500,color: Colors.black45),
+          ),
+        ),
         Positioned(
           top: 5,
           right: 5,
@@ -198,11 +201,7 @@ class _ScanGalleryState extends State<ScanGallery> {
                 color: Colors.red.withOpacity(0.7),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.close,
-                color: Colors.white,
-                size: 20,
-              ),
+              child: const Icon(Icons.close, color: Colors.white, size: 20),
             ),
           ),
         ),

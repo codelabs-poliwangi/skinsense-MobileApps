@@ -27,7 +27,7 @@ class _ScanPageState extends State<ScanPageFront> {
   @override
   void initState() {
     super.initState();
-     WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _showIntroDialog();
       _requestCameraPermission();
     });
@@ -51,6 +51,7 @@ class _ScanPageState extends State<ScanPageFront> {
       _showSettingsDialog();
     }
   }
+
   void _showIntroDialog() {
     showDialog(
       context: context,
@@ -60,9 +61,9 @@ class _ScanPageState extends State<ScanPageFront> {
           message:
               'Sebelum memulai proses scan, pastikan wajah Anda bersih dari makeup. Ini penting agar analisis dapat mendeteksi kondisi kulit Anda dengan lebih tepat.',
           mainButton: () async {
-              Navigator.of(context).pop();
+            Navigator.of(context).pop();
           },
-          mainButtonMessage: 'Oke, Saya Sudah Membersihkan Make up',
+          mainButtonMessage: 'Oke',
         );
       },
     );
@@ -168,28 +169,34 @@ class _ScanPageState extends State<ScanPageFront> {
 
   // Function to initialize the camera
   void _initializeCamera(CameraDescription cameraDescription) {
-    controller = CameraController(cameraDescription, ResolutionPreset.max,
-        enableAudio: false);
-    controller.initialize().then((_) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {
-        _isCameraInitialized = true;
-      });
-    }).catchError((Object e) {
-      if (e is CameraException) {
-        switch (e.code) {
-          case 'CameraAccessDenied':
-            print('Camera access denied');
-            _showPermissionDialog();
-            break;
-          default:
-            print('Camera error: ${e.code}');
-            break;
-        }
-      }
-    });
+    controller = CameraController(
+      cameraDescription,
+      ResolutionPreset.max,
+      enableAudio: false,
+    );
+    controller
+        .initialize()
+        .then((_) {
+          if (!mounted) {
+            return;
+          }
+          setState(() {
+            _isCameraInitialized = true;
+          });
+        })
+        .catchError((Object e) {
+          if (e is CameraException) {
+            switch (e.code) {
+              case 'CameraAccessDenied':
+                print('Camera access denied');
+                _showPermissionDialog();
+                break;
+              default:
+                print('Camera error: ${e.code}');
+                break;
+            }
+          }
+        });
   }
 
   void switchCamera() {
@@ -261,6 +268,12 @@ class _ScanPageState extends State<ScanPageFront> {
   }
 
   @override
+  void dispose() {
+    controller.dispose(); // wajib untuk menghindari memory leak
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -269,28 +282,26 @@ class _ScanPageState extends State<ScanPageFront> {
             // Camera Preview or Black Screen Container
             _isCameraPermissionGranted
                 ? _isCameraInitialized
-                    ? SizedBox.expand(
-                        child: Stack(
-                          children: [
-                            // Camera Preview
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height,
-                              child: CameraPreview(controller),
-                            ),
+                      ? SizedBox.expand(
+                          child: Stack(
+                            children: [
+                              // Camera Preview
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                child: CameraPreview(controller),
+                              ),
 
-                            // Blurred overlay with guided frame
-                            CameraFrameScan(
-                              sideScan: 'Depan',
-                            )
-                          ],
-                        ),
-                      )
-                    : Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height,
-                        color: Colors.black,
-                      )
+                              // Blurred overlay with guided frame
+                              CameraFrameScan(sideScan: 'Depan'),
+                            ],
+                          ),
+                        )
+                      : Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+                          color: Colors.black,
+                        )
                 : SizedBox(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
@@ -343,11 +354,15 @@ class _ScanPageState extends State<ScanPageFront> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.transparent,
-                          border: Border.all(width: 1, color: primaryBlueColor), // Warna border
+                          border: Border.all(
+                            width: 1,
+                            color: primaryBlueColor,
+                          ), // Warna border
                         ),
                         child: Padding(
-                          padding:
-                              EdgeInsets.all(5), // Jarak antara border dan isi
+                          padding: EdgeInsets.all(
+                            5,
+                          ), // Jarak antara border dan isi
                           child: Container(
                             width: 80,
                             height: 80,
@@ -391,11 +406,5 @@ class _ScanPageState extends State<ScanPageFront> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
   }
 }

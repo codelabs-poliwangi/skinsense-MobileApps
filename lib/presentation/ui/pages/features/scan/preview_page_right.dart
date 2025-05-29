@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/domain/services/sharedPreferences-services.dart';
+import 'package:skinisense/domain/utils/logger.dart';
+import 'package:skinisense/presentation/ui/pages/features/questions/questions_intro.dart';
 import 'package:skinisense/presentation/ui/widget/alertdialog_widget.dart';
 import 'package:skinisense/presentation/ui/widget/button_primary.dart';
 import 'package:skinisense/presentation/ui/widget/button_secoundary.dart';
@@ -59,7 +61,8 @@ class _PreviewPageRightState extends State<PreviewPageRight> {
             child: Container(
               margin: const EdgeInsets.only(right: 24),
               child: Transform.rotate(
-                angle: 45 *
+                angle:
+                    45 *
                     (3.141592653589793 / 180), // Mengubah derajat ke radian
                 child: const Icon(
                   size: 40,
@@ -99,16 +102,15 @@ class _PreviewPageRightState extends State<PreviewPageRight> {
                                 fontSize: 20,
                               ),
                             ),
-                            SizedBox(
-                              height: 20,
-                            ),
+                            SizedBox(height: 20),
                             ClipRRect(
                               borderRadius: BorderRadius.circular(16),
                               child: SizedBox(
                                 height: 400,
                                 child: Image.file(
                                   File(
-                                      imagePath), // Menampilkan gambar dari File
+                                    imagePath,
+                                  ), // Menampilkan gambar dari File
                                 ),
                               ),
                             ),
@@ -133,8 +135,9 @@ class _PreviewPageRightState extends State<PreviewPageRight> {
                       mainButtonMessage: "Ambil Ulang",
                       mainButton: () {
                         // Hapus gambar di SharedPreferences
-                        SharedPreferencesService()
-                            .removeData('scan_face_right');
+                        SharedPreferencesService().removeData(
+                          'scan_face_right',
+                        );
                         Navigator.of(context).pushNamed(routeScanRight);
                       },
                     ),
@@ -143,20 +146,25 @@ class _PreviewPageRightState extends State<PreviewPageRight> {
                   Expanded(
                     child: ButtonPrimary(
                       mainButtonMessage: "Konfirmasi",
-                      mainButton: () {
-                        Future<String?> imageRightSide =
-                            SharedPreferencesService()
-                                .getString('scan_face_right');
-                        Future<String?> imageLeftSide =
-                            SharedPreferencesService()
-                                .getString('scan_face_left');
-                        Future<String?> imageFrontSide =
-                            SharedPreferencesService()
-                                .getString('scan_face_front');
-                        print(imageRightSide);
-                        print(imageLeftSide);
-                        print(imageFrontSide);
-                        // Navigator.of(context).pushNamed(routeScanRight);
+                      mainButton: () async {
+                        String? imageRightSide =
+                            await SharedPreferencesService().getString(
+                              'scan_face_right',
+                            );
+                        String? imageLeftSide = await SharedPreferencesService()
+                            .getString('scan_face_left');
+                        String? imageFrontSide =
+                            await SharedPreferencesService().getString(
+                              'scan_face_front',
+                            );
+                        logger.d(imageRightSide);
+                        logger.d(imageLeftSide);
+                        logger.d(imageFrontSide);
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => QuestionsIntro()),
+                          ModalRoute.withName('/home'),
+                        );
                       },
                     ),
                   ),
