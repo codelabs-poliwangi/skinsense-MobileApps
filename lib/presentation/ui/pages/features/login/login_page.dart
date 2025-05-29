@@ -132,11 +132,11 @@ class _LoginPageState extends State<LoginPage> {
                   // Username or email field
                   CustomInput(
                     controller: _emailController,
-                    hintText: 'Username or Email',
+                    hintText: 'Email',
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter an username or email!';
+                        return 'Please enter your email!';
                       }
                       return null;
                     },

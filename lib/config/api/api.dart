@@ -1,5 +1,5 @@
 // !base url
-const String baseUrl = "https://api.103.74.5.192.sslip.io/api";
+const String baseUrl = "http://10.0.2.2:8080/api";
 
 // !auth
 const String loginUrl = "/auth/login";

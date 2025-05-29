@@ -1,3 +1,4 @@
+import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skinisense/config/common/image_assets.dart';
@@ -19,7 +20,8 @@ class RegisterPasswordPage extends StatefulWidget {
 class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   bool _obscureText = true;
   bool _obscureTextConfirm = true;
   bool _rememberMe = false;
@@ -69,14 +71,84 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
           Navigator.of(context).pop(); // Close loading dialog
 
           if (state.status == RegisterStatus.passwordSuccess) {
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              routeLogin,
-              (route) => false,
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) {
+                return AlertDialog(
+                  scrollable: false,
+                  contentPadding: EdgeInsets.zero,
+                  content: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                      color: Colors.white,
+                    ),
+                    padding: EdgeInsets.all(32),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                          child: Icon(
+                            size: 60,
+                            FluentSystemIcons
+                                .ic_fluent_checkmark_circle_regular,
+                            color: Colors.green.shade300,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Center(
+                          child: Text(
+                            textAlign: TextAlign.center,
+                            "Succesfull Create Account ",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              fontSize: SizeConfig.calHeightMultiplier(20),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Center(
+                          child: Text(
+                            "Wellcome aboard",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontWeight: FontWeight.w400,
+                              fontSize: SizeConfig.calHeightMultiplier(16),
+                            ),
+                          ),
+                        ),
+                        Center(
+                          child: Text(
+                            "Your account has been created successfully",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontWeight: FontWeight.w400,
+                              fontSize: SizeConfig.calHeightMultiplier(16),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             );
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Registrasi Berhasil')),
-            );
+            Future.delayed(Duration(seconds: 1), () {
+              Navigator.of(context, rootNavigator: true).pop(); // Tutup dialog
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                routeLogin,
+                (route) => false,
+              );
+            });
+            // ScaffoldMessenger.of(
+            //   context,
+            // ).showSnackBar(SnackBar(content: Text('Registrasi Berhasil')));
           } else if (state.status == RegisterStatus.failure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.error ?? 'An error occurred')),
@@ -104,15 +176,17 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
                     Text(
                       'Create Your Account',
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          color: primaryBlueColor, fontWeight: FontWeight.w700),
+                        color: primaryBlueColor,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                     Opacity(
                       opacity: .5,
                       child: Text(
                         'Create an Account to Sign In',
                         style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                              color: primaryBlueColor,
-                            ),
+                          color: primaryBlueColor,
+                        ),
                       ),
                     ),
                     SizedBox(height: SizeConfig.calHeightMultiplier(24)),
@@ -160,7 +234,9 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
                         ),
                         Text(
                           'I agree with and Accept',
-                          style: TextStyle(fontSize: SizeConfig.calMultiplierText(11)),
+                          style: TextStyle(
+                            fontSize: SizeConfig.calMultiplierText(11),
+                          ),
                         ),
                         const SizedBox(width: 5),
                         GestureDetector(
@@ -177,20 +253,24 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
                     SizedBox(height: SizeConfig.calHeightMultiplier(12)),
 
                     CustomButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          context.read<RegisterBloc>().add(
-                                RegisterPasswordSubmitted(
-                                  _passwordController.text,
-                                  _confirmPasswordController.text,
-                                ),
-                              );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Validation failed')),
-                          );
-                        }
-                      },
+                      onPressed: _rememberMe
+                          ? () {
+                              if (_formKey.currentState!.validate()) {
+                                context.read<RegisterBloc>().add(
+                                  RegisterPasswordSubmitted(
+                                    _passwordController.text,
+                                    _confirmPasswordController.text,
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Validation failed'),
+                                  ),
+                                );
+                              }
+                            }
+                          : null,
                       text: 'Create Account',
                       fontSize: 14,
                       backgroundColor: primaryBlueColor,
@@ -210,39 +290,59 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: const [
-                                Expanded(child: Divider(color: primaryBlueColor)),
+                                Expanded(
+                                  child: Divider(color: primaryBlueColor),
+                                ),
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 8.0,
+                                  ),
                                   child: Text(
                                     'Or Login With',
-                                    style: TextStyle(color: primaryBlueColor, fontSize: 12),
+                                    style: TextStyle(
+                                      color: primaryBlueColor,
+                                      fontSize: 12,
+                                    ),
                                   ),
                                 ),
-                                Expanded(child: Divider(color: primaryBlueColor)),
+                                Expanded(
+                                  child: Divider(color: primaryBlueColor),
+                                ),
                               ],
                             ),
-                            SizedBox(height: SizeConfig.calHeightMultiplier(16)),
+                            SizedBox(
+                              height: SizeConfig.calHeightMultiplier(16),
+                            ),
 
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                CustomLogoButton(icon: imgLogoGoogle, onPressed: () {}),
+                                CustomLogoButton(
+                                  icon: imgLogoGoogle,
+                                  onPressed: () {},
+                                ),
                                 const SizedBox(width: 16),
-                                CustomLogoButton(icon: imgLogoFacebook, onPressed: () {}),
+                                CustomLogoButton(
+                                  icon: imgLogoFacebook,
+                                  onPressed: () {},
+                                ),
                                 const SizedBox(width: 16),
-                                CustomLogoButton(icon: imgLogoTwitter, onPressed: () {}),
+                                CustomLogoButton(
+                                  icon: imgLogoTwitter,
+                                  onPressed: () {},
+                                ),
                               ],
                             ),
-                            SizedBox(height: SizeConfig.calHeightMultiplier(24)),
+                            SizedBox(
+                              height: SizeConfig.calHeightMultiplier(24),
+                            ),
 
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
                                   "Have an account?",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
+                                  style: Theme.of(context).textTheme.bodyMedium!
                                       .copyWith(color: Colors.black),
                                 ),
                                 const SizedBox(width: 10),
@@ -252,9 +352,14 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium!
-                                        .copyWith(color: Colors.blue[900], fontWeight: FontWeight.bold),
+                                        .copyWith(
+                                          color: Colors.blue[900],
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                   ),
-                                  onTap: () => Navigator.of(context).pushNamed(routeLogin),
+                                  onTap: () => Navigator.of(
+                                    context,
+                                  ).pushNamed(routeLogin),
                                 ),
                               ],
                             ),

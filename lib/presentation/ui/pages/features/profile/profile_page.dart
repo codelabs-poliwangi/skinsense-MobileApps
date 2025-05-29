@@ -89,7 +89,7 @@ class ProfilePage extends StatelessWidget {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               image: DecorationImage(
-                                image: AssetImage(imageForgotPassword),
+                                image: AssetImage(imageUserDefault),
                                 fit: BoxFit.cover,
                               ),
                             ),
