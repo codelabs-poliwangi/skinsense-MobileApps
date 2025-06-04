@@ -2,8 +2,10 @@ import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skinisense/config/common/image_assets.dart';
+import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/dependency_injector.dart';
+import 'package:skinisense/domain/utils/logger.dart';
 import 'package:skinisense/presentation/ui/pages/features/questions/bloc/question_bloc.dart';
 import 'package:skinisense/presentation/ui/pages/features/questions/repository/question_repository.dart';
 import 'package:skinisense/presentation/ui/widget/button_primary.dart';
@@ -85,7 +87,23 @@ class _QuestionsPageState extends State<QuestionsPage> {
             SafeArea(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 24),
-                child: BlocBuilder<QuestionBloc, QuestionState>(
+                child: BlocConsumer<QuestionBloc, QuestionState>(
+                  listener: (context, state) {
+                    if (state is QuestionScanSuccess) {
+                      logger.d('go to scan loading');
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        routeLoadingScan,
+                        ModalRoute.withName(routeHome),
+                        arguments: state.resultQuestion,
+                      );
+                      // Navigator.pushNamed(
+                      //   context,
+                      //   routeLoadingScan,
+                      //   arguments: state.resultQuestion,
+                      // );
+                    }
+                  },
                   builder: (context, state) {
                     if (state is QuestionLoading) {
                       return const Center(child: CircularProgressIndicator());

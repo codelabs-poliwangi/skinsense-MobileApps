@@ -25,12 +25,16 @@ import 'package:skinisense/presentation/ui/pages/features/splash_onboard/splash_
 // import 'package:skinisense/presentation/ui/pages/features/auth/login_screen.dart';
 import 'package:skinisense/presentation/ui/pages/not_found_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/splash_onboard/onboard_page.dart';
+
+import '../../presentation/ui/pages/features/questions/model/result_question_list.dart';
+import '../../presentation/ui/pages/features/result/model/scan_successfull_response_model.dart';
+import '../../presentation/ui/pages/features/result/result_loading.dart';
 // import 'package:skinisense/presentation/ui/pages/features/auth/register_screen.dart';
 // import 'package:skinisense/presentation/ui/splash_screen.dart';
 
 class Routes {
   static Route onRoute(RouteSettings settings) {
-    final args = settings.arguments as Map<String, dynamic>?;
+    // final args = settings.arguments as Map<String, dynamic>?;
     switch (settings.name) {
       case routeInitial:
         return PageTransition(
@@ -110,11 +114,20 @@ class Routes {
           child: const PreviewPageRight(),
           settings: settings,
         );
-      case routeResultScan:
+      case routeLoadingScan:
+        final args = settings.arguments as List<ResultQuestionList>;
         return PageTransition(
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
-          child: ResultScanPage(),
+          child: ResultLoading(question: args,),
+          settings: settings,
+        );
+      case routeResultScan:
+        final args = settings.arguments as ScanSuccesfullResponseModel;
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 300),
+          child: ResultScanPage(result: args,),
           settings: settings,
         );
       case routeResultRecom:
@@ -179,13 +192,6 @@ class Routes {
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
           child: const LoginScope(),
-          settings: settings,
-        );
-      case routeRegister:
-        return PageTransition(
-          type: PageTransitionType.fade,
-          duration: const Duration(milliseconds: 300),
-          child: const RegisterScope(),
           settings: settings,
         );
       case routeProductKatalog:

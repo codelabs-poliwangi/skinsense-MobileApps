@@ -45,6 +45,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
       onPressed: () {
         Navigator.of(context).pushNamed(routeScanChoice);
         // Navigator.of(context).pushNamed(routeScanFront);
+        // Navigator.of(context).pushNamed(routeResultScan);
       },
       child: Image(
         width: SizeConfig.calWidthMultiplier(32),

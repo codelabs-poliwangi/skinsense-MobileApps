@@ -1,13 +1,42 @@
 // import 'package:carousel_slider/carousel_slider.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:gauge_indicator/gauge_indicator.dart';
+import 'package:skinisense/dependency_injector.dart';
+import 'package:skinisense/presentation/ui/pages/features/result/model/scan_successfull_response_model.dart';
 import 'package:skinisense/presentation/ui/widget/custom_button.dart';
 
-class ResultScanPage extends StatelessWidget {
-  const ResultScanPage({super.key});
+import '../../../../../config/common/image_assets.dart';
+import '../../../../../domain/services/sharedPreferences-services.dart';
+
+class ResultScanPageScope extends StatelessWidget {
+  final ScanSuccesfullResponseModel result;
+  const ResultScanPageScope({super.key, required this.result});
+
+  @override
+  Widget build(BuildContext context) {
+    return ResultScanPage(result: result);
+  }
+}
+
+class ResultScanPage extends StatefulWidget {
+  final ScanSuccesfullResponseModel result;
+  const ResultScanPage({super.key, required this.result});
+
+  @override
+  State<ResultScanPage> createState() => _ResultScanPageState();
+}
+
+class _ResultScanPageState extends State<ResultScanPage> {
+  double mainLevel = 50;
+  Future<String?> _fetchUserName(BuildContext context) async {
+    return di<SharedPreferencesService>().getString('name') ?? 'Guest';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,33 +53,43 @@ class ResultScanPage extends StatelessWidget {
                 backgroundColor: lightBlueColor,
                 automaticallyImplyLeading: false,
                 expandedHeight: SizeConfig.calHeightMultiplier(280),
-                flexibleSpace: FlexibleSpaceBar(
-                  background: CardResultWidget(),
-                ),
+                flexibleSpace: FlexibleSpaceBar(background: CardResultWidget()),
               ),
               SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    SizedBox(height: SizeConfig.calHeightMultiplier(20)),
-                    Container(
-                        decoration: const BoxDecoration(
-                            color: Colors.white,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(16))),
-                        margin: EdgeInsets.only(
-                          top: 0,
-                          left: SizeConfig.calWidthMultiplier(24),
-                          right: SizeConfig.calWidthMultiplier(24),
-                          bottom: SizeConfig.calHeightMultiplier(16),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                            vertical: SizeConfig.calHeightMultiplier(20),
-                            horizontal: SizeConfig.calHeightMultiplier(20)),
-                        child: Wrap(
+                delegate: SliverChildListDelegate([
+                  SizedBox(height: SizeConfig.calHeightMultiplier(20)),
+                  Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                    ),
+                    margin: EdgeInsets.only(
+                      top: 0,
+                      left: SizeConfig.calWidthMultiplier(24),
+                      right: SizeConfig.calWidthMultiplier(24),
+                      bottom: SizeConfig.calHeightMultiplier(16),
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      vertical: SizeConfig.calHeightMultiplier(20),
+                      horizontal: SizeConfig.calHeightMultiplier(20),
+                    ),
+                    child: FutureBuilder(
+                      future: _fetchUserName(context),
+                      builder: (context, asyncSnapshot) {
+                        String userName = 'Guest';
+                        if (asyncSnapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          userName = 'Loading...';
+                        } else if (asyncSnapshot.hasError) {
+                          userName = 'Error';
+                        } else if (asyncSnapshot.hasData) {
+                          userName = asyncSnapshot.data!;
+                        }
+                        return Wrap(
                           runSpacing: 10,
                           children: [
                             Text(
-                              'Hai, Jennife Lawr',
+                              'Hai, $userName',
                               style: TextStyle(
                                 color: primaryBlueColor,
                                 fontSize: SizeConfig.calHeightMultiplier(20),
@@ -65,13 +104,18 @@ class ResultScanPage extends StatelessWidget {
                               ),
                             ),
                             CustomRadialGauge(
-                              value: 90,
+                              value: mainLevel,
                               label: "Acne",
+                              colorsGauge: mainLevel < 30
+                                  ? Colors.green
+                                  : mainLevel < 50
+                                  ? Colors.yellow
+                                  : Colors.red,
                             ),
                             Text(
                               'Hasil Analisa Kulit Anda',
                               style: TextStyle(
-                                color: primaryBlueColor,
+                                color: blueTextColor,
                                 fontSize: SizeConfig.calHeightMultiplier(16),
                                 fontWeight: FontWeight.w600,
                               ),
@@ -90,7 +134,8 @@ class ResultScanPage extends StatelessWidget {
                                   height: SizeConfig.calWidthMultiplier(80),
                                   decoration: BoxDecoration(
                                     borderRadius: const BorderRadius.all(
-                                        Radius.circular(16)),
+                                      Radius.circular(16),
+                                    ),
                                     color: primaryBlueColor.withOpacity(.5),
                                   ),
                                   child: Column(
@@ -99,20 +144,19 @@ class ResultScanPage extends StatelessWidget {
                                       Text(
                                         "50%",
                                         style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize:
-                                                SizeConfig.calWidthMultiplier(
-                                                    20),
-                                            color: Colors.white),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize:
+                                              SizeConfig.calWidthMultiplier(20),
+                                          color: Colors.white,
+                                        ),
                                       ),
                                       Text(
                                         "Flex",
                                         style: TextStyle(
-                                            fontSize:
-                                                SizeConfig.calWidthMultiplier(
-                                                    12),
-                                            color:
-                                                Colors.white.withOpacity(.8)),
+                                          fontSize:
+                                              SizeConfig.calWidthMultiplier(12),
+                                          color: Colors.white.withOpacity(.8),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -122,8 +166,9 @@ class ResultScanPage extends StatelessWidget {
                                   width: SizeConfig.calWidthMultiplier(90),
                                   height: SizeConfig.calWidthMultiplier(90),
                                   decoration: const BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(16)),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(16),
+                                    ),
                                     color: primaryBlueColor,
                                   ),
                                   child: Column(
@@ -132,20 +177,19 @@ class ResultScanPage extends StatelessWidget {
                                       Text(
                                         "89%",
                                         style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize:
-                                                SizeConfig.calWidthMultiplier(
-                                                    20),
-                                            color: Colors.white),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize:
+                                              SizeConfig.calWidthMultiplier(20),
+                                          color: Colors.white,
+                                        ),
                                       ),
                                       Text(
                                         "Acne",
                                         style: TextStyle(
-                                            fontSize:
-                                                SizeConfig.calWidthMultiplier(
-                                                    12),
-                                            color:
-                                                Colors.white.withOpacity(.8)),
+                                          fontSize:
+                                              SizeConfig.calWidthMultiplier(12),
+                                          color: Colors.white.withOpacity(.8),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -156,7 +200,8 @@ class ResultScanPage extends StatelessWidget {
                                   height: SizeConfig.calWidthMultiplier(80),
                                   decoration: BoxDecoration(
                                     borderRadius: const BorderRadius.all(
-                                        Radius.circular(16)),
+                                      Radius.circular(16),
+                                    ),
                                     color: primaryBlueColor.withOpacity(.5),
                                   ),
                                   child: Column(
@@ -165,20 +210,19 @@ class ResultScanPage extends StatelessWidget {
                                       Text(
                                         "45%",
                                         style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize:
-                                                SizeConfig.calWidthMultiplier(
-                                                    20),
-                                            color: Colors.white),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize:
+                                              SizeConfig.calWidthMultiplier(20),
+                                          color: Colors.white,
+                                        ),
                                       ),
                                       Text(
                                         "Wrinkle",
                                         style: TextStyle(
-                                            fontSize:
-                                                SizeConfig.calWidthMultiplier(
-                                                    12),
-                                            color:
-                                                Colors.white.withOpacity(.8)),
+                                          fontSize:
+                                              SizeConfig.calWidthMultiplier(12),
+                                          color: Colors.white.withOpacity(.8),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -200,16 +244,23 @@ class ResultScanPage extends StatelessWidget {
                               ),
                             ),
                             SizedBox(
-                                height: SizeConfig.calHeightMultiplier(50)),
+                              height: SizeConfig.calHeightMultiplier(50),
+                            ),
                             CustomButton(
-                                onPressed: () {
-                                  debugPrint('Clicked');
-                                  Navigator.of(context).pushReplacementNamed(routeResultRecom);
-                                }, text: 'Rekomendasi Product')
+                              onPressed: () {
+                                debugPrint('Clicked');
+                                Navigator.of(
+                                  context,
+                                ).pushNamed(routeResultRecom);
+                              },
+                              text: 'Rekomendasi Product',
+                            ),
                           ],
-                        )),
-                  ],
-                ),
+                        );
+                      },
+                    ),
+                  ),
+                ]),
               ),
               // Membungkus GridView.builder di dalam SliverToBoxAdapter
               // Wrap the BlocBuilder with SliverToBoxAdapter to handle non-sliver content
@@ -238,10 +289,12 @@ class _CardResultWidgetState extends State<CardResultWidget> {
   final ScrollController _scrollController = ScrollController();
 
   double _scrollPosition = 0.0;
+  List<String> images = [];
 
   @override
   void initState() {
     super.initState();
+    _loadImagesFromSharedPreferences();
     _scrollController.addListener(() {
       setState(() {
         _scrollPosition = _scrollController.position.pixels;
@@ -249,12 +302,27 @@ class _CardResultWidgetState extends State<CardResultWidget> {
     });
   }
 
-  final List<String> images = [
-    'https://images.unsplash.com/photo-1719603785926-84d214438120?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://images.unsplash.com/photo-1719603785926-84d214438120?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://images.unsplash.com/photo-1586871608370-4adee64d1794?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2862&q=80',
-    'https://images.unsplash.com/photo-1586901533048-0e856dff2c0d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80',
-  ];
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadImagesFromSharedPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final imageRight = prefs.getString('scan_face_right');
+    final imageLeft = prefs.getString('scan_face_left');
+    final imageFront = prefs.getString('scan_face_front');
+
+    setState(() {
+      images = [
+        if (imageRight != null) imageRight,
+        if (imageLeft != null) imageLeft,
+        if (imageFront != null) imageFront,
+      ];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -264,115 +332,141 @@ class _CardResultWidgetState extends State<CardResultWidget> {
     //     ? (_scrollPosition / maxScroll).clamp(0.0, 1.0)
     //     : 0.0;
     return Container(
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(16),
-            bottomRight: Radius.circular(16),
-          ),
-          color: primaryBlueColor,
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(16),
+          bottomRight: Radius.circular(16),
         ),
-        width: double.infinity,
-        height: SizeConfig.calHeightMultiplier(260),
-        child: Stack(
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: SizeConfig.calWidthMultiplier(24),
-                vertical: SizeConfig.calHeightMultiplier(16),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: SizeConfig.calHeightMultiplier(12)),
-                  Text(
+        color: primaryBlueColor,
+      ),
+      width: double.infinity,
+      height: SizeConfig.calHeightMultiplier(260),
+      child: Stack(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(
+              // horizontal: SizeConfig.calWidthMultiplier(24),
+              vertical: SizeConfig.calHeightMultiplier(16),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: SizeConfig.calHeightMultiplier(12)),
+                Padding(
+                  padding: const EdgeInsets.only(left: 24),
+                  child: Text(
                     'Face Scan Result',
                     style: TextStyle(
-                        fontSize: SizeConfig.calHeightMultiplier(18),
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: SizeConfig.calHeightMultiplier(20)),
-                  SingleChildScrollView(
-                    controller: _scrollController,
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 150,
-                          height: 150,
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(16)),
-                            color: Colors.grey,
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(16),
-                            child: Image.network(
-                              images[0],
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: SizeConfig.calWidthMultiplier(10)),
-                        Container(
-                          width: 150,
-                          height: 150,
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(16)),
-                            color: Colors.grey,
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(16),
-                            child: Image.network(
-                              images[0],
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: SizeConfig.calWidthMultiplier(10)),
-                        Container(
-                          width: 150,
-                          height: 150,
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(16)),
-                            color: Colors.grey,
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(16),
-                            child: Image.network(
-                              images[0],
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        ),
-                      ],
+                      fontSize: SizeConfig.calHeightMultiplier(18),
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ],
-              ),
+                ),
+                SizedBox(height: SizeConfig.calHeightMultiplier(20)),
+                SingleChildScrollView(
+                  controller: _scrollController,
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 150,
+                        height: 150,
+                        margin: EdgeInsets.only(left: 24),
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(16)),
+                          color: Colors.grey,
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child:
+                              images[0] != null && File(images[0]).existsSync()
+                              ? Image.file(File(images[0]), fit: BoxFit.fill)
+                              : Padding(
+                                  padding: const EdgeInsets.all(24),
+                                  child: Image.asset(
+                                    imageDefault,
+                                    color: Colors.black38,
+                                  ),
+                                ),
+                        ),
+                      ),
+                      SizedBox(width: SizeConfig.calWidthMultiplier(10)),
+                      Container(
+                        width: 150,
+                        height: 150,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(16)),
+                          color: Colors.grey,
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child:
+                              images[1] != null && File(images[1]).existsSync()
+                              ? Image.file(File(images[1]), fit: BoxFit.fill)
+                              : Padding(
+                                  padding: const EdgeInsets.all(24),
+                                  child: Image.asset(
+                                    imageDefault,
+                                    color: Colors.black38,
+                                  ),
+                                ),
+                        ),
+                      ),
+                      SizedBox(width: SizeConfig.calWidthMultiplier(10)),
+                      Container(
+                        width: 150,
+                        height: 150,
+                        margin: EdgeInsets.only(right: 24),
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(16)),
+                          color: Colors.grey,
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child:
+                              images[2] != null && File(images[2]).existsSync()
+                              ? Image.file(File(images[2]), fit: BoxFit.fill)
+                              : Padding(
+                                  padding: const EdgeInsets.all(24),
+                                  child: Image.asset(
+                                    imageDefault,
+                                    color: Colors.black38,
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 }
 
 class CustomRadialGauge extends StatelessWidget {
   const CustomRadialGauge({
     super.key,
+    required this.colorsGauge,
     required this.value,
     required this.label,
   });
-
+  final Color colorsGauge;
   final double value;
   final String label;
 
   @override
   Widget build(BuildContext context) {
     return AnimatedRadialGauge(
-      duration: const Duration(seconds: 1),
+      duration: Duration(seconds: 1),
       value: value,
       radius: 200,
       builder: (context, child, value) => _buildGaugeContent(value),
-      axis: const GaugeAxis(
+      axis: GaugeAxis(
         min: 0,
         max: 100,
         degrees: 180,
@@ -381,9 +475,7 @@ class CustomRadialGauge extends StatelessWidget {
           background: Color(0xFFDFE2EC),
           segmentSpacing: 4,
         ),
-        progressBar: GaugeProgressBar.rounded(
-          color: primaryBlueColor,
-        ),
+        progressBar: GaugeProgressBar.rounded(color: colorsGauge),
       ),
     );
   }
@@ -402,9 +494,7 @@ class CustomRadialGauge extends StatelessWidget {
         ),
         Text(
           label,
-          style: TextStyle(
-            fontSize: SizeConfig.calWidthMultiplier(20),
-          ),
+          style: TextStyle(fontSize: SizeConfig.calWidthMultiplier(20)),
         ),
       ],
     );

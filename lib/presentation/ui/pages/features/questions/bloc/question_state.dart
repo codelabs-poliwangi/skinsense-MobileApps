@@ -17,7 +17,12 @@ final class QuestionOnLoaded extends QuestionState {
 
   const QuestionOnLoaded(this.listQuestions, this.currentIndex);
 }
+final class QuestionScanSuccess extends QuestionState{
+  final List<ResultQuestionList> resultQuestion;
 
+  const QuestionScanSuccess({required this.resultQuestion});
+  
+}
 final class QuestionError extends QuestionState {
   final String message;
 

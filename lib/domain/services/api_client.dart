@@ -154,7 +154,7 @@ class ApiClient {
 
   Future<ApiResponse<T>> post<T>(
     String path, {
-    Map<String, dynamic>? data,
+    dynamic data,
     Map<String, dynamic>? queryParameters,
     Map<String, String>? headers,
     bool requireAuth = true,
@@ -164,7 +164,13 @@ class ApiClient {
         baseUrl + path,
         data: data,
         queryParameters: queryParameters,
-        options: Options(headers: headers, extra: {'requireAuth': requireAuth}),
+        options: Options(
+          headers: headers,
+          extra: {'requireAuth': requireAuth},
+          contentType: data is FormData
+              ? 'multipart/form-data'
+              : 'application/json',
+        ),
       );
       logger.d(
         "fetching api post, status code ${response.statusCode} data ${response.data}",
@@ -181,7 +187,7 @@ class ApiClient {
 
   Future<ApiResponse<T>> put<T>(
     String path, {
-    Map<String, dynamic>? data,
+    dynamic data,
     Map<String, dynamic>? queryParameters,
     Map<String, String>? headers,
     bool requireAuth = true,
@@ -191,7 +197,13 @@ class ApiClient {
         baseUrl + path,
         data: data,
         queryParameters: queryParameters,
-        options: Options(headers: headers, extra: {'requireAuth': requireAuth}),
+        options: Options(
+          headers: headers,
+          extra: {'requireAuth': requireAuth},
+          contentType: data is FormData
+              ? 'multipart/form-data'
+              : 'application/json',
+        ),
       );
       logger.d(
         "fetching api put, status code ${response.statusCode} data ${response.data}",

@@ -1,6 +1,6 @@
 // !base url
-const String baseUrl = "http://10.0.2.2:8080/api";
-// const String baseUrl = "http://v8gg4c8wogg0kw4c4088skos.103.92.209.22.sslip.io/api";
+// const String baseUrl = "http://10.0.2.2:8080/api";
+const String baseUrl = "http://v8gg4c8wogg0kw4c4088skos.103.92.209.22.sslip.io/api";
 
 // !auth
 const String loginUrl = "/auth/login";
@@ -32,3 +32,7 @@ const String skinConditionUrl = "https://retoolapi.dev/kCYWJj/skin_condition";
 // const String questionUrl = "https://mocki.io/v1/8d631335-2bd8-468a-9ae9-197bdf30f4f4";
 const String questionUrl = "/questions";
 
+
+// !scan 
+const String resultMachineLearingUrl = "/machine-learning/scan";
+const String recomendationMachineLearingUrl = "/machine-learning";
