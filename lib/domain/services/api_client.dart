@@ -65,7 +65,13 @@ class ApiClient {
           }
           return handler.next(options);
         },
-        onResponse: (response, handler) {
+        onResponse: (response, handler) async {
+          if (response.statusCode == 401 &&
+              response.data['message'] == 'Unauthorized') {
+            // !cehcking accestoken is exp
+            logger.d('access token exp');
+            await _handleUnauthorizedError();
+          }
           return handler.next(response);
         },
         onError: (DioException e, handler) async {
@@ -106,7 +112,8 @@ class ApiClient {
         logger.d('succesfull create accesToken');
         // Proses refresh token normal
         await tokenService.deleteAccessToken();
-        final accesToken = response.data['data']['access_token'] as String;
+        logger.d('acces Token ${response.data['access_token']}');
+        final accesToken = response.data['access_token']; //! error
         await tokenService.saveAccessToken(accesToken);
       }
     } catch (e) {

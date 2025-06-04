@@ -76,7 +76,7 @@ class _ScanGalleryState extends State<ScanGallery> {
           child: Column(
             children: [
               Text(
-                "Sebelum memulai proses scan, pastikan gambar wajah yang Anda pilih, bersih dari makeup.",
+                "Sebelum memulai proses scan, pastikan gambar wajah yang Anda pilih, bersih dari makeup. dengan urutan depan, kiri, dan kanan",
                 style: TextStyle(fontSize: 14, color: Colors.black54),
                 textAlign: TextAlign.center,
               ),
