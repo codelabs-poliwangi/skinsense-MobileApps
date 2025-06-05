@@ -12,6 +12,7 @@ import 'package:skinisense/presentation/ui/pages/features/home/home_wrapper.dart
 import 'package:skinisense/presentation/ui/pages/features/product/product_katalog_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/questions/questions_intro.dart';
 import 'package:skinisense/presentation/ui/pages/features/result/package/package_from_loading_to_scan_result.dart';
+import 'package:skinisense/presentation/ui/pages/features/result/package/package_from_resul_scan_to_result_recom.dart';
 import 'package:skinisense/presentation/ui/pages/features/result/result_recom_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/preview_page_front.dart';
 import 'package:skinisense/presentation/ui/pages/features/scan/preview_page_left.dart';
@@ -132,11 +133,11 @@ class Routes {
           settings: settings,
         );
       case routeResultRecom:
-      final args = settings.arguments as String;
+      final args = settings.arguments as PackageFromResulScanToResultRecom;
         return PageTransition(
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
-          child: ResultRecomScope(id: args,),
+          child: ResultRecomScope(package: args,),
           settings: settings,
         );
       case routeRegister:

@@ -9,6 +9,7 @@ import 'package:skinisense/config/theme/color.dart';
 import 'package:gauge_indicator/gauge_indicator.dart';
 import 'package:skinisense/dependency_injector.dart';
 import 'package:skinisense/presentation/ui/pages/features/result/package/package_from_loading_to_scan_result.dart';
+import 'package:skinisense/presentation/ui/pages/features/result/package/package_from_resul_scan_to_result_recom.dart';
 import 'package:skinisense/presentation/ui/widget/custom_button.dart';
 
 import '../../../../../config/common/image_assets.dart';
@@ -54,201 +55,215 @@ class _ResultScanPageState extends State<ResultScanPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: null,
-      backgroundColor: lightBlueColor,
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              pinned: false,
-              backgroundColor: lightBlueColor,
-              automaticallyImplyLeading: false,
-              expandedHeight: SizeConfig.calHeightMultiplier(280),
-              flexibleSpace: FlexibleSpaceBar(background: CardResultWidget()),
-            ),
-            SliverList(
-              delegate: SliverChildListDelegate([
-                SizedBox(height: SizeConfig.calHeightMultiplier(20)),
-                Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(16)),
-                  ),
-                  margin: EdgeInsets.only(
-                    top: 0,
-                    left: SizeConfig.calWidthMultiplier(24),
-                    right: SizeConfig.calWidthMultiplier(24),
-                    bottom: SizeConfig.calHeightMultiplier(16),
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    vertical: SizeConfig.calHeightMultiplier(20),
-                    horizontal: SizeConfig.calHeightMultiplier(20),
-                  ),
-                  child: FutureBuilder(
-                    future: _fetchUserName(context),
-                    builder: (context, asyncSnapshot) {
-                      String userName = 'Guest';
-                      if (asyncSnapshot.connectionState ==
-                          ConnectionState.waiting) {
-                        userName = 'Loading...';
-                      } else if (asyncSnapshot.hasError) {
-                        userName = 'Error';
-                      } else if (asyncSnapshot.hasData) {
-                        userName = asyncSnapshot.data!;
-                      }
-                      return Wrap(
-                        runSpacing: 10,
-                        children: [
-                          Text(
-                            'Hai, $userName',
-                            style: TextStyle(
-                              color: primaryBlueColor,
-                              fontSize: SizeConfig.calHeightMultiplier(20),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          Text(
-                            'Berikut laporan hasil analisis kulitmu by SCIN',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: SizeConfig.calHeightMultiplier(12),
-                            ),
-                          ),
-                          CustomRadialGauge(
-                            value: reorderedConditions[selectedIndex]['value'],
-                            label: reorderedConditions[selectedIndex]['label'],
-                            colorsGauge:
-                                reorderedConditions[selectedIndex]['value'] <
-                                    30
-                                ? Colors.green
-                                : reorderedConditions[selectedIndex]['value'] <
-                                      50
-                                ? Colors.yellow
-                                : Colors.red,
-                          ),
-    
-                          Text(
-                            'Hasil Analisa Kulit Anda',
-                            style: TextStyle(
-                              color: blueTextColor,
-                              fontSize: SizeConfig.calHeightMultiplier(16),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          Text(
-                            'Kami telah menganalisis kondisi kulit Anda untuk memberikan informasi yang akurat dan mendetail. Berikut adalah hasilnya:',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: SizeConfig.calHeightMultiplier(12),
-                            ),
-                          ),
-                          SizedBox(height: SizeConfig.calHeightMultiplier(60)),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: List.generate(3, (index) {
-                              final item = reorderedConditions[index];
-                              final isSelected = selectedIndex == index;
-                              return GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    selectedIndex = index;
-                                  });
-                                },
-                                child: Container(
-                                  width: SizeConfig.calWidthMultiplier(80),
-                                  height: SizeConfig.calWidthMultiplier(80),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16),
-                                    color: isSelected
-                                        ? primaryBlueColor
-                                        : primaryBlueColor.withOpacity(.5),
-                                    boxShadow: isSelected
-                                        ? [
-                                            BoxShadow(
-                                              color: Colors.blueAccent,
-                                              blurRadius: 8,
-                                            ),
-                                          ]
-                                        : [],
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        '${item['value'].toStringAsFixed(0)}%',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize:
-                                              SizeConfig.calWidthMultiplier(
-                                                20,
-                                              ),
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      Text(
-                                        item['label'],
-                                        style: TextStyle(
-                                          fontSize:
-                                              SizeConfig.calWidthMultiplier(
-                                                12,
-                                              ),
-                                          color: Colors.white.withOpacity(.8),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }),
-                          ),
-    
-                          SizedBox(height: SizeConfig.calHeightMultiplier(90),),
-                          Text(
-                            widget.result.description,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: SizeConfig.calHeightMultiplier(12),
-                            ),
-                          ),
-                          SizedBox(height: SizeConfig.calHeightMultiplier(20)),
-                          Text(
-                            'Temukan rekomendasi produk perawatan terbaik untuk kulit Anda di sini!',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: SizeConfig.calHeightMultiplier(12),
-                            ),
-                          ),
-                          SizedBox(
-                            height: SizeConfig.calHeightMultiplier(50),
-                          ),
-                          CustomButton(
-                            onPressed: () {
-                              debugPrint('Clicked');
-                              Navigator.of(context).pushNamed(
-                                routeResultRecom,
-                                arguments: widget.result.id,
-                              );
-                            },
-                            text: 'Rekomendasi Product',
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              ]),
-            ),
-            // Membungkus GridView.builder di dalam SliverToBoxAdapter
-            // Wrap the BlocBuilder with SliverToBoxAdapter to handle non-sliver content
-            // Tambahkan padding di bawah
-            SliverPadding(
-              padding: EdgeInsets.symmetric(
-                vertical: SizeConfig.calHeightMultiplier(20),
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        appBar: null,
+        backgroundColor: lightBlueColor,
+        body: SafeArea(
+          child: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                pinned: false,
+                backgroundColor: lightBlueColor,
+                automaticallyImplyLeading: false,
+                expandedHeight: SizeConfig.calHeightMultiplier(280),
+                flexibleSpace: FlexibleSpaceBar(background: CardResultWidget()),
               ),
-            ),
-          ],
+              SliverList(
+                delegate: SliverChildListDelegate([
+                  SizedBox(height: SizeConfig.calHeightMultiplier(20)),
+                  Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                    ),
+                    margin: EdgeInsets.only(
+                      top: 0,
+                      left: SizeConfig.calWidthMultiplier(24),
+                      right: SizeConfig.calWidthMultiplier(24),
+                      bottom: SizeConfig.calHeightMultiplier(16),
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      vertical: SizeConfig.calHeightMultiplier(20),
+                      horizontal: SizeConfig.calHeightMultiplier(20),
+                    ),
+                    child: FutureBuilder(
+                      future: _fetchUserName(context),
+                      builder: (context, asyncSnapshot) {
+                        String userName = 'Guest';
+                        if (asyncSnapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          userName = 'Loading...';
+                        } else if (asyncSnapshot.hasError) {
+                          userName = 'Error';
+                        } else if (asyncSnapshot.hasData) {
+                          userName = asyncSnapshot.data!;
+                        }
+                        return Wrap(
+                          runSpacing: 10,
+                          children: [
+                            Text(
+                              'Hai, $userName',
+                              style: TextStyle(
+                                color: primaryBlueColor,
+                                fontSize: SizeConfig.calHeightMultiplier(20),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              'Berikut laporan hasil analisis kulitmu by SCIN',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: SizeConfig.calHeightMultiplier(12),
+                              ),
+                            ),
+                            CustomRadialGauge(
+                              value:
+                                  reorderedConditions[selectedIndex]['value'],
+                              label:
+                                  reorderedConditions[selectedIndex]['label'],
+                              colorsGauge:
+                                  reorderedConditions[selectedIndex]['value'] <
+                                      30
+                                  ? Colors.green
+                                  : reorderedConditions[selectedIndex]['value'] <
+                                        50
+                                  ? Colors.yellow
+                                  : Colors.red,
+                            ),
+
+                            Text(
+                              'Hasil Analisa Kulit Anda',
+                              style: TextStyle(
+                                color: blueTextColor,
+                                fontSize: SizeConfig.calHeightMultiplier(16),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              'Kami telah menganalisis kondisi kulit Anda untuk memberikan informasi yang akurat dan mendetail. Berikut adalah hasilnya:',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: SizeConfig.calHeightMultiplier(12),
+                              ),
+                            ),
+                            SizedBox(
+                              height: SizeConfig.calHeightMultiplier(60),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: List.generate(3, (index) {
+                                final item = reorderedConditions[index];
+                                final isSelected = selectedIndex == index;
+                                return GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      selectedIndex = index;
+                                    });
+                                  },
+                                  child: Container(
+                                    width: SizeConfig.calWidthMultiplier(80),
+                                    height: SizeConfig.calWidthMultiplier(80),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16),
+                                      color: isSelected
+                                          ? primaryBlueColor
+                                          : primaryBlueColor.withOpacity(.5),
+                                      boxShadow: isSelected
+                                          ? [
+                                              BoxShadow(
+                                                color: Colors.blueAccent,
+                                                blurRadius: 8,
+                                              ),
+                                            ]
+                                          : [],
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          '${item['value'].toStringAsFixed(0)}%',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize:
+                                                SizeConfig.calWidthMultiplier(
+                                                  20,
+                                                ),
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        Text(
+                                          item['label'],
+                                          style: TextStyle(
+                                            fontSize:
+                                                SizeConfig.calWidthMultiplier(
+                                                  12,
+                                                ),
+                                            color: Colors.white.withOpacity(.8),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }),
+                            ),
+
+                            SizedBox(
+                              height: SizeConfig.calHeightMultiplier(90),
+                            ),
+                            Text(
+                              widget.result.description,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: SizeConfig.calHeightMultiplier(12),
+                              ),
+                            ),
+                            SizedBox(
+                              height: SizeConfig.calHeightMultiplier(20),
+                            ),
+                            Text(
+                              'Temukan rekomendasi produk perawatan terbaik untuk kulit Anda di sini!',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: SizeConfig.calHeightMultiplier(12),
+                              ),
+                            ),
+                            SizedBox(
+                              height: SizeConfig.calHeightMultiplier(50),
+                            ),
+                            CustomButton(
+                              onPressed: () {
+                                debugPrint('Clicked');
+                                Navigator.of(context).pushNamed(
+                                  routeResultRecom,
+                                  arguments: PackageFromResulScanToResultRecom(
+                                    id: widget.result.id,
+                                    recomDesc: widget.result.recomDesc,
+                                  ),
+                                );
+                              },
+                              text: 'Rekomendasi Product',
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ]),
+              ),
+              // Membungkus GridView.builder di dalam SliverToBoxAdapter
+              // Wrap the BlocBuilder with SliverToBoxAdapter to handle non-sliver content
+              // Tambahkan padding di bawah
+              SliverPadding(
+                padding: EdgeInsets.symmetric(
+                  vertical: SizeConfig.calHeightMultiplier(20),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
