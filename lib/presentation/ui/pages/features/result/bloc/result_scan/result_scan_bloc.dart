@@ -101,6 +101,9 @@ class ResultScanBloc extends Bloc<ResultScanEvent, ResultScanState> {
       // Emit state sukses
       PackageFromLoadingToScanResult result = PackageFromLoadingToScanResult(
         condition: conditions,
+        acne: acneScore.toInt(),
+        flex: flexScore.toInt(),
+        wrinkle: wrinkleScore.toInt(),
         id: resultScan.id,
         recomDesc: recomDecs,
         description: mainDescription,

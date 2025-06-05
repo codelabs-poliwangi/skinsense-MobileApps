@@ -240,6 +240,9 @@ class _ResultScanPageState extends State<ResultScanPage> {
                                 Navigator.of(context).pushNamed(
                                   routeResultRecom,
                                   arguments: PackageFromResulScanToResultRecom(
+                                    acne: widget.result.acne,
+                                    flex: widget.result.flex,
+                                    wringkle: widget.result.wrinkle,
                                     id: widget.result.id,
                                     recomDesc: widget.result.recomDesc,
                                   ),

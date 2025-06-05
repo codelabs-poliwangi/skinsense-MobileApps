@@ -1,6 +1,7 @@
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
@@ -33,18 +34,14 @@ class HomePageScope extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => ProductBloc(
-            ProductRepository(
-              di<ProductProvider>(),
-            ),
+            ProductRepository(di<ProductProvider>()),
             // di<ProductRepository>(),
           ),
         ),
         BlocProvider(
           create: (context) => SkinConditionBloc(di<SkinConditionRepository>()),
         ),
-        BlocProvider(
-          create: (context) => RoutineBloc(di<RoutineRepository>()),
-        ),
+        BlocProvider(create: (context) => RoutineBloc(di<RoutineRepository>())),
       ],
       child: HomePage(),
     );
@@ -74,35 +71,31 @@ class HomePage extends StatelessWidget {
               ),
               // Jarak antara SliverAppBar pertama dan konten lainnya
               SliverToBoxAdapter(
-                child: SizedBox(
-                  height: SizeConfig.calHeightMultiplier(10),
-                ),
+                child: SizedBox(height: SizeConfig.calHeightMultiplier(10)),
               ),
               SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    SkinConditionWidget(),
-                    SizedBox(height: SizeConfig.calHeightMultiplier(20)),
-                    TrackRoutineWidget(),
-                    SizedBox(height: SizeConfig.calHeightMultiplier(20)),
-                    Container(
-                      padding: EdgeInsets.only(
-                        top: 0,
-                        left: SizeConfig.calWidthMultiplier(24),
-                        right: SizeConfig.calWidthMultiplier(24),
-                        bottom: SizeConfig.calHeightMultiplier(16),
-                      ),
-                      child: Text(
-                        'Product',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: SizeConfig.calHeightMultiplier(16),
-                          fontWeight: FontWeight.w600,
-                        ),
+                delegate: SliverChildListDelegate([
+                  SkinConditionWidget(),
+                  SizedBox(height: SizeConfig.calHeightMultiplier(20)),
+                  TrackRoutineWidget(),
+                  SizedBox(height: SizeConfig.calHeightMultiplier(20)),
+                  Container(
+                    padding: EdgeInsets.only(
+                      top: 0,
+                      left: SizeConfig.calWidthMultiplier(24),
+                      right: SizeConfig.calWidthMultiplier(24),
+                      bottom: SizeConfig.calHeightMultiplier(16),
+                    ),
+                    child: Text(
+                      'Product',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: SizeConfig.calHeightMultiplier(16),
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ]),
               ),
               // Membungkus GridView.builder di dalam SliverToBoxAdapter
               // Wrap the BlocBuilder with SliverToBoxAdapter to handle non-sliver content
@@ -114,9 +107,7 @@ class HomePage extends StatelessWidget {
                     builder: (context, state) {
                       if (state is ProductInitial) {
                         context.read<ProductBloc>().add(FetchProducts());
-                        return const Center(
-                          child: Text('Please Wait'),
-                        );
+                        return const Center(child: Text('Please Wait'));
                       } else if (state is ProductLoading) {
                         return GridView.builder(
                           scrollDirection: Axis.horizontal,
@@ -124,12 +115,12 @@ class HomePage extends StatelessWidget {
                           padding: EdgeInsets.symmetric(horizontal: 24),
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 4, // Jumlah baris
-                            crossAxisSpacing: 16, // Jarak antar kolom
-                            mainAxisSpacing: 16, // Jarak antar baris
-                            childAspectRatio:
-                                1 / 0.69, // Rasio aspek untuk kotak
-                          ),
+                                crossAxisCount: 4, // Jumlah baris
+                                crossAxisSpacing: 16, // Jarak antar kolom
+                                mainAxisSpacing: 16, // Jarak antar baris
+                                childAspectRatio:
+                                    1 / 0.69, // Rasio aspek untuk kotak
+                              ),
                           itemBuilder: (BuildContext context, int index) {
                             return ProductKatalogLoading();
                           },
@@ -142,34 +133,39 @@ class HomePage extends StatelessWidget {
                           padding: EdgeInsets.symmetric(horizontal: 24),
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 4, // Jumlah baris
-                            crossAxisSpacing: 16, // Jarak antar kolom
-                            mainAxisSpacing: 16, // Jarak antar baris
-                            childAspectRatio:
-                                1 / 0.69, // Rasio aspek untuk kotak
-                          ),
+                                crossAxisCount: 4, // Jumlah baris
+                                crossAxisSpacing: 16, // Jarak antar kolom
+                                mainAxisSpacing: 16, // Jarak antar baris
+                                childAspectRatio:
+                                    1 / 0.69, // Rasio aspek untuk kotak
+                              ),
                           itemBuilder: (BuildContext context, int index) {
                             return GestureDetector(
                               onTap: () {
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) {
-                                    return ProductDetailPage(
-                                      id: state.products.data[index].id,
-                                      name: state.products.data[index].name,
-                                      price: state.products.data[index].price,
-                                      rating:
-                                          state.products.data[index].rating ??
-                                              0,
-                                      shop: state.products.data[index].shop,
-                                      image: state.products.data[index].image,
-                                      sold: state.products.data[index].sold,
-                                      linkProduct: state
-                                          .products.data[index].linkProduct,
-                                      category:
-                                          state.products.data[index].category,
-                                    );
-                                  },
-                                ));
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return ProductDetailPage(
+                                        id: state.products.data[index].id,
+                                        name: state.products.data[index].name,
+                                        price: state.products.data[index].price,
+                                        rating:
+                                            state.products.data[index].rating ??
+                                            0,
+                                        shop: state.products.data[index].shop,
+                                        image: state.products.data[index].image,
+                                        sold: state.products.data[index].sold,
+                                        linkProduct: state
+                                            .products
+                                            .data[index]
+                                            .linkProduct,
+                                        category:
+                                            state.products.data[index].category,
+                                      );
+                                    },
+                                  ),
+                                );
                               },
                               child: ProductItemWidget(
                                 isKatalog: false,
@@ -185,9 +181,7 @@ class HomePage extends StatelessWidget {
                           itemCount: state.products.data.length,
                         );
                       } else if (state is ProductError) {
-                        return Center(
-                          child: Text('Error: ${state.message}'),
-                        );
+                        return Center(child: Text('Error: ${state.message}'));
                       } else {
                         return const Center(
                           child: Text('Something went wrong'),
@@ -212,15 +206,14 @@ class HomePage extends StatelessWidget {
 }
 
 class TrackRoutineWidget extends StatelessWidget {
-  const TrackRoutineWidget({
-    super.key,
-  });
+  const TrackRoutineWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding:
-          EdgeInsets.symmetric(horizontal: SizeConfig.calHeightMultiplier(24)),
+      padding: EdgeInsets.symmetric(
+        horizontal: SizeConfig.calHeightMultiplier(24),
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,9 +234,7 @@ class TrackRoutineWidget extends StatelessWidget {
             builder: (context, state) {
               if (state is RoutineInitial) {
                 context.read<RoutineBloc>().add(FetchRoutine());
-                return const Center(
-                  child: Text('Please Wait'),
-                );
+                return const Center(child: Text('Please Wait'));
               } else if (state is RoutineLoading) {
                 return ListView.builder(
                   itemCount: 4,
@@ -259,9 +250,9 @@ class TrackRoutineWidget extends StatelessWidget {
                   physics:
                       NeverScrollableScrollPhysics(), // Mencegah ListView ini dapat di-scroll
                   itemCount: state
-                      .routines.length, // Ganti dengan jumlah elemen sebenarnya
+                      .routines
+                      .length, // Ganti dengan jumlah elemen sebenarnya
                   itemBuilder: (context, index) {
-                    
                     return Container(
                       margin: EdgeInsets.only(bottom: 16),
                       child: Row(
@@ -270,12 +261,13 @@ class TrackRoutineWidget extends StatelessWidget {
                           Checkbox(
                             activeColor: primaryBlueColor,
 
-                            value: state.routines[index]
+                            value: state
+                                .routines[index]
                                 .isComplete, // Sesuaikan dengan logika state yang diinginkan
                             onChanged: (bool? value) {
-                              context
-                                  .read<RoutineBloc>()
-                                  .add(ToggleRoutineComplete(index));
+                              context.read<RoutineBloc>().add(
+                                ToggleRoutineComplete(index),
+                              );
                               // Aksi ketika checklist diubah
                             },
                           ),
@@ -292,13 +284,9 @@ class TrackRoutineWidget extends StatelessWidget {
                   },
                 );
               } else if (state is RoutineError) {
-                return Center(
-                  child: Text('Error: ${state.Message}'),
-                );
+                return Center(child: Text('Error: ${state.Message}'));
               } else {
-                return const Center(
-                  child: Text('Something went wrong'),
-                );
+                return const Center(child: Text('Something went wrong'));
               }
             },
           ),
@@ -309,21 +297,21 @@ class TrackRoutineWidget extends StatelessWidget {
 }
 
 class SkinConditionWidget extends StatelessWidget {
-  const SkinConditionWidget({
-    super.key,
-  });
+  const SkinConditionWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-          EdgeInsets.symmetric(horizontal: SizeConfig.calHeightMultiplier(24)),
+      padding: EdgeInsets.symmetric(
+        horizontal: SizeConfig.calHeightMultiplier(24),
+      ),
       child: Container(
         width: double.infinity,
         margin: EdgeInsets.only(top: SizeConfig.calHeightMultiplier(20)),
         padding: EdgeInsets.symmetric(
-            horizontal: SizeConfig.calWidthMultiplier(16),
-            vertical: SizeConfig.calHeightMultiplier(20)),
+          horizontal: SizeConfig.calWidthMultiplier(16),
+          vertical: SizeConfig.calHeightMultiplier(20),
+        ),
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
@@ -340,13 +328,9 @@ class SkinConditionWidget extends StatelessWidget {
           builder: (context, state) {
             if (state is SkinConditionInitial) {
               context.read<SkinConditionBloc>().add(FetchSkinCondition());
-              return const Center(
-                child: Text('Please Wait'),
-              );
+              return const Center(child: Text('Please Wait'));
             } else if (state is SkinConditionLoading) {
-              return const Center(
-                child: SkinConditionLoadingWidget(),
-              );
+              return const Center(child: SkinConditionLoadingWidget());
             } else if (state is SkinConditionLoaded) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -360,31 +344,29 @@ class SkinConditionWidget extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Last Check : ${state.skinCondition.lastCheck}',
+                    'Last Check : ${state.skinCondition.date != null ? DateFormat('dd MMM yyyy').format(state.skinCondition.date!) : '-'}',
                     style: TextStyle(
                       color: blueTextColor,
                       fontSize: SizeConfig.calHeightMultiplier(10),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  SizedBox(
-                    height: SizeConfig.calHeightMultiplier(12),
-                  ),
+
+                  SizedBox(height: SizeConfig.calHeightMultiplier(12)),
                   ProgressSkinWidget(
-                      problemSkin: 'Skin Acne',
-                      percentProblemSKin: state.skinCondition.acne),
-                  SizedBox(
-                    height: SizeConfig.calHeightMultiplier(16),
+                    problemSkin: 'Skin Acne',
+                    percentProblemSKin: state.skinCondition.acne,
                   ),
+                  SizedBox(height: SizeConfig.calHeightMultiplier(16)),
                   ProgressSkinWidget(
-                      problemSkin: 'Skin Wringkle',
-                      percentProblemSKin: state.skinCondition.wringkle),
-                  SizedBox(
-                    height: SizeConfig.calHeightMultiplier(16),
+                    problemSkin: 'Skin Wringkle',
+                    percentProblemSKin: state.skinCondition.wringkle,
                   ),
+                  SizedBox(height: SizeConfig.calHeightMultiplier(16)),
                   ProgressSkinWidget(
-                      problemSkin: 'Skin Flex',
-                      percentProblemSKin: state.skinCondition.flex),
+                    problemSkin: 'Skin Flex',
+                    percentProblemSKin: state.skinCondition.flex,
+                  ),
                 ],
               );
             } else if (state is SkinConditionError) {
@@ -467,27 +449,22 @@ class CardWelcomeWidget extends StatelessWidget {
                           children: [
                             GestureDetector(
                               onTap: () {
-                                Navigator.of(context)
-                                    .pushNamed(routeProductKatalog);
+                                Navigator.of(
+                                  context,
+                                ).pushNamed(routeProductKatalog);
                               },
                               child: Icon(
                                 FluentSystemIcons.ic_fluent_search_regular,
                                 color: Colors.white,
                               ),
                             ),
-                            SizedBox(
-                              width: SizeConfig.calWidthMultiplier(16),
-                            ),
-                            NotificationWidget(
-                              isNotification: true,
-                            ),
+                            SizedBox(width: SizeConfig.calWidthMultiplier(16)),
+                            NotificationWidget(isNotification: true),
                           ],
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: SizeConfig.calHeightMultiplier(40),
-                    ),
+                    SizedBox(height: SizeConfig.calHeightMultiplier(40)),
                     Text(
                       "🌞Don't forget to use sunscreen\nand re-apply it every 3 hours🌞",
                       style: TextStyle(

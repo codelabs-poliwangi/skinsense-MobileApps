@@ -1,4 +1,6 @@
 // import 'package:carousel_slider/carousel_slider.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skinisense/config/common/image_assets.dart';
@@ -9,6 +11,7 @@ import 'package:skinisense/dependency_injector.dart';
 import 'package:skinisense/domain/services/sharedPreferences-services.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/product_detail_page.dart';
 import 'package:skinisense/presentation/ui/pages/features/result/bloc/get_recomendation_product/get_recomendation_product_bloc.dart';
+import 'package:skinisense/presentation/ui/pages/features/result/model/last_scan_model.dart';
 import 'package:skinisense/presentation/ui/widget/button_primary.dart';
 import 'package:skinisense/presentation/ui/widget/product_katalog.dart';
 
@@ -260,9 +263,42 @@ class _ResultRecomPageState extends State<ResultRecomPage> {
         padding: EdgeInsets.all(24),
         child: ButtonPrimary(
           mainButtonMessage: "Kembali ke Home",
-          mainButton: () {
+          mainButton: () async {
             // menghapus data yang di butuhka nuntuk peoses scan di preferences
-            
+            // String? imageRightSide =
+            //                 await SharedPreferencesService().getString(
+            //                   'scan_face_right',
+            //                 );
+            //             String? imageLeftSide = await SharedPreferencesService()
+            //                 .getString('scan_face_left');
+            //             String? imageFrontSide =
+            //                 await SharedPreferencesService().getString(
+            //                   'scan_face_front',
+            //                 );
+            SharedPreferencesService().removeData('scan_face_right');
+            SharedPreferencesService().removeData('scan_face_left');
+            SharedPreferencesService().removeData('scan_face_front');
+            SharedPreferencesService().getString('last_scan');
+            final sharedPrefs = SharedPreferencesService();
+            final existingData = await sharedPrefs.getString('last_scan');
+
+            LastScanModel dataLastScan = LastScanModel(
+              date: DateTime.now(),
+              wringkle: widget.package.wringkle,
+              acne: 0,
+              flex: 0,
+            );
+
+            if (existingData != null) {
+              await sharedPrefs.removeData('last_scan');
+            }
+
+            // Simpan data baru
+            await sharedPrefs.saveString(
+              'last_scan',
+              jsonEncode(dataLastScan.toJson()),
+            );
+
             // menambah data history scan berupa date, time, dan hasil
             Navigator.pushNamedAndRemoveUntil(
               context,

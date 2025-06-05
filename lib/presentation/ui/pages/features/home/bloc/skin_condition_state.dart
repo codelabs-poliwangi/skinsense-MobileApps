@@ -12,7 +12,7 @@ final class SkinConditionInitial extends SkinConditionState {}
 final class SkinConditionLoading extends SkinConditionState {}
 
 final class SkinConditionLoaded extends SkinConditionState {
-  final SkinCondition skinCondition;
+  final LastScanModel skinCondition;
 
   const SkinConditionLoaded(this.skinCondition);
 }
