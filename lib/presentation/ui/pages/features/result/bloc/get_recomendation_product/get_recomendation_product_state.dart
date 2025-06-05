@@ -8,3 +8,12 @@ sealed class GetRecomendationProductState extends Equatable {
 }
 
 final class GetRecomendationProductInitial extends GetRecomendationProductState {}
+final class GetRecomendationProductLoading extends GetRecomendationProductState {}
+final class GetRecomendationProductSuccess extends GetRecomendationProductState {
+  GetRecomendationProductResponseModel dataRecomendation;
+  GetRecomendationProductSuccess({required this.dataRecomendation});
+}
+final class GetRecomendationProductFailed extends GetRecomendationProductState {
+  String message;
+  GetRecomendationProductFailed({required this.message});
+}

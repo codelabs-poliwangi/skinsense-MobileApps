@@ -10,8 +10,8 @@ sealed class ResultScanState extends Equatable {
 final class ResultScanInitial extends ResultScanState {}
 final class ResultScanLoading extends ResultScanState {}
 final class ResultScanSuccess extends ResultScanState {
-  final ScanSuccesfullResponseModel scanSuccesfullResponseModel;
-  const ResultScanSuccess({required this.scanSuccesfullResponseModel});
+  final PackageFromLoadingToScanResult resultScan;
+  const ResultScanSuccess({required this.resultScan});
 }
 final class ResultScanFailure extends ResultScanState {
   final String errorMessage;

@@ -66,6 +66,9 @@ class ApiClient {
           return handler.next(options);
         },
         onResponse: (response, handler) async {
+          if (response.requestOptions.extra['isSkipInspector'] == true) {
+            return handler.next(response);
+          }
           if (response.statusCode == 401 &&
               response.data['message'] == 'Unauthorized') {
             // !cehcking accestoken is exp
@@ -88,17 +91,17 @@ class ApiClient {
   Future<void> _handleUnauthorizedError() async {
     try {
       // Coba refresh token
-      await generateRefreshToken();
+      await generateAccessToken();
     } catch (e) {
       // Jika refresh token gagal, paksa logout
       await _forceLogout();
     }
   }
 
-  Future<void> generateRefreshToken() async {
+  Future<void> generateAccessToken() async {
     final refreshToken = await tokenService.getRefreshToken();
     try {
-      final response = await di<AuthenticationProvider>().refreshToken(
+      final response = await di<AuthenticationProvider>().generateAccesToken(
         refreshToken!,
       );
 
@@ -136,12 +139,19 @@ class ApiClient {
     Map<String, dynamic>? queryParameters,
     Map<String, String>? headers,
     bool requireAuth = true,
+    bool isSkipInspector = false,
   }) async {
     try {
       final response = await dio.get(
         baseUrl + path,
         queryParameters: queryParameters,
-        options: Options(headers: headers, extra: {'requireAuth': requireAuth}),
+        options: Options(
+          headers: headers,
+          extra: {
+            'requireAuth': requireAuth,
+            'skipAuthInterceptor': isSkipInspector,
+          },
+        ),
       );
       logger.d(
         "fetching api get, status code ${response.statusCode} data ${response.data}",
@@ -158,6 +168,7 @@ class ApiClient {
     Map<String, dynamic>? queryParameters,
     Map<String, String>? headers,
     bool requireAuth = true,
+    bool isSkipInspector = false,
   }) async {
     try {
       final response = await dio.post(
@@ -166,7 +177,10 @@ class ApiClient {
         queryParameters: queryParameters,
         options: Options(
           headers: headers,
-          extra: {'requireAuth': requireAuth},
+          extra: {
+            'requireAuth': requireAuth,
+            'skipAuthInterceptor': isSkipInspector,
+          },
           contentType: data is FormData
               ? 'multipart/form-data'
               : 'application/json',
@@ -191,6 +205,7 @@ class ApiClient {
     Map<String, dynamic>? queryParameters,
     Map<String, String>? headers,
     bool requireAuth = true,
+    bool isSkipInspector = false,
   }) async {
     try {
       final response = await dio.put(
@@ -199,7 +214,10 @@ class ApiClient {
         queryParameters: queryParameters,
         options: Options(
           headers: headers,
-          extra: {'requireAuth': requireAuth},
+          extra: {
+            'requireAuth': requireAuth,
+            'skipAuthInterceptor': isSkipInspector,
+          },
           contentType: data is FormData
               ? 'multipart/form-data'
               : 'application/json',
@@ -219,12 +237,19 @@ class ApiClient {
     Map<String, dynamic>? queryParameters,
     Map<String, String>? headers,
     bool requireAuth = true,
+    bool isSkipInspector = false,
   }) async {
     try {
       final response = await dio.delete(
         baseUrl + path,
         queryParameters: queryParameters,
-        options: Options(headers: headers, extra: {'requireAuth': requireAuth}),
+        options: Options(
+          headers: headers,
+          extra: {
+            'requireAuth': requireAuth,
+            'skipAuthInterceptor': isSkipInspector,
+          },
+        ),
       );
       logger.d(
         "fetching api delete, status code ${response.statusCode} data ${response.data}",

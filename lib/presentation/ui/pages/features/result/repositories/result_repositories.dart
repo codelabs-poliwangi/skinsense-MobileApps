@@ -32,9 +32,9 @@ class ResultRepositories {
     }
   }
 
-  Future<GetRecomendationProductResponseModel> getRecomendation() async {
+  Future<GetRecomendationProductResponseModel> getRecomendation(String id) async {
     try {
-      final response = await _resultProvider.getRecomendationProduct();
+      final response = await _resultProvider.getRecomendationProduct(id);
       logger.d('succes fecthing result from repository $response');
       return response;
     } catch (e) {

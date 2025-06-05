@@ -42,15 +42,15 @@ class ResultLoadingViewState extends State<ResultLoadingView> {
   Widget build(BuildContext context) {
     return BlocListener<ResultScanBloc, ResultScanState>(
       listener: (context, state) {
-        // if (state is ResultScanSuccess) {
-        //   logger.d('go to scan result');
-        //   Navigator.pushNamedAndRemoveUntil(
-        //     context,
-        //     routeResultScan,
-        //     ModalRoute.withName(routeHome),
-        //     arguments: state.scanSuccesfullResponseModel,
-        //   );
-        // }
+        if (state is ResultScanSuccess) {
+          logger.d('go to scan result');
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            routeResultScan,
+            ModalRoute.withName(routeHome),
+            arguments: state.resultScan,
+          );
+        }
       },
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -70,7 +70,7 @@ class ResultLoadingViewState extends State<ResultLoadingView> {
                     ),
                   ),
                   // SizedBox(height: 20),
-                  Container(
+                  SizedBox(
                     width: 120,
                     child: LoadingIndicator(
                       indicatorType: Indicator.ballPulseSync,

@@ -65,10 +65,10 @@ class ResultProvider {
     }
   }
 
-  Future<GetRecomendationProductResponseModel> getRecomendationProduct() async {
+  Future<GetRecomendationProductResponseModel> getRecomendationProduct(String id) async {
     try {
       final response = await apiClient.get(
-        recomendationMachineLearingUrl,
+        '$recomendationMachineLearingUrl/$id',
         requireAuth: true,
       );
 

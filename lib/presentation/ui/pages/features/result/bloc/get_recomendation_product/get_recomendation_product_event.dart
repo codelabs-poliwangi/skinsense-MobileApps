@@ -6,3 +6,7 @@ sealed class GetRecomendationProductEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+final class GetRecomendationProductFromScan extends GetRecomendationProductEvent {
+  final String id;
+  const GetRecomendationProductFromScan({required this.id});
+}
