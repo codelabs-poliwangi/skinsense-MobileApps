@@ -1,7 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:skinisense/presentation/ui/widget/button_primary.dart';
+
+import '../questions/questions_intro.dart';
 
 class ScanGalleryScope extends StatelessWidget {
   const ScanGalleryScope({super.key});
@@ -20,41 +24,79 @@ class ScanGallery extends StatefulWidget {
 }
 
 class _ScanGalleryState extends State<ScanGallery> {
-  final List<File> _selectedImages = [];
   final ImagePicker _picker = ImagePicker();
-  final List<String> _imagePositions = ['Depan', 'Kiri', 'Kanan'];
+  File? _frontImage;
+  File? _leftImage;
+  File? _rightImage;
 
-  Future<void> _pickImage() async {
-    if (_selectedImages.length >= 3) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Maksimal 3 gambar')));
-      return;
-    }
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedImages();
+  }
 
-    try {
-      final XFile? pickedFile = await _picker.pickImage(
-        source: ImageSource.gallery,
-        imageQuality: 80,
-      );
+  Future<void> _loadSavedImages() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      final frontPath = prefs.getString('scan_face_front');
+      final leftPath = prefs.getString('scan_face_left');
+      final rightPath = prefs.getString('scan_face_right');
 
-      if (pickedFile != null) {
-        setState(() {
-          _selectedImages.add(File(pickedFile.path));
-        });
+      if (frontPath != null && File(frontPath).existsSync()) {
+        _frontImage = File(frontPath);
       }
-    } catch (e) {
-      print('Error picking image: $e');
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Gagal memilih gambar: $e')));
+      if (leftPath != null && File(leftPath).existsSync()) {
+        _leftImage = File(leftPath);
+      }
+      if (rightPath != null && File(rightPath).existsSync()) {
+        _rightImage = File(rightPath);
+      }
+    });
+  }
+
+  Future<void> _pickAndSaveImage(String position) async {
+    final XFile? pickedFile = await _picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
+
+    if (pickedFile != null) {
+      final path = pickedFile.path;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('scan_face_$position', path);
+
+      setState(() {
+        final file = File(path);
+        if (position == 'front') _frontImage = file;
+        if (position == 'left') _leftImage = file;
+        if (position == 'right') _rightImage = file;
+      });
     }
   }
 
-  void _removeImage(int index) {
-    setState(() {
-      _selectedImages.removeAt(index);
-    });
+  Widget _buildImageBox(String label, File? image, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              image: image != null
+                  ? DecorationImage(image: FileImage(image), fit: BoxFit.cover)
+                  : null,
+            ),
+            child: image == null
+                ? const Icon(Icons.add_a_photo, size: 40, color: Colors.grey)
+                : null,
+          ),
+          const SizedBox(height: 8),
+          Text(label),
+        ],
+      ),
+    );
   }
 
   @override
@@ -72,7 +114,7 @@ class _ScanGalleryState extends State<ScanGallery> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(24.0),
           child: Column(
             children: [
               Text(
@@ -80,137 +122,115 @@ class _ScanGalleryState extends State<ScanGallery> {
                 style: TextStyle(fontSize: 14, color: Colors.black54),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 40),
 
-              // Tombol upload di tengah
-              if (_selectedImages.isEmpty)
-                Center(
-                  child: Column(
-                    children: [
-                      _buildAddImageButton(),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Upload Gambar Anda',
-                        style: TextStyle(
-                          color: primaryBlueColor.withOpacity(0.5),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildImageBox(
+                    'Depan',
+                    _frontImage,
+                    () => _pickAndSaveImage('front'),
                   ),
-                ),
-              SizedBox(height: 20),
-              // Grid untuk menampilkan gambar yang dipilih
-              if (_selectedImages.isNotEmpty)
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
+                  _buildImageBox(
+                    'Kiri',
+                    _leftImage,
+                    () => _pickAndSaveImage('left'),
                   ),
-                  itemCount: _selectedImages.length,
-                  itemBuilder: (context, index) {
-                    return _buildImageThumbnail(index);
-                  },
-                ),
-
-              // Tombol tambah gambar jika sudah ada gambar
-              if (_selectedImages.isNotEmpty && _selectedImages.length < 3)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: _buildAddImageButton(),
-                ),
-
-              SizedBox(height: 20),
-              // Tombol proses scan
-              if (_selectedImages.isNotEmpty)
-                ElevatedButton(
-                  onPressed: _processScan,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryBlueColor,
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size(double.infinity, 50),
+                  _buildImageBox(
+                    'Kanan',
+                    _rightImage,
+                    () => _pickAndSaveImage('right'),
                   ),
-                  child: const Text('Proses Scan'),
-                ),
+                ],
+              ),
+              SizedBox(height: 40),
+              ButtonPrimary(
+                mainButtonMessage: 'Selanjutnya',
+                mainButton: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => QuestionsIntro()),
+                    ModalRoute.withName('/home'),
+                  );
+                },
+              ),
             ],
           ),
         ),
       ),
     );
   }
-
-  Widget _buildAddImageButton() {
-    return GestureDetector(
-      onTap: _pickImage,
-      child: Container(
-        width: 150,
-        height: 150,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: primaryBlueColor.withOpacity(0.5)),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.add_photo_alternate_outlined,
-              color: primaryBlueColor,
-              size: 50,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Tambah Gambar',
-              style: TextStyle(color: primaryBlueColor, fontSize: 12),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildImageThumbnail(int index) {
-    return Stack(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            image: DecorationImage(
-              image: FileImage(_selectedImages[index]),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        Center(
-          child: Text(
-            _imagePositions[index],
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500,color: Colors.black45),
-          ),
-        ),
-        Positioned(
-          top: 5,
-          right: 5,
-          child: GestureDetector(
-            onTap: () => _removeImage(index),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.7),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.close, color: Colors.white, size: 20),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _processScan() {
-    print('Memproses ${_selectedImages.length} gambar');
-    // Implementasi proses scan
-  }
 }
+
+//   Widget _buildAddImageButton() {
+//     return GestureDetector(
+//       onTap: _pickImage,
+//       child: Container(
+//         width: 150,
+//         height: 150,
+//         decoration: BoxDecoration(
+//           color: Colors.white,
+//           border: Border.all(color: primaryBlueColor.withOpacity(0.5)),
+//           borderRadius: BorderRadius.circular(10),
+//         ),
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             Icon(
+//               Icons.add_photo_alternate_outlined,
+//               color: primaryBlueColor,
+//               size: 50,
+//             ),
+//             const SizedBox(height: 8),
+//             Text(
+//               'Tambah Gambar',
+//               style: TextStyle(color: primaryBlueColor, fontSize: 12),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   Widget _buildImageThumbnail(int index) {
+//     return Stack(
+//       children: [
+//         Container(
+//           decoration: BoxDecoration(
+//             borderRadius: BorderRadius.circular(10),
+//             image: DecorationImage(
+//               image: FileImage(_selectedImages[index]),
+//               fit: BoxFit.cover,
+//             ),
+//           ),
+//         ),
+//         Center(
+//           child: Text(
+//             _imagePositions[index],
+//             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500,color: Colors.black45),
+//           ),
+//         ),
+//         Positioned(
+//           top: 5,
+//           right: 5,
+//           child: GestureDetector(
+//             onTap: () => _removeImage(index),
+//             child: Container(
+//               decoration: BoxDecoration(
+//                 color: Colors.red.withOpacity(0.7),
+//                 shape: BoxShape.circle,
+//               ),
+//               child: const Icon(Icons.close, color: Colors.white, size: 20),
+//             ),
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+
+//   void _processScan(List<File> images) {
+//     print('Memproses ${_selectedImages.length} gambar');
+//     // Implementasi proses scan
+//   }
+// }

@@ -285,8 +285,8 @@ class _ResultRecomPageState extends State<ResultRecomPage> {
             LastScanModel dataLastScan = LastScanModel(
               date: DateTime.now(),
               wringkle: widget.package.wringkle,
-              acne: 0,
-              flex: 0,
+              acne: widget.package.acne,
+              flex: widget.package.flex,
             );
 
             if (existingData != null) {
