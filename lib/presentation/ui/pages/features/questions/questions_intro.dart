@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
-import 'package:skinisense/presentation/ui/pages/features/questions/bloc/question_bloc.dart';
-import 'package:skinisense/presentation/ui/pages/features/questions/questions_page.dart';
 import 'package:skinisense/presentation/ui/widget/button_primary.dart';
 
 class QuestionsIntro extends StatelessWidget {

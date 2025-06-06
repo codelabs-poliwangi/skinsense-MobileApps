@@ -11,5 +11,5 @@ class FetchRoutine extends RoutineEvent { }
 class ToggleRoutineComplete extends RoutineEvent {
   final int index;
 
-  ToggleRoutineComplete(this.index);
+  const ToggleRoutineComplete(this.index);
 }

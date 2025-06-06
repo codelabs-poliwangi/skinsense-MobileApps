@@ -1,5 +1,6 @@
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/domain/utils/currency_rupiah.dart';
 import 'package:skinisense/presentation/ui/widget/button_primary.dart';
@@ -63,7 +64,13 @@ class ProductDetailPage extends StatelessWidget {
                       image,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
-                        return const Center(child: Icon(Icons.error));
+                        return Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Image.asset(
+                            imageDefault,
+                            color: Colors.black38,
+                          ),
+                        ); // Ha
                       },
                     ),
                   ),
@@ -92,8 +99,10 @@ class ProductDetailPage extends StatelessWidget {
 
               // Nama produk
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
                 child: Text(
                   name,
                   style: const TextStyle(
@@ -121,18 +130,13 @@ class ProductDetailPage extends StatelessWidget {
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 24),
                       padding: EdgeInsets.symmetric(vertical: 3, horizontal: 9),
-                      child: Text(
-                        '$category',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.white,
-                        ),
-                      ),
                       decoration: BoxDecoration(
                         color: primaryBlueColor,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(8),
-                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                      ),
+                      child: Text(
+                        category,
+                        style: TextStyle(fontSize: 12, color: Colors.white),
                       ),
                     ),
                   ],
@@ -173,24 +177,18 @@ class ProductDetailPage extends StatelessWidget {
                   children: [
                     Text(
                       '$sold Sold',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                      ),
+                      style: const TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                     // Line vertikal
                     Container(
                       margin: const EdgeInsets.symmetric(
-                          horizontal: 8), // Jarak horizontal
+                        horizontal: 8,
+                      ), // Jarak horizontal
                       width: 1, // Lebar garis vertikal
                       height: 16, // Tinggi garis vertikal
                       color: Colors.grey, // Warna garis
                     ),
-                    const Icon(
-                      Icons.star,
-                      color: Colors.amber,
-                      size: 16,
-                    ),
+                    const Icon(Icons.star, color: Colors.amber, size: 16),
                     const SizedBox(width: 4),
                     Text(
                       '$rating',

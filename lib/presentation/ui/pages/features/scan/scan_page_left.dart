@@ -270,7 +270,7 @@ class _ScanPageState extends State<ScanPageLeft> {
                         height: MediaQuery.of(context).size.height,
                         color: Colors.black,
                       )
-                : Container(
+                : SizedBox(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
                     child: Center(

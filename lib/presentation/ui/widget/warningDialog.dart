@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
 import 'package:skinisense/presentation/ui/widget/button_primary.dart';

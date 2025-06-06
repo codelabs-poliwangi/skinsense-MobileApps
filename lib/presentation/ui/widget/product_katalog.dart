@@ -12,14 +12,15 @@ class ProductItemWidget extends StatelessWidget {
   final String storeProduct;
   final double ratingProduct;
   final bool isKatalog;
-  const ProductItemWidget(
-      {super.key,
-      required this.indexProduct,
-      required this.imageProduct,
-      required this.nameProduct,
-      required this.storeProduct,
-      required this.ratingProduct,
-      required this.isKatalog});
+  const ProductItemWidget({
+    super.key,
+    required this.indexProduct,
+    required this.imageProduct,
+    required this.nameProduct,
+    required this.storeProduct,
+    required this.ratingProduct,
+    required this.isKatalog,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -43,25 +44,30 @@ class ProductItemWidget extends StatelessWidget {
         children: [
           // Gambar produk
           ClipRRect(
-            borderRadius:
-                BorderRadius.circular(8), // Memberikan radius pada gambar
+            borderRadius: BorderRadius.circular(
+              8,
+            ), // Memberikan radius pada gambar
             child: Container(
               height: isKatalog
                   ? MediaQuery.sizeOf(context).width * 0.425
                   : SizeConfig.calHeightMultiplier(160), // Tinggi gambar
               width: double.infinity, // Gambar mengisi lebar penuh kontainer
-              decoration: BoxDecoration(
-                // color: Colors.blue, // Tambahkan gambar di sini
-                image: DecorationImage(
-                  image: NetworkImage(imageProduct), // Gambar dari asset
-                  fit: BoxFit
-                      .cover, // Mengatur gambar agar sesuai dengan container
-                ),
+              child: Image.network(
+                imageProduct,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+                errorBuilder: (context, error, stackTrace) {
+                  // Kalau error, biarkan fallback di bawah yang terlihat
+                  return Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Image.asset(imageDefault,color: Colors.black38,),
+                  ); // Hapus tampilan image ini
+                },
               ),
             ),
           ),
           const SizedBox(height: 8), // Jarak antara gambar dan konten
-
           // Expanded digunakan agar elemen di dalam Column memenuhi tinggi container
           Expanded(
             child: Container(
@@ -87,7 +93,7 @@ class ProductItemWidget extends StatelessWidget {
                           // strutStyle: StrutStyle(fontSize: 12.0),
                           maxLines: 2,
                           text: TextSpan(
-                            text: '${nameProduct}',
+                            text: nameProduct,
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
@@ -109,8 +115,8 @@ class ProductItemWidget extends StatelessWidget {
                               size: 18,
                             ),
                             SizedBox(
-                                width:
-                                    8), // Menambahkan jarak antara gambar dan teks
+                              width: 8,
+                            ), // Menambahkan jarak antara gambar dan teks
                             Expanded(
                               child: RichText(
                                 overflow: TextOverflow.ellipsis,
@@ -130,7 +136,7 @@ class ProductItemWidget extends StatelessWidget {
                             ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ],

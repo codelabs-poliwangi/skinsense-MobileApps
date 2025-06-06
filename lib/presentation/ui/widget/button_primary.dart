@@ -14,20 +14,20 @@ class ButtonPrimary extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: mainButton,
-      child: Text(
-        mainButtonMessage,
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.w500,
-          fontSize: 16,
-        ),
-      ),
       style: ElevatedButton.styleFrom(
         backgroundColor: primaryBlueColor,
         foregroundColor: Colors.white,
         minimumSize: Size(double.infinity, 58),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      child: Text(
+        mainButtonMessage,
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w500,
+          fontSize: 16,
         ),
       ),
     );

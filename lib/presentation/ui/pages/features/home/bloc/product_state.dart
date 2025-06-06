@@ -13,7 +13,7 @@
   final class ProductLoading extends ProductState {}
 
   final class ProductLoaded extends ProductState{
-    List<Product> products;
+    Products products;
 
     ProductLoaded(this.products);
   }
@@ -21,6 +21,6 @@
   final class ProductError extends ProductState {
     final String message;
 
-    ProductError(this.message);
+    const ProductError(this.message);
 
   }

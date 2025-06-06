@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:skinisense/config/theme/color.dart';
 
 class CustomButton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback?  onPressed;
   final String text;
   final Color backgroundColor;
   final double fontSize;
 
   const CustomButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.text,
     this.backgroundColor = primaryBlueColor,
     this.fontSize = 18.0,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

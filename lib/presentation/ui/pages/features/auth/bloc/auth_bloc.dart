@@ -28,12 +28,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       logger.d('user is login  $isLoggedIn');
       if (isLoggedIn) {
         final user = await authRepository.me();
-        if (user != null) {
-          logger.d("User Authenticated");
-          emit(AuthAuthenticated(user));
-          return;
-        }
-      }
+        logger.d("User Authenticated");
+        emit(AuthAuthenticated(user));
+        return;
+            }
       emit(AuthUnauthenticated());
       logger.d("User Not Authenticated");
     } catch (e) {

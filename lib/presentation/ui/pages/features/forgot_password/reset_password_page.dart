@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
-import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/presentation/ui/pages/features/forgot_password/bloc/forgot_password_bloc.dart';
-import 'package:skinisense/presentation/ui/pages/features/register/bloc/register_bloc.dart';
 import 'package:skinisense/presentation/ui/widget/custom_button.dart';
 import 'package:skinisense/presentation/ui/widget/custom_input.dart';
-import 'package:skinisense/presentation/ui/widget/custom_logo_button.dart';
+
+import '../../../../../config/routes/Route.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   const ResetPasswordPage({super.key});
@@ -47,12 +46,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<ForgotPasswordBloc, ForgotPasswordState>(
       listener: (context, state) {
+        if (state.status == ForgotPasswordStatus.resetSuccess) {
+          Navigator.pushNamed(context, routeLogin);
+        }
       },
       builder: (context, state) {
-        String? tokenText;
-        if(state is ForgotPasswordOtpSuccess) {
-          tokenText = state.otp;
-        }
         return Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
@@ -126,7 +124,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         if (_formKey.currentState!.validate()) {
                           context.read<ForgotPasswordBloc>().add(
                                 ForgotPasswordResetSubmitted(
-                                  token: tokenText!,
+                                  token: state.otp,
                                   password: _passwordController.text,
                                   confirmPassword: _confirmPasswordController.text
                                 ),

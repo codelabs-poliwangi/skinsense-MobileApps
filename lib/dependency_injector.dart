@@ -15,6 +15,8 @@ import 'package:skinisense/presentation/ui/pages/features/home/repository/routin
 import 'package:skinisense/presentation/ui/pages/features/home/repository/skin_condition_repository.dart';
 import 'package:skinisense/presentation/ui/pages/features/product/repository/product_repository.dart';
 import 'package:skinisense/presentation/ui/pages/features/questions/repository/question_repository.dart';
+import 'package:skinisense/presentation/ui/pages/features/result/provider/result_provider.dart';
+import 'package:skinisense/presentation/ui/pages/features/result/repositories/result_repositories.dart';
 
 final di = GetIt.instance;
 
@@ -61,7 +63,9 @@ void init() async {
   di.registerSingleton<QuestionProvider>(QuestionProvider(di<ApiClient>()));
   di.registerSingleton<QuestionRepository>(
       QuestionRepository(di<QuestionProvider>()));
-  // hive databse local
+  
 
-  // connectiviy
+  // scan 
+  di.registerSingleton<ResultProvider>(ResultProvider(di<ApiClient>()));
+  di.registerSingleton<ResultRepositories>(ResultRepositories(di<ResultProvider>()));
 }

@@ -18,10 +18,7 @@ class AuthenticationProvider {
     try {
       final response = await apiClient.post(
         loginUrl,
-        data: {
-          'email': email,
-          'password': password,
-        },
+        data: {'email': email, 'password': password},
         requireAuth: false,
       );
 
@@ -111,8 +108,11 @@ class AuthenticationProvider {
   // Logout method
   Future<void> logout(String token) async {
     try {
-      final response = await apiClient.post(logoutUrl,
-          headers: {'Authorization': 'Bearer $token'}, requireAuth: true);
+      final response = await apiClient.post(
+        logoutUrl,
+        headers: {'Authorization': 'Bearer $token'},
+        requireAuth: true,
+      );
 
       if (response.statusCode != 200) {
         logger.e('Error: ${response.data['message']}');
@@ -150,7 +150,8 @@ class AuthenticationProvider {
   }
 
   Future<Map<String, dynamic>> getTokenAfterSignInGoogle(
-      String jwtGoogle) async {
+    String jwtGoogle,
+  ) async {
     try {
       final response = await apiClient.post(
         loginGoogleUrl,
@@ -185,12 +186,14 @@ class AuthenticationProvider {
   }
 
   // refreshToken
-  Future<ApiResponse<dynamic>> refreshToken(String refreshToken) async {
+  Future<ApiResponse<dynamic>> generateAccesToken(String refreshToken) async {
     try {
-      final response =
-          await apiClient.post(refreshTokenUrl, requireAuth: false, data: {
-        "refresh_token": refreshToken,
-      });
+      final response = await apiClient.post(
+        refreshTokenUrl,
+        requireAuth: false,
+        isSkipInspector: true,
+        data: {"refresh_token": refreshToken},
+      );
 
       return response;
     } catch (e) {

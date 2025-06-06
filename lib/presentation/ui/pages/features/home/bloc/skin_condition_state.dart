@@ -12,7 +12,7 @@ final class SkinConditionInitial extends SkinConditionState {}
 final class SkinConditionLoading extends SkinConditionState {}
 
 final class SkinConditionLoaded extends SkinConditionState {
-  final SkinCondition skinCondition;
+  final LastScanModel skinCondition;
 
   const SkinConditionLoaded(this.skinCondition);
 }
@@ -20,5 +20,5 @@ final class SkinConditionLoaded extends SkinConditionState {
 final class SkinConditionError extends SkinConditionState {
   final String message;
 
-  SkinConditionError(this.message);
+  const SkinConditionError(this.message);
 }

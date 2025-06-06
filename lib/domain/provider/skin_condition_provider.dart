@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:skinisense/config/api/api.dart';
 import 'package:skinisense/domain/model/skin_condition.dart';
-import 'package:skinisense/domain/services/api_client.dart';
 import 'package:http/http.dart' as http;
 class SkinConditionProvider {
   Future<SkinCondition> getSkinCondition() async{

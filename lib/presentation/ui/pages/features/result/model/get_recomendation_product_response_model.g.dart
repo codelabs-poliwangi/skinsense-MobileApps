@@ -1,17 +1,41 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'product.dart';
+part of 'get_recomendation_product_response_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
+
+GetRecomendationProductResponseModel
+    _$GetRecomendationProductResponseModelFromJson(Map<String, dynamic> json) =>
+        GetRecomendationProductResponseModel(
+          id: json['id'] as String,
+          acneScore: json['acne_score'] as String,
+          flexScore: json['flex_score'] as String,
+          wrinkleScore: json['wrinkle_score'] as String,
+          mainCondition: json['main_condition'] as String,
+          products: (json['products'] as List<dynamic>)
+              .map((e) => Product.fromJson(e as Map<String, dynamic>))
+              .toList(),
+        );
+
+Map<String, dynamic> _$GetRecomendationProductResponseModelToJson(
+        GetRecomendationProductResponseModel instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'acne_score': instance.acneScore,
+      'flex_score': instance.flexScore,
+      'wrinkle_score': instance.wrinkleScore,
+      'main_condition': instance.mainCondition,
+      'products': instance.products,
+    };
 
 Product _$ProductFromJson(Map<String, dynamic> json) => Product(
       id: json['id'] as String,
       name: json['name'] as String,
       linkProduct: json['link_product'] as String,
       price: json['price'] as String,
-      rating: (json['rating'] as num?)?.toDouble(),
+      rating: (json['rating'] as num).toDouble(),
       shop: json['shop'] as String,
       image: json['image'] as String,
       sold: json['sold'] as String,

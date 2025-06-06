@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:skinisense/config/common/image_assets.dart';
 import 'package:skinisense/config/common/screen.dart';
-import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/domain/provider/forgot_password_provider.dart';
 import 'package:skinisense/presentation/ui/pages/features/forgot_password/otp_verification_page.dart';
@@ -36,7 +35,7 @@ class ForgotPasswordPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<ForgotPasswordBloc, ForgotPasswordState>(
         listener: (context, state) {
-          if (state is ForgotPasswordLoading) {
+          if (state.status == ForgotPasswordStatus.loading) {
             showDialog(
             context: context,
             barrierDismissible: false,
@@ -47,7 +46,7 @@ class ForgotPasswordPage extends StatelessWidget {
             ),
           );
           }
-          if (state is ForgotPasswordEmailSuccess) {
+          if (state.status == ForgotPasswordStatus.emailSuccess) {
             Navigator.of(context).pop(); // Close loading dialog
             Navigator.of(context).push(
               PageTransition(
@@ -60,10 +59,13 @@ class ForgotPasswordPage extends StatelessWidget {
               )
             );
           }
-          if (state is ForgotPasswordFailure) {
+          if (state.status == ForgotPasswordStatus.failure) {
             Navigator.of(context).pop(); // Close loading dialog
+
+            Future.delayed(Durations.short4);
+
             ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.error)));
+                .showSnackBar(SnackBar(content: Text(state.error), backgroundColor: Colors.redAccent,));
           }
         },
         builder: (context, state) {

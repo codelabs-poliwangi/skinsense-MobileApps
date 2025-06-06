@@ -5,7 +5,7 @@ import 'package:skinisense/config/routes/Route.dart';
 import 'package:skinisense/presentation/ui/widget/dot_indicator.dart';
 
 class OnboardPage extends StatefulWidget {
-  const OnboardPage({Key? key}) : super(key: key);
+  const OnboardPage({super.key});
 
   @override
   _OnboardPageState createState() => _OnboardPageState();

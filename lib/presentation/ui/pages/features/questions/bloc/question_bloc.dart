@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:skinisense/domain/model/question.dart';
 import 'package:skinisense/domain/utils/logger.dart';
+import 'package:skinisense/presentation/ui/pages/features/questions/model/result_question_list.dart';
 import 'package:skinisense/presentation/ui/pages/features/questions/repository/question_repository.dart';
 
 part 'question_event.dart';
@@ -11,6 +12,7 @@ class QuestionBloc extends Bloc<QuestionEvent, QuestionState> {
   final QuestionRepository _questionRepository;
   List<Question> listQuestion = [];
   int currentIndex = 0;
+  List<String?> questionId = [];
   List<String?> answers = [];
 
   QuestionBloc(this._questionRepository) : super(QuestionInitial()) {
@@ -24,6 +26,10 @@ class QuestionBloc extends Bloc<QuestionEvent, QuestionState> {
 
         if (listQuestion.isNotEmpty) {
           answers = List<String?>.filled(listQuestion.length, null);
+          questionId = List<String?>.filled(
+            listQuestion.length,
+            null,
+          ); // ✅ Tambahkan ini
           logger.d("currentIndex: $currentIndex");
           emit(QuestionOnLoaded(listQuestion, currentIndex));
         } else {
@@ -52,22 +58,44 @@ class QuestionBloc extends Bloc<QuestionEvent, QuestionState> {
 
     on<QuestionSubmited>((event, emit) {
       if (answers.contains(null)) {
-        logger.w("Some questions are unanswered: ${answers}");
+        logger.w("Some questions are unanswered: $answers");
       } else {
-        logger.d("All answers are submitted: ${answers}");
+        logger.d('all question id is ${questionId}');
+        logger.d("All answers are submitted: $answers");
+        final List<ResultQuestionList> result = [];
+
+        for (int i = 0; i < questionId.length; i++) {
+          final qId = questionId[i];
+          final aId = answers[i];
+
+          if (qId != null && aId != null) {
+            result.add(ResultQuestionList(questionId: qId, optionId: aId));
+          }
+        }
+
+        logger.d(
+          "Mapped ResultQuestionList: ${result.map((e) => e.toJson()).toList()}",
+        );
+
+        emit(QuestionScanSuccess(resultQuestion: result));
       }
     });
 
     on<SelectAnswer>((event, emit) {
       // Store the selected answer
-      if (answers.length > currentIndex) {
+      if (answers.length > currentIndex && questionId.length > currentIndex) {
         answers[currentIndex] = event.answer;
-        logger.d("Answer selected for question $currentIndex: ${event.answer}");
-        emit(QuestionOnLoaded(
-            listQuestion, currentIndex)); // Emit the current state
+        questionId[currentIndex] = event.questionId;
+        logger.d(
+          "Answer selected for question $questionId is : ${event.answer}",
+        );
+        emit(
+          QuestionOnLoaded(listQuestion, currentIndex),
+        ); // Emit the current state
       } else {
         logger.e(
-            "Error: Attempting to access index $currentIndex in answers, but list is smaller.");
+          "Error: Attempting to access index $currentIndex in answers, but list is smaller.",
+        );
       }
     });
   }

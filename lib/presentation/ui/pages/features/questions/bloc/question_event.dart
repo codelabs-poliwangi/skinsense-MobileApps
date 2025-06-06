@@ -17,9 +17,10 @@ final class QuestionNext extends QuestionEvent {}
 
 class SelectAnswer extends QuestionEvent {
   final String answer; // The selected answer
+  final String questionId;
 
-  const SelectAnswer(this.answer);
+  const SelectAnswer({required this.answer,required this.questionId});
 
   @override
-  List<Object> get props => [answer];
+  List<Object> get props => [questionId,answer];
 }

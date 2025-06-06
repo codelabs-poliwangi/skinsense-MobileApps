@@ -25,6 +25,10 @@ const String routeScanLeft = '/scan/left';
 const String routeScanLeftPreview = '/scan/left/preview';
 const String routeQuestionIntro = '/scan/questions-intro/';
 
+const String routeLoadingScan = '/scan/loading';
+const String routeResultScan = '/scan/result';
+const String routeResultRecom = '/scan/result/recommendation';
+
 
 const String routeQuestions = '/scan/questions/';
 const String routeProductSearch = '/product/search';

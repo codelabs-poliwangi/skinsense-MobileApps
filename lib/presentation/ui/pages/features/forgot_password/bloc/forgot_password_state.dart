@@ -1,50 +1,46 @@
 part of 'forgot_password_bloc.dart';
 
-sealed class ForgotPasswordState extends Equatable {
+enum ForgotPasswordStatus { initial, loading, emailSuccess, otpSuccess, resetSuccess, failure }
 
-  const ForgotPasswordState();
-  
-  @override
-  List<Object> get props => [];
-}
+final class ForgotPasswordState extends Equatable {
+  const ForgotPasswordState({
+    this.status = ForgotPasswordStatus.initial,
+    this.email = '',
+    this.otp = '',
+    this.token = '',
+    this.password = '',
+    this.confirmPassword = '',
+    this.error = '',
+  });
 
-final class ForgotPasswordInitial extends ForgotPasswordState {}
-final class ForgotPasswordLoading extends ForgotPasswordState {}
-
-final class ForgotPasswordEmailSuccess extends ForgotPasswordState {
+  final ForgotPasswordStatus status;
   final String email;
-
-  const ForgotPasswordEmailSuccess({required this.email});
-
-  @override
-  List<Object> get props => [email];
-}
-
-final class ForgotPasswordOtpSuccess extends ForgotPasswordState {
   final String otp;
-
-  const ForgotPasswordOtpSuccess({required this.otp});
-
-  @override
-  List<Object> get props => [otp];
-}
-
-final class ForgotPasswordResetSuccess extends ForgotPasswordState {
   final String token;
   final String password;
   final String confirmPassword;
-
-  const ForgotPasswordResetSuccess({required this.token, required this.password, required this.confirmPassword});
-
-  @override
-  List<Object> get props => [token, password, confirmPassword];
-}
-
-final class ForgotPasswordFailure extends ForgotPasswordState {
   final String error;
 
-  const ForgotPasswordFailure(this.error);
+  ForgotPasswordState copyWith({
+    ForgotPasswordStatus? status,
+    String? email,
+    String? otp,
+    String? token,
+    String? password,
+    String? confirmPassword,
+    String? error,
+  }) {
+    return ForgotPasswordState(
+      status: status ?? this.status,
+      email: email ?? this.email,
+      otp: otp ?? this.otp,
+      token: token ?? this.token,
+      password: password ?? this.password,
+      confirmPassword: confirmPassword ?? this.confirmPassword,
+      error: error ?? this.error,
+    );
+  }
 
   @override
-  List<Object> get props => [error];
+  List<Object> get props => [status, email, otp, token, password, confirmPassword, error];
 }

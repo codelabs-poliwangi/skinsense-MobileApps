@@ -13,9 +13,11 @@ class ApiResponse<T> {
   final String message;
   final int statusCode;
   final Map<String, String> headers;
+  final dynamic metadata;
 
   ApiResponse({
     required this.data,
+    this.metadata,
     required this.statusCode,
     required this.message,
     required this.headers,
@@ -27,11 +29,7 @@ class ApiException implements Exception {
   final int? statusCode;
   final dynamic data;
 
-  ApiException({
-    required this.message,
-    this.statusCode,
-    this.data,
-  });
+  ApiException({required this.message, this.statusCode, this.data});
 
   @override
   String toString() => message;
@@ -42,65 +40,83 @@ class ApiClient {
   final TokenService tokenService;
   late Dio dio;
 
-  ApiClient(
-    this.tokenService, {
-    this.timeout = const Duration(seconds: 30),
-  }) {
-    dio = Dio(BaseOptions(
-      baseUrl: baseUrl,
-      connectTimeout: timeout,
-      receiveTimeout: timeout,
-      contentType: 'application/json',
-      responseType: ResponseType.json,
-      validateStatus: (status) => true
-    ));
+  ApiClient(this.tokenService, {this.timeout = const Duration(seconds: 30)}) {
+    dio = Dio(
+      BaseOptions(
+        baseUrl: baseUrl,
+        connectTimeout: timeout,
+        receiveTimeout: timeout,
+        contentType: 'application/json',
+        responseType: ResponseType.json,
+        validateStatus: (status) => true,
+      ),
+    );
 
     // Menambahkan interceptor untuk menangani JWT
-    dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) async {
-        final token = await tokenService.getAccessToken();
-        if (token != null) {
-          options.headers['Authorization'] = 'Bearer $token';
-        }
-        return handler.next(options);
-      },
-      onResponse: (response, handler) {
-        return handler.next(response);
-      },
-      onError: (DioException e, handler) async {
-        if (e.response?.statusCode == 401) {
-          // !cehcking accestoken is exp
-          logger.d('access token exp');
-          await _handleUnauthorizedError();
-        }
-        return handler.next(e);
-      },
-    ));
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final requireAuth = options.extra['requireAuth'] ?? true;
+          if (requireAuth) {
+            final token = await tokenService.getAccessToken();
+            if (token != null) {
+              options.headers['Authorization'] = 'Bearer $token';
+            }
+          }
+          return handler.next(options);
+        },
+        onResponse: (response, handler) async {
+          if (response.requestOptions.extra['isSkipInspector'] == true) {
+            return handler.next(response);
+          }
+          if (response.statusCode == 401 &&
+              response.data['message'] == 'Unauthorized') {
+            // !cehcking accestoken is exp
+            logger.d('access token exp');
+            await _handleUnauthorizedError();
+          }
+          return handler.next(response);
+        },
+        onError: (DioException e, handler) async {
+          if (e.response?.statusCode == 401) {
+            // !cehcking accestoken is exp
+            logger.d('access token exp');
+            await _handleUnauthorizedError();
+          }
+          return handler.next(e);
+        },
+      ),
+    );
   }
   Future<void> _handleUnauthorizedError() async {
     try {
       // Coba refresh token
-      await generateRefreshToken();
+      await generateAccessToken();
     } catch (e) {
       // Jika refresh token gagal, paksa logout
       await _forceLogout();
     }
   }
 
-  Future<void> generateRefreshToken() async {
+  Future<void> generateAccessToken() async {
     final refreshToken = await tokenService.getRefreshToken();
     try {
-      final response = await di<AuthenticationProvider>().refreshToken(refreshToken!);
-      
+      final response = await di<AuthenticationProvider>().generateAccesToken(
+        refreshToken!,
+      );
+
       if (response.statusCode == 401) {
         // Invalid refresh token, trigger logout
-        logger.d('failed create accesToken and refreshToken and accesToken token exp,');
+        logger.d(
+          'failed create accesToken and refreshToken and accesToken token exp,',
+        );
         await _forceLogout();
       } else {
         logger.d('succesfull create accesToken');
         // Proses refresh token normal
         await tokenService.deleteAccessToken();
-        final accesToken = response.data['data']['access_token'] as String;
+        logger.d('acces Token ${response.data['access_token']}');
+        final accesToken = response.data['access_token']; //! error
         await tokenService.saveAccessToken(accesToken);
       }
     } catch (e) {
@@ -123,15 +139,23 @@ class ApiClient {
     Map<String, dynamic>? queryParameters,
     Map<String, String>? headers,
     bool requireAuth = true,
+    bool isSkipInspector = false,
   }) async {
     try {
       final response = await dio.get(
-        path,
+        baseUrl + path,
         queryParameters: queryParameters,
-        options: Options(headers: headers),
+        options: Options(
+          headers: headers,
+          extra: {
+            'requireAuth': requireAuth,
+            'skipAuthInterceptor': isSkipInspector,
+          },
+        ),
       );
       logger.d(
-          "fetching api get, status code ${response.statusCode} data ${response.data}");
+        "fetching api get, status code ${response.statusCode} data ${response.data}",
+      );
       return _handleResponse<T>(response);
     } catch (e) {
       throw ApiException(message: 'Network error: $e');
@@ -140,46 +164,68 @@ class ApiClient {
 
   Future<ApiResponse<T>> post<T>(
     String path, {
-    Map<String, dynamic>? data,
+    dynamic data,
     Map<String, dynamic>? queryParameters,
     Map<String, String>? headers,
     bool requireAuth = true,
+    bool isSkipInspector = false,
   }) async {
     try {
       final response = await dio.post(
-        path,
+        baseUrl + path,
         data: data,
         queryParameters: queryParameters,
-        options: Options(headers: headers),
+        options: Options(
+          headers: headers,
+          extra: {
+            'requireAuth': requireAuth,
+            'skipAuthInterceptor': isSkipInspector,
+          },
+          contentType: data is FormData
+              ? 'multipart/form-data'
+              : 'application/json',
+        ),
       );
       logger.d(
-          "fetching api post, status code ${response.statusCode} data ${response.data}");
+        "fetching api post, status code ${response.statusCode} data ${response.data}",
+      );
       return _handleResponse<T>(response);
     } on DioException catch (e) {
       throw ApiException(
-        statusCode: e.response!.statusCode,
-        message: e.response!.statusMessage.toString(),
-        data: e.response!.data
+        statusCode: e.response?.statusCode ?? 500,
+        message: e.response?.statusMessage.toString() ?? '',
+        data: e.response?.data,
       );
     }
   }
 
   Future<ApiResponse<T>> put<T>(
     String path, {
-    Map<String, dynamic>? data,
+    dynamic data,
     Map<String, dynamic>? queryParameters,
     Map<String, String>? headers,
     bool requireAuth = true,
+    bool isSkipInspector = false,
   }) async {
     try {
       final response = await dio.put(
-        path,
+        baseUrl + path,
         data: data,
         queryParameters: queryParameters,
-        options: Options(headers: headers),
+        options: Options(
+          headers: headers,
+          extra: {
+            'requireAuth': requireAuth,
+            'skipAuthInterceptor': isSkipInspector,
+          },
+          contentType: data is FormData
+              ? 'multipart/form-data'
+              : 'application/json',
+        ),
       );
       logger.d(
-          "fetching api put, status code ${response.statusCode} data ${response.data}");
+        "fetching api put, status code ${response.statusCode} data ${response.data}",
+      );
       return _handleResponse<T>(response);
     } catch (e) {
       throw ApiException(message: 'Network error: $e');
@@ -191,15 +237,23 @@ class ApiClient {
     Map<String, dynamic>? queryParameters,
     Map<String, String>? headers,
     bool requireAuth = true,
+    bool isSkipInspector = false,
   }) async {
     try {
       final response = await dio.delete(
-        path,
+        baseUrl + path,
         queryParameters: queryParameters,
-        options: Options(headers: headers),
+        options: Options(
+          headers: headers,
+          extra: {
+            'requireAuth': requireAuth,
+            'skipAuthInterceptor': isSkipInspector,
+          },
+        ),
       );
       logger.d(
-          "fetching api delete, status code ${response.statusCode} data ${response.data}");
+        "fetching api delete, status code ${response.statusCode} data ${response.data}",
+      );
       return _handleResponse<T>(response);
     } catch (e) {
       throw ApiException(message: 'Network error: $e');
@@ -210,13 +264,15 @@ class ApiClient {
     final body = response.data;
 
     // Fungsi pembantu untuk mengonversi headers
-    Map<String, String> _convertHeaders(Headers headers) {
-      return headers.map.map((key, value) =>
-          MapEntry(key, (value is List) ? value.join(',') : value.toString()));
+    Map<String, String> convertHeaders(Headers headers) {
+      return headers.map.map(
+        (key, value) =>
+            MapEntry(key, (value is List) ? value.join(',') : value.toString()),
+      );
     }
 
     // Fungsi pembantu untuk mengekstrak pesan dengan aman
-    String _safeGetMessage(dynamic body) {
+    String safeGetMessage(dynamic body) {
       if (body is Map) {
         return body['message'] ?? 'No message available';
       }
@@ -224,57 +280,65 @@ class ApiClient {
     }
 
     // Fungsi pembantu untuk mengekstrak data dengan aman
-    dynamic _safeGetData(dynamic body) {
+    dynamic safeGetData(dynamic body) {
       if (body is Map) {
         return body['data'] ?? body;
       }
       return body;
     }
 
+    dynamic safeGetMeta(dynamic body) {
+      if (body is Map) {
+        return body['meta']; // Kembalikan null jika tidak ada
+      }
+      return null;
+    }
+
     // Pemeriksaan null safety untuk status code
     if ((response.statusCode ?? 0) >= 200 && (response.statusCode ?? 0) < 300) {
       return ApiResponse<T>(
-        headers: _convertHeaders(response.headers),
+        headers: convertHeaders(response.headers),
         statusCode: response.statusCode!,
-        message: _safeGetMessage(body),
-        data: _safeGetData(body),
+        message: safeGetMessage(body),
+        data: safeGetData(body),
+        metadata: safeGetMeta(body),
       );
     }
 
     switch (response.statusCode) {
       case 400:
         throw ApiException(
-          message: _safeGetMessage(body),
+          message: safeGetMessage(body),
           statusCode: response.statusCode,
           data: body,
         );
       case 401:
         throw ApiException(
-          message: _safeGetMessage(body),
+          message: safeGetMessage(body),
           statusCode: response.statusCode,
           data: body,
         );
       case 403:
         throw ApiException(
-          message: _safeGetMessage(body),
+          message: safeGetMessage(body),
           statusCode: response.statusCode,
           data: body,
         );
       case 404:
         throw ApiException(
-          message: _safeGetMessage(body),
+          message: safeGetMessage(body),
           statusCode: response.statusCode,
           data: body,
         );
       case 500:
         throw ApiException(
-          message: _safeGetMessage(body),
+          message: safeGetMessage(body),
           statusCode: response.statusCode,
           data: body,
         );
       default:
         throw ApiException(
-          message: _safeGetMessage(body),
+          message: safeGetMessage(body),
           statusCode: response.statusCode,
           data: body,
         );
