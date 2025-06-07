@@ -1,10 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:skinisense/presentation/ui/pages/features/questions/questions_intro.dart';
 import 'package:skinisense/presentation/ui/widget/button_primary.dart';
+
+import '../../../../../domain/utils/logger.dart';
 
 class ScanGalleryScope extends StatelessWidget {
   const ScanGalleryScope({super.key});
@@ -61,11 +64,24 @@ class _ScanGalleryState extends State<ScanGallery> {
 
     if (pickedFile != null) {
       final path = pickedFile.path;
+      final commpresedPath = '${path}_compressed.jpg';
+      // compressed
+      // compress image
+      var result = await FlutterImageCompress.compressAndGetFile(
+        path,
+        commpresedPath,
+        quality: 88,
+        rotate: 180,
+      );
+      if (result == null) {
+        logger.e('Image compression failed');
+        throw Exception('Failed to compress image');
+      }
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('scan_face_$position', path);
+      await prefs.setString('scan_face_$position', commpresedPath);
 
       setState(() {
-        final file = File(path);
+        final file = File(commpresedPath);
         if (position == 'front') _frontImage = file;
         if (position == 'left') _leftImage = file;
         if (position == 'right') _rightImage = file;
