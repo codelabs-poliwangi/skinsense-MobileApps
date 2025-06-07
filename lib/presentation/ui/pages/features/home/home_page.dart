@@ -262,8 +262,7 @@ class TrackRoutineWidget extends StatelessWidget {
                             activeColor: primaryBlueColor,
 
                             value: state
-                                .routines[index]
-                                .isComplete, // Sesuaikan dengan logika state yang diinginkan
+                                .routines[index].isComlete, // Sesuaikan dengan logika state yang diinginkan
                             onChanged: (bool? value) {
                               context.read<RoutineBloc>().add(
                                 ToggleRoutineComplete(index),
@@ -274,7 +273,7 @@ class TrackRoutineWidget extends StatelessWidget {
                           // RoutineListTile dengan Expanded agar layout lebih fleksibel
                           Expanded(
                             child: RoutineListTile(
-                              routineImage: state.routines[index].image,
+                              // routineImage: state.routines[index].image,
                               routineName: state.routines[index].activity,
                             ),
                           ),

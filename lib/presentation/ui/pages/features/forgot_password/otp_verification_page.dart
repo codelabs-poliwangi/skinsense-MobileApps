@@ -85,6 +85,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
       },
       builder: (context, state) {
         return Scaffold(
+          backgroundColor: Colors.white,
           body: SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),

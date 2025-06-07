@@ -51,6 +51,7 @@ class _SplashPageState extends State<SplashPage> {
         }
       },
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: Center(
           child: Container(
             width: SizeConfig.calMultiplierImage(156),
