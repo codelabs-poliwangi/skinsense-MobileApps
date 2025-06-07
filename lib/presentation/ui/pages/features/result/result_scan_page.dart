@@ -37,10 +37,6 @@ class _ResultScanPageState extends State<ResultScanPage> {
   int selectedIndex = 1; // Index item yang diklik
   late List<Map<String, dynamic>> reorderedConditions;
 
-  Future<String?> _fetchUserName(BuildContext context) async {
-    return di<SharedPreferencesService>().getString('name') ?? 'Guest';
-  }
-
   @override
   void initState() {
     // TODO: implement initState
@@ -88,171 +84,136 @@ class _ResultScanPageState extends State<ResultScanPage> {
                       vertical: SizeConfig.calHeightMultiplier(20),
                       horizontal: SizeConfig.calHeightMultiplier(20),
                     ),
-                    child: FutureBuilder(
-                      future: _fetchUserName(context),
-                      builder: (context, asyncSnapshot) {
-                        String userName = 'Guest';
-                        if (asyncSnapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          userName = 'Loading...';
-                        } else if (asyncSnapshot.hasError) {
-                          userName = 'Error';
-                        } else if (asyncSnapshot.hasData) {
-                          userName = asyncSnapshot.data!;
-                        }
-                        return Wrap(
-                          runSpacing: 10,
-                          children: [
-                            Text(
-                              'Hai, $userName',
-                              style: TextStyle(
-                                color: primaryBlueColor,
-                                fontSize: SizeConfig.calHeightMultiplier(20),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            Text(
-                              'Berikut laporan hasil analisis kulitmu by SCIN',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: SizeConfig.calHeightMultiplier(12),
-                              ),
-                            ),
-                            CustomRadialGauge(
-                              value:
-                                  reorderedConditions[selectedIndex]['value'],
-                              label:
-                                  reorderedConditions[selectedIndex]['label'],
-                              colorsGauge:
-                                  reorderedConditions[selectedIndex]['value'] <
-                                      30
-                                  ? Colors.green
-                                  : reorderedConditions[selectedIndex]['value'] <
-                                        50
-                                  ? Colors.yellow
-                                  : Colors.red,
-                            ),
+                    child: Wrap(
+                      runSpacing: 10,
+                      children: [
+                        _BuildName(),
+                        Text(
+                          'Berikut laporan hasil analisis kulitmu by SCIN',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: SizeConfig.calHeightMultiplier(12),
+                          ),
+                        ),
 
-                            Text(
-                              'Hasil Analisa Kulit Anda',
-                              style: TextStyle(
-                                color: blueTextColor,
-                                fontSize: SizeConfig.calHeightMultiplier(16),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            Text(
-                              'Kami telah menganalisis kondisi kulit Anda untuk memberikan informasi yang akurat dan mendetail. Berikut adalah hasilnya:',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: SizeConfig.calHeightMultiplier(12),
-                              ),
-                            ),
-                            SizedBox(
-                              height: SizeConfig.calHeightMultiplier(60),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: List.generate(3, (index) {
-                                final item = reorderedConditions[index];
-                                final isSelected = selectedIndex == index;
-                                return GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      selectedIndex = index;
-                                    });
-                                  },
-                                  child: Container(
-                                    width: SizeConfig.calWidthMultiplier(80),
-                                    height: SizeConfig.calWidthMultiplier(80),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16),
-                                      color: isSelected
-                                          ? primaryBlueColor
-                                          : primaryBlueColor.withOpacity(.5),
-                                      boxShadow: isSelected
-                                          ? [
-                                              BoxShadow(
-                                                color: Colors.blueAccent,
-                                                blurRadius: 8,
-                                              ),
-                                            ]
-                                          : [],
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          '${item['value'].toStringAsFixed(0)}%',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize:
-                                                SizeConfig.calWidthMultiplier(
-                                                  20,
-                                                ),
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                        Text(
-                                          item['label'],
-                                          style: TextStyle(
-                                            fontSize:
-                                                SizeConfig.calWidthMultiplier(
-                                                  12,
-                                                ),
-                                            color: Colors.white.withOpacity(.8),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }),
-                            ),
+                        CustomRadialGauge(
+                          value: reorderedConditions[selectedIndex]['value'],
+                          label: reorderedConditions[selectedIndex]['label'],
+                          colorsGauge:
+                              reorderedConditions[selectedIndex]['value'] < 30
+                              ? Colors.green
+                              : reorderedConditions[selectedIndex]['value'] < 50
+                              ? Colors.yellow
+                              : Colors.red,
+                        ),
 
-                            SizedBox(
-                              height: SizeConfig.calHeightMultiplier(90),
-                            ),
-                            Text(
-                              widget.result.description,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: SizeConfig.calHeightMultiplier(12),
-                              ),
-                            ),
-                            SizedBox(
-                              height: SizeConfig.calHeightMultiplier(20),
-                            ),
-                            Text(
-                              'Temukan rekomendasi produk perawatan terbaik untuk kulit Anda di sini!',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: SizeConfig.calHeightMultiplier(12),
-                              ),
-                            ),
-                            SizedBox(
-                              height: SizeConfig.calHeightMultiplier(50),
-                            ),
-                            CustomButton(
-                              onPressed: () {
-                                debugPrint('Clicked');
-                                Navigator.of(context).pushNamed(
-                                  routeResultRecom,
-                                  arguments: PackageFromResulScanToResultRecom(
-                                    acne: widget.result.acne,
-                                    flex: widget.result.flex,
-                                    wringkle: widget.result.wrinkle,
-                                    id: widget.result.id,
-                                    recomDesc: widget.result.recomDesc,
-                                  ),
-                                );
+                        Text(
+                          'Hasil Analisa Kulit Anda',
+                          style: TextStyle(
+                            color: blueTextColor,
+                            fontSize: SizeConfig.calHeightMultiplier(16),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          'Kami telah menganalisis kondisi kulit Anda untuk memberikan informasi yang akurat dan mendetail. Berikut adalah hasilnya:',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: SizeConfig.calHeightMultiplier(12),
+                          ),
+                        ),
+                        SizedBox(height: SizeConfig.calHeightMultiplier(60)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: List.generate(3, (index) {
+                            final item = reorderedConditions[index];
+                            final isSelected = selectedIndex == index;
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selectedIndex = index;
+                                });
                               },
-                              text: 'Rekomendasi Product',
-                            ),
-                          ],
-                        );
-                      },
+                              child: Container(
+                                width: SizeConfig.calWidthMultiplier(80),
+                                height: SizeConfig.calWidthMultiplier(80),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  color: isSelected
+                                      ? primaryBlueColor
+                                      : primaryBlueColor.withOpacity(.5),
+                                  boxShadow: isSelected
+                                      ? [
+                                          BoxShadow(
+                                            color: Colors.blueAccent,
+                                            blurRadius: 8,
+                                          ),
+                                        ]
+                                      : [],
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      '${item['value'].toStringAsFixed(0)}%',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: SizeConfig.calWidthMultiplier(
+                                          20,
+                                        ),
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    Text(
+                                      item['label'],
+                                      style: TextStyle(
+                                        fontSize: SizeConfig.calWidthMultiplier(
+                                          12,
+                                        ),
+                                        color: Colors.white.withOpacity(.8),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                        ),
+
+                        SizedBox(height: SizeConfig.calHeightMultiplier(90)),
+                        Text(
+                          widget.result.description,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: SizeConfig.calHeightMultiplier(12),
+                          ),
+                        ),
+                        SizedBox(height: SizeConfig.calHeightMultiplier(20)),
+                        Text(
+                          'Temukan rekomendasi produk perawatan terbaik untuk kulit Anda di sini!',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: SizeConfig.calHeightMultiplier(12),
+                          ),
+                        ),
+                        SizedBox(height: SizeConfig.calHeightMultiplier(50)),
+                        CustomButton(
+                          onPressed: () {
+                            debugPrint('Clicked');
+                            Navigator.of(context).pushNamed(
+                              routeResultRecom,
+                              arguments: PackageFromResulScanToResultRecom(
+                                acne: widget.result.acne,
+                                flex: widget.result.flex,
+                                wringkle: widget.result.wrinkle,
+                                id: widget.result.id,
+                                recomDesc: widget.result.recomDesc,
+                              ),
+                            );
+                          },
+                          text: 'Rekomendasi Product',
+                        ),
+                      ],
                     ),
                   ),
                 ]),
@@ -269,6 +230,57 @@ class _ResultScanPageState extends State<ResultScanPage> {
           ),
         ),
       ),
+    );
+  }
+}
+class _BuildName extends StatefulWidget {
+  const _BuildName({super.key});
+
+  @override
+  State<_BuildName> createState() => _BuildNameState();
+}
+
+class _BuildNameState extends State<_BuildName> {
+  late Future<String> _userNameFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _userNameFuture = _fetchUserName();
+  }
+
+  Future<String> _fetchUserName() async {
+    try {
+      final name = await di<SharedPreferencesService>().getString('name');
+      return name ?? 'Guest';
+    } catch (e) {
+      // Return default value if there's an error
+      return 'Guest';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<String>(
+      future: _userNameFuture,
+      builder: (context, snapshot) {
+        // Handle all possible states
+        final userName = switch (snapshot) {
+          AsyncSnapshot(connectionState: ConnectionState.waiting) => 'Loading...',
+          AsyncSnapshot(hasError: true) => 'Guest', // Fallback to 'Guest' on error
+          AsyncSnapshot(data: final data) => data,
+          _ => 'Guest', // Default fallback
+        };
+
+        return Text(
+          'Hai, $userName',
+          style: TextStyle(
+            color: primaryBlueColor,
+            fontSize: SizeConfig.calHeightMultiplier(20),
+            fontWeight: FontWeight.w600,
+          ),
+        );
+      },
     );
   }
 }
@@ -460,7 +472,7 @@ class CustomRadialGauge extends StatelessWidget {
       duration: Duration(seconds: 1),
       value: value,
       radius: 200,
-      builder: (context, child, value) => _buildGaugeContent(value),
+      builder: (context, child, value) => _buildGaugeContent(value, context),
       axis: GaugeAxis(
         min: 0,
         max: 100,
@@ -476,7 +488,7 @@ class CustomRadialGauge extends StatelessWidget {
   }
 
   /// Builds the content inside the gauge (percentage and label).
-  Widget _buildGaugeContent(double value) {
+  Widget _buildGaugeContent(double value, BuildContext ctx) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -484,13 +496,14 @@ class CustomRadialGauge extends StatelessWidget {
           "${value.round()}%",
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: SizeConfig.calWidthMultiplier(40),
+            fontSize: SizeConfig.calWidthMultiplier(32),
           ),
         ),
         Text(
           label,
-          style: TextStyle(fontSize: SizeConfig.calWidthMultiplier(20)),
+          style: TextStyle(fontSize: SizeConfig.calWidthMultiplier(16)),
         ),
+        // SizedBox(height: MediaQuery.of(ctx).size.height * 1,)
       ],
     );
   }

@@ -259,7 +259,6 @@ class _ScanPageState extends State<ScanPageFront> {
         picture.path,
         compressedPath,
         quality: 88,
-        rotate: 180,
       );
       if (result == null) {
         logger.e('Image compression failed');

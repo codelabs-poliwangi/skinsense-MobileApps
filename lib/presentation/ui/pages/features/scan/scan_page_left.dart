@@ -229,7 +229,6 @@ class _ScanPageState extends State<ScanPageLeft> {
         picture.path,
         compressedPath,
         quality: 88,
-        rotate: 180,
       );
       if (result == null) {
         logger.e('Image compression failed');
@@ -244,7 +243,7 @@ class _ScanPageState extends State<ScanPageLeft> {
       );
 
       //save pic
-      SharedPreferencesService().saveString('scan_face_left', picture.path);
+      SharedPreferencesService().saveString('scan_face_left', compressedPath);
       print('Picture saved to ${picture.path}');
       Navigator.of(context).pushNamed(routeScanLeftPreview);
     } catch (e) {
