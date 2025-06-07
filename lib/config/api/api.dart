@@ -20,7 +20,7 @@ const String productUrl = "/products";
 
 // !routine
 //* routine mock api
-const String routineUrl =  "https://retoolapi.dev/76WqTn/routine";
+const String routineUrl =  "/routine";
 
 // !skin condition
 

@@ -98,6 +98,7 @@ class _ProductKatalogPageState extends State<ProductKatalogPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: lightBlueColor,
       body: SafeArea(
         child: NestedScrollView(
             floatHeaderSlivers: true,

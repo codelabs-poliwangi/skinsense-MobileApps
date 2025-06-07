@@ -55,7 +55,7 @@ void init() async {
 
   // routine
 
-  di.registerSingleton<RoutineProvider>(RoutineProvider());
+  di.registerSingleton<RoutineProvider>(RoutineProvider(di<ApiClient>()));
   di.registerSingleton<RoutineRepository>(
       RoutineRepository(di<RoutineProvider>()));
 

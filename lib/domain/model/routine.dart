@@ -3,33 +3,20 @@ part 'routine.g.dart';
 @JsonSerializable()
 class Routine {
     @JsonKey(name: "id")
-    final int id;
+    int id;
     @JsonKey(name: "image")
-    final String image;
+    String image;
     @JsonKey(name: "activity")
-    final String activity;
+    String activity;
     @JsonKey(name: "is_comlete")
-    bool isComplete;
+    bool isComlete;
 
     Routine({
         required this.id,
         required this.image,
         required this.activity,
-        required this.isComplete,
+        required this.isComlete,
     });
-
-    Routine copyWith({
-        int? id,
-        String? image,
-        String? activity,
-        bool? isComlete, required bool isComplete,
-    }) => 
-        Routine(
-            id: id ?? this.id,
-            image: image ?? this.image,
-            activity: activity ?? this.activity,
-            isComplete: isComlete ?? this.isComplete,
-        );
 
     factory Routine.fromJson(Map<String, dynamic> json) => _$RoutineFromJson(json);
 

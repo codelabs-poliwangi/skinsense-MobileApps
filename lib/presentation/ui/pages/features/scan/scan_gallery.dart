@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skinisense/config/theme/color.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:skinisense/presentation/ui/pages/features/questions/questions_intro.dart';
 import 'package:skinisense/presentation/ui/widget/button_primary.dart';
-
-import '../questions/questions_intro.dart';
 
 class ScanGalleryScope extends StatelessWidget {
   const ScanGalleryScope({super.key});

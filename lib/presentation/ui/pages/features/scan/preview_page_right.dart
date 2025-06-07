@@ -29,6 +29,7 @@ class _PreviewPageRightState extends State<PreviewPageRight> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,

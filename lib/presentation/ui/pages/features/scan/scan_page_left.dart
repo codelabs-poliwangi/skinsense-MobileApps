@@ -242,6 +242,7 @@ class _ScanPageState extends State<ScanPageLeft> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Stack(
           children: [
