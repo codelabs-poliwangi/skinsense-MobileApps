@@ -66,7 +66,7 @@ class ApiClient {
           return handler.next(options);
         },
         onResponse: (response, handler) async {
-          if (response.requestOptions.extra['isSkipInspector'] == true) {
+          if (response.requestOptions.extra['skipAuthInterceptor'] == true) {
             return handler.next(response);
           }
           if (response.statusCode == 401 &&

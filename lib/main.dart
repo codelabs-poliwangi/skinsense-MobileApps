@@ -12,9 +12,6 @@ import 'package:skinisense/presentation/ui/pages/features/auth/bloc/auth_bloc.da
 import 'package:skinisense/presentation/ui/pages/features/auth/repository/auth_repository.dart';
 import 'firebase_options.dart';
 
-// ...
-
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([

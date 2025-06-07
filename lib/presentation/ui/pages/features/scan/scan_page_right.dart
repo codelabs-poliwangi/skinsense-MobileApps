@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:permission_handler/permission_handler.dart'; // Import permission_handler
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:skinisense/config/routes/Route.dart';
@@ -7,6 +8,8 @@ import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/domain/services/sharedPreferences-services.dart';
 import 'package:skinisense/presentation/ui/widget/alertdialog_widget.dart';
 import 'package:skinisense/presentation/ui/widget/camera_frame_scan.dart';
+
+import '../../../../../domain/utils/logger.dart';
 
 late List<CameraDescription> _cameras; // List camera use
 
@@ -147,28 +150,34 @@ class _ScanPageState extends State<ScanPageRight> {
 
   // Function to initialize the camera
   void _initializeCamera(CameraDescription cameraDescription) {
-    controller = CameraController(cameraDescription, ResolutionPreset.max,
-        enableAudio: false);
-    controller.initialize().then((_) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {
-        _isCameraInitialized = true;
-      });
-    }).catchError((Object e) {
-      if (e is CameraException) {
-        switch (e.code) {
-          case 'CameraAccessDenied':
-            print('Camera access denied');
-            _showPermissionDialog();
-            break;
-          default:
-            print('Camera error: ${e.code}');
-            break;
-        }
-      }
-    });
+    controller = CameraController(
+      cameraDescription,
+      ResolutionPreset.max,
+      enableAudio: false,
+    );
+    controller
+        .initialize()
+        .then((_) {
+          if (!mounted) {
+            return;
+          }
+          setState(() {
+            _isCameraInitialized = true;
+          });
+        })
+        .catchError((Object e) {
+          if (e is CameraException) {
+            switch (e.code) {
+              case 'CameraAccessDenied':
+                print('Camera access denied');
+                _showPermissionDialog();
+                break;
+              default:
+                print('Camera error: ${e.code}');
+                break;
+            }
+          }
+        });
   }
 
   void switchCamera() {
@@ -212,7 +221,33 @@ class _ScanPageState extends State<ScanPageRight> {
     }
 
     try {
+      // get pic
       XFile picture = await controller.takePicture();
+      int sizeInBytes = await picture.length();
+      String compressedPath = '${picture.path}_compressed.jpg';
+      double sizeInMB = sizeInBytes / (1024 * 1024);
+      logger.d('size picture ${sizeInMB}');
+
+      // compress image
+      var result = await FlutterImageCompress.compressAndGetFile(
+        picture.path,
+        compressedPath,
+        quality: 88,
+        rotate: 180,
+      );
+      if (result == null) {
+        logger.e('Image compression failed');
+        throw Exception('Failed to compress image');
+      }
+
+      // get compressed size
+      int compressedSizeInBytes = await result.length();
+      double compressedSizeInMB = compressedSizeInBytes / (1024 * 1024);
+      logger.d(
+        'Compressed picture size: ${compressedSizeInMB.toStringAsFixed(2)} MB',
+      );
+
+      // save pic
       SharedPreferencesService().saveString('scan_face_right', picture.path);
       print('Picture saved to ${picture.path}');
       Navigator.of(context).pushNamed(routeScanRightPreview);
@@ -249,28 +284,26 @@ class _ScanPageState extends State<ScanPageRight> {
             // Camera Preview or Black Screen Container
             _isCameraPermissionGranted
                 ? _isCameraInitialized
-                    ? SizedBox.expand(
-                        child: Stack(
-                          children: [
-                            // Camera Preview
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height,
-                              child: CameraPreview(controller),
-                            ),
+                      ? SizedBox.expand(
+                          child: Stack(
+                            children: [
+                              // Camera Preview
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                child: CameraPreview(controller),
+                              ),
 
-                            // Blurred overlay with guided frame
-                            CameraFrameScan(
-                              sideScan: 'Kanan',
-                            )
-                          ],
-                        ),
-                      )
-                    : Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height,
-                        color: Colors.black,
-                      )
+                              // Blurred overlay with guided frame
+                              CameraFrameScan(sideScan: 'Kanan'),
+                            ],
+                          ),
+                        )
+                      : Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+                          color: Colors.black,
+                        )
                 : SizedBox(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
@@ -323,11 +356,15 @@ class _ScanPageState extends State<ScanPageRight> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.transparent,
-                          border: Border.all(width: 1, color: primaryBlueColor), // Warna border
+                          border: Border.all(
+                            width: 1,
+                            color: primaryBlueColor,
+                          ), // Warna border
                         ),
                         child: Padding(
-                          padding:
-                              EdgeInsets.all(5), // Jarak antara border dan isi
+                          padding: EdgeInsets.all(
+                            5,
+                          ), // Jarak antara border dan isi
                           child: Container(
                             width: 80,
                             height: 80,

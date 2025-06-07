@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:permission_handler/permission_handler.dart'; // Import permission_handler
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:skinisense/config/routes/Route.dart';
@@ -7,6 +8,8 @@ import 'package:skinisense/config/theme/color.dart';
 import 'package:skinisense/domain/services/sharedPreferences-services.dart';
 import 'package:skinisense/presentation/ui/widget/alertdialog_widget.dart';
 import 'package:skinisense/presentation/ui/widget/camera_frame_scan.dart';
+
+import '../../../../../domain/utils/logger.dart';
 
 late List<CameraDescription> _cameras; // List camera use
 
@@ -212,7 +215,35 @@ class _ScanPageState extends State<ScanPageLeft> {
     }
 
     try {
+      //get pic
       XFile picture = await controller.takePicture();
+      logger.d('picture path ${picture.path}');
+      String compressedPath = '${picture.path}_compressed.jpg';
+      // size original
+      int sizeInBytes = await picture.length();
+      double sizeInMB = sizeInBytes / (1024 * 1024);
+      logger.d('size picture ${sizeInMB}');
+
+       // compress image
+      var result = await FlutterImageCompress.compressAndGetFile(
+        picture.path,
+        compressedPath,
+        quality: 88,
+        rotate: 180,
+      );
+      if (result == null) {
+        logger.e('Image compression failed');
+        throw Exception('Failed to compress image');
+      }
+
+      // get compressed size
+      int compressedSizeInBytes = await result.length();
+      double compressedSizeInMB = compressedSizeInBytes / (1024 * 1024);
+      logger.d(
+        'Compressed picture size: ${compressedSizeInMB.toStringAsFixed(2)} MB',
+      );
+
+      //save pic
       SharedPreferencesService().saveString('scan_face_left', picture.path);
       print('Picture saved to ${picture.path}');
       Navigator.of(context).pushNamed(routeScanLeftPreview);
